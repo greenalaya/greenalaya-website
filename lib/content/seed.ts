@@ -100,6 +100,7 @@ export const seedTeamMembers: TeamMember[] = [
     position: null,
     bio: null,
     photo_url: "/images/team/team-group.png",
+    linkedin_url: "https://www.linkedin.com/in/madhav-upadhaya-283a4622a/",
   },
   {
     id: "seed-pritam-thapa",

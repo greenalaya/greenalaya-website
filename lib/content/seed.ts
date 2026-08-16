@@ -109,7 +109,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "pritam-thapa",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/pritam-thapa.jpg",
     linkedin_url: "https://www.linkedin.com/in/pritam-thapa-94640a32b/",
   },
 ];

@@ -23,6 +23,7 @@ export const seedTeamMembers: TeamMember[] = [
     position: null,
     bio: null,
     photo_url: "/images/team/team-group.png",
+    linkedin_url: "https://www.linkedin.com/in/binit-timalsina-04a440266/",
   },
   {
     id: "seed-siddhartha-sapkota",
@@ -55,6 +56,7 @@ export const seedTeamMembers: TeamMember[] = [
     position: null,
     bio: null,
     photo_url: "/images/team/team-group.png",
+    linkedin_url: "https://www.linkedin.com/in/shreejana-bajracharya-386b1028a/",
   },
   {
     id: "seed-rajib-sedhain",
@@ -104,6 +106,7 @@ export const seedTeamMembers: TeamMember[] = [
     position: null,
     bio: null,
     photo_url: "/images/team/team-group.png",
+    linkedin_url: "https://www.linkedin.com/in/pritam-thapa-94640a32b/",
   },
 ];
 

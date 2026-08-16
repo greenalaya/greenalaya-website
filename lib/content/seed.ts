@@ -32,6 +32,7 @@ export const seedTeamMembers: TeamMember[] = [
     position: null,
     bio: "Supports Greenalaya Nepal's governance and strategic direction, linking conservation research with community-centered environmental action across Nepal.",
     photo_url: "/images/team/siddartha-sapkota.jpg",
+    linkedin_url: "https://www.linkedin.com/in/siddartha-sapkota-133810290/",
   },
   {
     id: "seed-binay-dhakal",
@@ -74,6 +75,7 @@ export const seedTeamMembers: TeamMember[] = [
     position: null,
     bio: null,
     photo_url: "/images/team/team-group.png",
+    linkedin_url: "https://www.linkedin.com/in/sarita-pokhrel-025aa4269/",
   },
   {
     id: "seed-aashish-shrestha",

@@ -63,6 +63,7 @@ export const seedTeamMembers: TeamMember[] = [
     position: null,
     bio: null,
     photo_url: "/images/team/team-group.png",
+    linkedin_url: "https://www.linkedin.com/in/rajib-sedhain/",
   },
   {
     id: "seed-sarita-pokhrel",

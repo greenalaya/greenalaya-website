@@ -22,7 +22,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "binit-timalsina",
     position: null,
     bio: null,
-    photo_url: "/images/team/binit-timalsina.jpg",
+    photo_url: "/images/team/team-group.png",
     linkedin_url: "https://www.linkedin.com/in/binit-timalsina-04a440266/",
   },
   {

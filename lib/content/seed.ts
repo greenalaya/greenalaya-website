@@ -92,7 +92,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "negma-shakya",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/negma-shakya.jpg",
   },
   {
     id: "seed-madhav-upadhya",

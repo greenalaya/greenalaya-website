@@ -56,7 +56,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "shreejana-bajracharya",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/shreejana-bajracharya.jpg",
     linkedin_url: "https://www.linkedin.com/in/shreejana-bajracharya-386b1028a/",
   },
   {

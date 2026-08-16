@@ -74,7 +74,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "sarita-pokhrel",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/sarita-pokhrel.jpg",
     linkedin_url: "https://www.linkedin.com/in/sarita-pokhrel-025aa4269/",
   },
   {

@@ -13,7 +13,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "nabin-sapkota",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/nabin-sapkota.jpg",
     linkedin_url: "https://www.linkedin.com/in/nabin1sapkota/",
   },
   {

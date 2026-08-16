@@ -13,7 +13,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "nabin-sapkota",
     position: null,
     bio: null,
-    photo_url: "/images/team/nabin-sapkota.jpg",
+    photo_url: "/images/team/team-group.png",
     linkedin_url: "https://www.linkedin.com/in/nabin1sapkota/",
   },
   {
@@ -22,7 +22,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "binit-timalsina",
     position: null,
     bio: null,
-    photo_url: "/images/team/binit-timalsina.jpg",
+    photo_url: "/images/team/team-group.png",
     linkedin_url: "https://www.linkedin.com/in/binit-timalsina-04a440266/",
   },
   {
@@ -56,7 +56,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "shreejana-bajracharya",
     position: null,
     bio: null,
-    photo_url: "/images/team/shreejana-bajracharya.jpg",
+    photo_url: "/images/team/team-group.png",
     linkedin_url: "https://www.linkedin.com/in/shreejana-bajracharya-386b1028a/",
   },
   {
@@ -74,7 +74,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "sarita-pokhrel",
     position: null,
     bio: null,
-    photo_url: "/images/team/sarita-pokhrel.jpg",
+    photo_url: "/images/team/team-group.png",
     linkedin_url: "https://www.linkedin.com/in/sarita-pokhrel-025aa4269/",
   },
   {
@@ -92,7 +92,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "negma-shakya",
     position: null,
     bio: null,
-    photo_url: "/images/team/negma-shakya.jpg",
+    photo_url: "/images/team/team-group.png",
   },
   {
     id: "seed-madhav-upadhya",
@@ -109,7 +109,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "pritam-thapa",
     position: null,
     bio: null,
-    photo_url: "/images/team/pritam-thapa.jpg",
+    photo_url: "/images/team/team-group.png",
     linkedin_url: "https://www.linkedin.com/in/pritam-thapa-94640a32b/",
   },
 ];

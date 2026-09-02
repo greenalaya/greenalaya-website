@@ -41,7 +41,7 @@ async function withTransparentBackground(input, threshold = 48) {
   });
 }
 
-async function renderLogo(size, background) {
+async function renderLogo(size, background, rounded = false) {
   const transparent = await withTransparentBackground(sourceInput);
   let pipeline = transparent.resize(size, size, {
     fit: "contain",
@@ -52,13 +52,25 @@ async function renderLogo(size, background) {
     pipeline = pipeline.flatten({ background });
   }
 
-  return pipeline.ensureAlpha().png({ compressionLevel: 9 }).toBuffer();
+  pipeline = pipeline.ensureAlpha();
+  if (rounded) {
+    pipeline = pipeline.composite([{ input: roundedCorners(size), blend: "dest-in" }]);
+  }
+
+  return pipeline.png({ compressionLevel: 9 }).toBuffer();
 }
 
 async function writeFaviconPng(size, filename, background) {
-  const buf = await renderLogo(size, background);
+  const buf = await renderLogo(size, background, true);
   writeFileSync(path.join(publicDir, filename), buf);
   return buf;
+}
+
+function roundedCorners(size) {
+  const radius = Math.max(1, Math.round(size * 0.2));
+  return Buffer.from(
+    `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="${size}" height="${size}" rx="${radius}" fill="white"/></svg>`,
+  );
 }
 
 function pngBuffersToIco(pngBuffers) {
@@ -108,6 +120,7 @@ writeFileSync(path.join(publicDir, "favicon.ico"), ico);
 // PWA / manifest + Organization schema logo (square, white background).
 await writeFaviconPng(192, "icon-192.png", theme.header);
 await writeFaviconPng(512, "icon-512.png", theme.header);
+await writeFaviconPng(512, "favicon.png", theme.header);
 
 // UI logo: transparent PNG for header (white) and footer (emerald-50).
 const icon512 = await renderLogo(512, null);

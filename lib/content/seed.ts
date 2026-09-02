@@ -134,7 +134,7 @@ export const seedAdvisors: TeamMember[] = [
     slug: "mahendra-singh-limbu",
     position: null,
     bio: null,
-    photo_url: "/images/team/mahendra-singh-limbu-crop.png",
+    photo_url: "/images/team/mahendra-singh-limbu.png",
   },
   {
     id: "seed-ruman-shrestha",

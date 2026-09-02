@@ -21,15 +21,10 @@ function filterPublications(items: PublicationCard[], query: string) {
   );
 }
 
-export function PublicationsPageContent({
-  publications,
-}: PublicationsPageContentProps) {
+export function PublicationsPageContent({ publications }: PublicationsPageContentProps) {
   const [query, setQuery] = useState("");
 
-  const filtered = useMemo(
-    () => filterPublications(publications, query),
-    [publications, query],
-  );
+  const filtered = useMemo(() => filterPublications(publications, query), [publications, query]);
 
   return (
     <>

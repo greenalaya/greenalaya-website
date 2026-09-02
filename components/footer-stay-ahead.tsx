@@ -135,11 +135,9 @@ export function FooterStayAhead() {
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-white sm:mt-3.5 lg:mx-0 lg:mt-4">
               Join researchers, communities, and organizations
-              <br className="sm:hidden" />
-              {" "}who trust {siteConfig.name}
-              <br className="sm:hidden" />
-              {" "}for evidence-based conservation and environmental action across
-              Nepal.
+              <br className="sm:hidden" /> who trust {siteConfig.name}
+              <br className="sm:hidden" /> for evidence-based conservation and environmental action
+              across Nepal.
             </p>
 
             <div className="mt-4 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:mt-5 lg:mt-8 lg:justify-start">

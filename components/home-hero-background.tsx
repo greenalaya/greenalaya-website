@@ -6,10 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
-import {
-  computeParallaxTransform,
-  PARALLAX_INITIAL_TRANSFORM,
-} from "@/lib/scroll-parallax";
+import { computeParallaxTransform, PARALLAX_INITIAL_TRANSFORM } from "@/lib/scroll-parallax";
 import { aboutPageContent, siteConfig } from "@/lib/site";
 import { cn, rafThrottle } from "@/lib/utils";
 
@@ -29,10 +26,8 @@ const heroButtonClass =
   "inline-flex min-h-12 items-center justify-center rounded-full px-8 text-[calc(18px-2px)] font-semibold no-underline transition-[transform,background-color,border-color,box-shadow] duration-200 ease-out active:scale-[0.98] motion-reduce:transition-none lg:text-[18px]";
 
 const HERO_ACCENT = "text-[#7dd87f]";
-const HERO_HEADLINE_MOBILE =
-  "max-md:whitespace-nowrap max-md:text-[21px]";
-const HERO_HEADLINE_TABLET =
-  "md:max-lg:whitespace-nowrap md:max-lg:text-[24px]";
+const HERO_HEADLINE_MOBILE = "max-md:whitespace-nowrap max-md:text-[21px]";
+const HERO_HEADLINE_TABLET = "md:max-lg:whitespace-nowrap md:max-lg:text-[24px]";
 const HERO_HEADLINE_LINE_1_DESKTOP =
   "lg:text-[clamp(calc(2.25rem-10px),calc(6.2vw-10px),calc(4.25rem-10px))]";
 const HERO_HEADLINE_LINE_2_DESKTOP = "lg:text-[clamp(2rem,6.2vw,68px)]";
@@ -143,10 +138,7 @@ export function HeroBackground({
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
-    <section
-      ref={sectionRef}
-      className={cn("relative bg-[#0a0f0a]", className ?? "min-h-screen")}
-    >
+    <section ref={sectionRef} className={cn("relative bg-[#0a0f0a]", className ?? "min-h-screen")}>
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-[#0a0f0a]">
         <HeroParallaxImage />
         <HeroOverlays />
@@ -221,9 +213,7 @@ export function HeroContent({
           <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:justify-center sm:gap-4">
             <Link
               href={primaryHref}
-              {...(primaryExternal
-                ? { target: "_blank", rel: "noopener noreferrer" }
-                : {})}
+              {...(primaryExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className={cn(
                 heroButtonClass,
                 "bg-[#2e7d32] text-white shadow-[0_4px_24px_rgba(46,125,50,0.35)] hover:bg-[#256d28] hover:shadow-[0_6px_28px_rgba(46,125,50,0.45)]",

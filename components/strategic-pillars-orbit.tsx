@@ -1,16 +1,16 @@
 "use client";
 
 import { aboutPageContent, siteConfig, strategicPillars } from "@/lib/site";
-import {
-  FlaskConical,
-  Leaf,
-  Monitor,
-  User,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { FlaskConical, Leaf, Monitor, User, Users, type LucideIcon } from "lucide-react";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 
 type PillarIconKey = (typeof strategicPillars)[number]["icon"];
 
@@ -57,9 +57,7 @@ function pillarNodeTransform(x: number, y: number): string {
   const rx = roundPx(x);
   const ry = roundPx(y);
   const formatAxis = (value: number) =>
-    value < 0
-      ? `- ${Math.abs(value).toFixed(3)}px`
-      : `+ ${value.toFixed(3)}px`;
+    value < 0 ? `- ${Math.abs(value).toFixed(3)}px` : `+ ${value.toFixed(3)}px`;
 
   return `translate(calc(-50% ${formatAxis(rx)}), calc(-50% ${formatAxis(ry)}))`;
 }
@@ -113,10 +111,9 @@ export function StrategicPillarsOrbit() {
     const section = sectionRef.current;
     if (!section || typeof IntersectionObserver === "undefined") return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.1 },
-    );
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
+      threshold: 0.1,
+    });
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
@@ -147,9 +144,7 @@ export function StrategicPillarsOrbit() {
 
       setOrbitRadius(Math.max(minRadius, maxRadius - (isCompact ? 2 : 4) + radiusBoost));
       setCircleInset(
-        isLaptop
-          ? { outer: 20, middle: 10, inner: 30 }
-          : { outer: 0, middle: 0, inner: 0 },
+        isLaptop ? { outer: 20, middle: 10, inner: 30 } : { outer: 0, middle: 0, inner: 0 },
       );
     };
 
@@ -266,9 +261,7 @@ export function StrategicPillarsOrbit() {
           </p>
         </header>
 
-        <div
-          className="relative mx-auto w-full max-w-[min(calc(100vw-2rem),26rem)] sm:max-w-[min(calc(100vw-2rem),28rem)] lg:max-w-none lg:h-[min(680px,calc(100vh-200px))] lg:min-h-[680px]"
-        >
+        <div className="relative mx-auto w-full max-w-[min(calc(100vw-2rem),26rem)] sm:max-w-[min(calc(100vw-2rem),28rem)] lg:max-w-none lg:h-[min(680px,calc(100vh-200px))] lg:min-h-[680px]">
           <div
             className="relative mx-auto aspect-square w-full overflow-visible lg:h-full lg:max-h-full"
             ref={orbitRef}

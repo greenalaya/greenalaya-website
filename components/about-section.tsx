@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  AboutGlassCard,
-  glassCardShadow,
-  glassCardSurface,
-} from "@/components/about-glass-card";
+import { AboutGlassCard, glassCardShadow, glassCardSurface } from "@/components/about-glass-card";
 import { AboutMeshBackground } from "@/components/about-mesh-background";
 import { GradientTracing } from "@/components/gradient-tracing";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
@@ -45,10 +41,7 @@ function useScrollDirectionZoom(sectionRef: RefObject<HTMLElement | null>) {
       const inView = rect.bottom > 0 && rect.top < window.innerHeight;
       if (!inView || delta === 0) return;
 
-      zoomRef.current = Math.min(
-        BG_MAX_ZOOM,
-        Math.max(0, zoomRef.current + delta * sensitivity),
-      );
+      zoomRef.current = Math.min(BG_MAX_ZOOM, Math.max(0, zoomRef.current + delta * sensitivity));
       setScale(1 + zoomRef.current);
     };
 
@@ -82,11 +75,7 @@ function connectorStripStyle(connector: Connector): CSSProperties {
   };
 }
 
-function measureConnector(
-  container: DOMRect,
-  from: DOMRect,
-  to: DOMRect,
-): Connector {
+function measureConnector(container: DOMRect, from: DOMRect, to: DOMRect): Connector {
   const fromX = from.left + from.width / 2 - container.left;
   const fromY = from.bottom - container.top;
   const toX = to.left + to.width / 2 - container.left;
@@ -177,67 +166,67 @@ export function AboutSection() {
       <SectionFadeBridges targetRef={sectionRef} showTop showBottom />
 
       <div className="relative px-5 pt-16 pb-12 md:pt-24 md:pb-[calc(6rem-30px)] lg:pt-28 lg:pb-[calc(7rem-30px)]">
-      <div ref={containerRef} className="relative mx-auto max-w-6xl">
-        {(connectors.mission || connectors.vision) && (
-          <div className="pointer-events-none absolute inset-0 z-[5] hidden overflow-visible md:block">
-            {connectors.mission && (
-              <div className="absolute" style={connectorStripStyle(connectors.mission)}>
-                <GradientTracing
-                  width={connectors.mission.width}
-                  height={CONNECTOR_STRIP_HEIGHT}
-                  path={connectorPath(connectors.mission.width)}
-                  strokeWidth={2.5}
-                  animationDuration={2.5}
-                />
-              </div>
-            )}
-            {connectors.vision && (
-              <div className="absolute" style={connectorStripStyle(connectors.vision)}>
-                <GradientTracing
-                  width={connectors.vision.width}
-                  height={CONNECTOR_STRIP_HEIGHT}
-                  path={connectorPath(connectors.vision.width)}
-                  strokeWidth={2.5}
-                  animationDuration={2.5}
-                />
-              </div>
-            )}
-          </div>
-        )}
+        <div ref={containerRef} className="relative mx-auto max-w-6xl">
+          {(connectors.mission || connectors.vision) && (
+            <div className="pointer-events-none absolute inset-0 z-[5] hidden overflow-visible md:block">
+              {connectors.mission && (
+                <div className="absolute" style={connectorStripStyle(connectors.mission)}>
+                  <GradientTracing
+                    width={connectors.mission.width}
+                    height={CONNECTOR_STRIP_HEIGHT}
+                    path={connectorPath(connectors.mission.width)}
+                    strokeWidth={2.5}
+                    animationDuration={2.5}
+                  />
+                </div>
+              )}
+              {connectors.vision && (
+                <div className="absolute" style={connectorStripStyle(connectors.vision)}>
+                  <GradientTracing
+                    width={connectors.vision.width}
+                    height={CONNECTOR_STRIP_HEIGHT}
+                    path={connectorPath(connectors.vision.width)}
+                    strokeWidth={2.5}
+                    animationDuration={2.5}
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
-        <div className="md:translate-y-[30px]">
-          <div className="relative z-10 flex flex-col gap-4 md:gap-0">
-            <div className="relative z-10 mx-auto w-full max-w-[548px] text-center">
-              <div className="md:-mt-[70px] md:translate-x-[20px] md:translate-y-[10px]">
-                <div
-                  ref={sourceRef}
-                  className={`rounded-2xl px-5 py-4 sm:rounded-3xl sm:px-10 sm:py-[10px] ${glassCardSurface} ${glassCardShadow}`}
-                >
-                  <h3 className="font-display text-xl font-bold uppercase tracking-[0.2em] text-[#2e7d32] sm:text-2xl">
-                    {siteConfig.name}
-                  </h3>
-                  <p className="mt-3 text-base leading-relaxed text-white sm:mt-5">
-                    {aboutPageContent.intro[1]}
-                  </p>
+          <div className="md:translate-y-[30px]">
+            <div className="relative z-10 flex flex-col gap-4 md:gap-0">
+              <div className="relative z-10 mx-auto w-full max-w-[548px] text-center">
+                <div className="md:-mt-[70px] md:translate-x-[20px] md:translate-y-[10px]">
+                  <div
+                    ref={sourceRef}
+                    className={`rounded-2xl px-5 py-4 sm:rounded-3xl sm:px-10 sm:py-[10px] ${glassCardSurface} ${glassCardShadow}`}
+                  >
+                    <h3 className="font-display text-xl font-bold uppercase tracking-[0.2em] text-[#2e7d32] sm:text-2xl">
+                      {siteConfig.name}
+                    </h3>
+                    <p className="mt-3 text-base leading-relaxed text-white sm:mt-5">
+                      {aboutPageContent.intro[1]}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="relative z-10 grid items-stretch gap-4 md:mt-[calc(3rem+80px)] md:grid-cols-2 md:gap-[calc(2rem+270px)] lg:mt-[calc(4rem+80px)]">
-              <div className="h-full min-h-0">
-                <AboutGlassCard cardRef={missionRef} title="Our Mission">
-                  {aboutPageContent.leadMission}
-                </AboutGlassCard>
-              </div>
-              <div className="h-full min-h-0">
-                <AboutGlassCard cardRef={visionRef} title="Our Vision">
-                  {aboutPageContent.vision}
-                </AboutGlassCard>
+              <div className="relative z-10 grid items-stretch gap-4 md:mt-[calc(3rem+80px)] md:grid-cols-2 md:gap-[calc(2rem+270px)] lg:mt-[calc(4rem+80px)]">
+                <div className="h-full min-h-0">
+                  <AboutGlassCard cardRef={missionRef} title="Our Mission">
+                    {aboutPageContent.leadMission}
+                  </AboutGlassCard>
+                </div>
+                <div className="h-full min-h-0">
+                  <AboutGlassCard cardRef={visionRef} title="Our Vision">
+                    {aboutPageContent.vision}
+                  </AboutGlassCard>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );

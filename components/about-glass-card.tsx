@@ -42,10 +42,7 @@ export function AboutGlassCard({
         </h4>
       ) : null}
       <div
-        className={cn(
-          "text-base leading-relaxed text-white",
-          title ? "mt-3 sm:mt-5" : undefined,
-        )}
+        className={cn("text-base leading-relaxed text-white", title ? "mt-3 sm:mt-5" : undefined)}
       >
         {children}
       </div>

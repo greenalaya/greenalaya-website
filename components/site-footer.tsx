@@ -20,8 +20,7 @@ const footerColumnTitleClass =
 
 const footerColumnListClass = "space-y-[11px] text-[16px] leading-snug";
 
-const footerColumnLinkClass =
-  "text-black leading-none transition hover:opacity-70 dark:text-white";
+const footerColumnLinkClass = "text-black leading-none transition hover:opacity-70 dark:text-white";
 
 const footerBodyTextClass = "text-black dark:text-white";
 
@@ -50,8 +49,7 @@ function FooterContactList({
   className?: string;
   align?: "responsive" | "start";
 }) {
-  const itemAlign =
-    align === "start" ? "justify-start" : "justify-center sm:justify-start";
+  const itemAlign = align === "start" ? "justify-start" : "justify-center sm:justify-start";
 
   return (
     <ul className={className}>
@@ -61,9 +59,7 @@ function FooterContactList({
           const content = (
             <>
               <Icon className="size-4 shrink-0 text-primary" />
-              <span
-                className={`transition hover:opacity-70 ${footerBodyTextClass}`}
-              >
+              <span className={`transition hover:opacity-70 ${footerBodyTextClass}`}>
                 {item.text}
               </span>
             </>
@@ -87,9 +83,7 @@ function FooterContactList({
           <li key={item.text}>
             <div className={`flex items-center gap-1.5 ${itemAlign}`}>
               <Icon className="size-4 shrink-0 text-primary" />
-              <address className={`not-italic ${footerBodyTextClass}`}>
-                {item.text}
-              </address>
+              <address className={`not-italic ${footerBodyTextClass}`}>{item.text}</address>
             </div>
           </li>
         );
@@ -112,13 +106,7 @@ function FooterAboutLinks() {
   );
 }
 
-function FooterAccordionSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
+function FooterAccordionSection({ title, children }: { title: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
@@ -279,9 +267,7 @@ export function SiteFooter() {
               &copy; {year} {siteConfig.name}
             </p>
 
-            <p
-              className={`text-[16px] lg:col-span-2 lg:text-right ${footerBodyTextClass}`}
-            >
+            <p className={`text-[16px] lg:col-span-2 lg:text-right ${footerBodyTextClass}`}>
               All rights reserved.
             </p>
           </div>

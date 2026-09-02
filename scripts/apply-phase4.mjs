@@ -11,7 +11,7 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !serviceKey) {
   console.error(
-    "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, or run supabase/phase4.sql in the SQL Editor."
+    "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, or run supabase/phase4.sql in the SQL Editor.",
   );
   process.exit(1);
 }
@@ -39,7 +39,7 @@ const steps = [
         bio: "Supports Greenalaya Nepal's governance and strategic direction, linking conservation research with community-centered environmental action across Nepal.",
         photo_url: "/images/team/siddartha-sapkota.jpg",
       },
-      { onConflict: "slug" }
+      { onConflict: "slug" },
     );
     if (error) throw error;
     console.log("Upserted team member");
@@ -66,7 +66,7 @@ const steps = [
           published_at: "2026-04-13",
         },
       ],
-      { onConflict: "slug" }
+      { onConflict: "slug" },
     );
     if (error) throw error;
     console.log("Upserted news posts");
@@ -79,7 +79,7 @@ const steps = [
         description:
           "A field documentation initiative cataloguing butterfly diversity across the Kathmandu Valley, producing open reference material for research, education, and urban biodiversity conservation.",
       },
-      { onConflict: "slug" }
+      { onConflict: "slug" },
     );
     if (error) throw error;
     console.log("Upserted flagship project");

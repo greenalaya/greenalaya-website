@@ -18,9 +18,7 @@ function MetadataRowItem({ label, value }: MetadataRow) {
   );
 }
 
-export function PublicationMetadataSection({
-  metadata,
-}: PublicationMetadataSectionProps) {
+export function PublicationMetadataSection({ metadata }: PublicationMetadataSectionProps) {
   const rows: MetadataRow[] = [
     { label: "Language", value: metadata.language },
     { label: "Published", value: metadata.published },

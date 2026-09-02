@@ -16,14 +16,14 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### Environment variables
 
-| Variable | Required | Purpose |
-|----------|----------|---------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Public anon key for data + auth |
-| `SUPABASE_SERVICE_ROLE_KEY` | Scripts only | `apply-phase4.mjs`, `update-butterfly-db-url.mjs` |
-| `RESEND_API_KEY` | Optional | Email staff on contact form submit |
-| `CONTACT_NOTIFY_EMAIL` | Optional | Recipient for contact alerts |
-| `CONTACT_FROM_EMAIL` | Optional | Sender for Resend |
+| Variable                        | Required     | Purpose                                           |
+| ------------------------------- | ------------ | ------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Yes          | Supabase project URL                              |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes          | Public anon key for data + auth                   |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Scripts only | `apply-phase4.mjs`, `update-butterfly-db-url.mjs` |
+| `RESEND_API_KEY`                | Optional     | Email staff on contact form submit                |
+| `CONTACT_NOTIFY_EMAIL`          | Optional     | Recipient for contact alerts                      |
+| `CONTACT_FROM_EMAIL`            | Optional     | Sender for Resend                                 |
 
 Never commit `.env.local` or expose the service role key in the browser.
 
@@ -56,14 +56,14 @@ node scripts/setup-contact-alerts.mjs
 
 This project uses **Supabase Table Editor** as the CMS — there is no in-app content editor or admin panel. Edit tables directly in the Supabase dashboard.
 
-| Table | Public page | Notes |
-|-------|-------------|-------|
-| `research` | `/research` | Publications; set `pdf_url` for downloads |
-| `team_members` | `/team` | `slug` must be URL-safe |
-| `news` | `/news` | `published_at` controls sort order |
-| `projects` | `/projects` | Thematic and field initiatives |
-| `contact_submissions` | — | View in Supabase Table Editor |
-| `newsletter_subscribers` | — | View in Supabase Table Editor |
+| Table                    | Public page | Notes                                     |
+| ------------------------ | ----------- | ----------------------------------------- |
+| `research`               | `/research` | Publications; set `pdf_url` for downloads |
+| `team_members`           | `/team`     | `slug` must be URL-safe                   |
+| `news`                   | `/news`     | `published_at` controls sort order        |
+| `projects`               | `/projects` | Thematic and field initiatives            |
+| `contact_submissions`    | —           | View in Supabase Table Editor             |
+| `newsletter_subscribers` | —           | View in Supabase Table Editor             |
 
 **Upload assets:** Supabase → Storage → `public-assets` bucket. Use [`lib/storage.ts`](lib/storage.ts) URL helper in content rows.
 
@@ -73,15 +73,15 @@ When tables are empty locally, the site shows **seed fallbacks** from [`lib/cont
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Development server |
-| `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run lint` | ESLint |
-| `npm run test:e2e` | Playwright smoke tests |
+| Command                   | Description                                                    |
+| ------------------------- | -------------------------------------------------------------- |
+| `npm run dev`             | Development server                                             |
+| `npm run build`           | Production build                                               |
+| `npm run start`           | Start production server                                        |
+| `npm run lint`            | ESLint                                                         |
+| `npm run test:e2e`        | Playwright smoke tests                                         |
 | `npm run db:apply-phase4` | Seed team, news, projects (needs service role in `.env.local`) |
-| `npm run db:check-phase5` | Verify `newsletter_subscribers` table exists |
+| `npm run db:check-phase5` | Verify `newsletter_subscribers` table exists                   |
 
 ## Deployment
 

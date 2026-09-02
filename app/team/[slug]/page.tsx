@@ -45,10 +45,7 @@ export default async function TeamMemberPage({ params }: PageProps) {
   }
 
   return (
-    <PageShell
-      title={member.name}
-      description={member.position ?? "Greenalaya Nepal team member"}
-    >
+    <PageShell title={member.name} description={member.position ?? "Greenalaya Nepal team member"}>
       <p className="mt-6">
         <Link href="/team" className="text-sm text-primary hover:underline">
           ← All team members
@@ -63,16 +60,13 @@ export default async function TeamMemberPage({ params }: PageProps) {
           height={192}
           className="mt-6 h-48 w-48 rounded-lg object-cover"
           unoptimized={
-            member.photo_url.startsWith("http") &&
-            !isOptimizableRemotePhoto(member.photo_url)
+            member.photo_url.startsWith("http") && !isOptimizableRemotePhoto(member.photo_url)
           }
         />
       ) : null}
 
       {member.bio ? (
-        <p className="mt-6 text-lg leading-relaxed text-foreground">
-          {member.bio}
-        </p>
+        <p className="mt-6 text-lg leading-relaxed text-foreground">{member.bio}</p>
       ) : (
         <p className="mt-6 text-muted-foreground">Bio coming soon.</p>
       )}

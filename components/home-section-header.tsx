@@ -1,12 +1,6 @@
 import type { ReactNode } from "react";
 
-function SectionTag({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+function SectionTag({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <span
       className={`mb-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/15 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-[#2e7d32] shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-[#81c784] ${className ?? ""}`}

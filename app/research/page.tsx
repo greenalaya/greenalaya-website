@@ -15,6 +15,7 @@ export const metadata = pageMetadata({
 });
 
 export const revalidate = 300;
+export const dynamic = "force-static";
 
 async function getResearch(): Promise<Research[]> {
   return fetchListWithFallback<Research>({
@@ -60,10 +61,7 @@ export default async function ResearchPage() {
             <li key={item.id}>
               <ContentCard>
                 <h2 className="text-xl font-semibold text-secondary-foreground">
-                  <Link
-                    href={`/publications/${item.slug}`}
-                    className="hover:underline"
-                  >
+                  <Link href={`/publications/${item.slug}`} className="hover:underline">
                     {item.title}
                   </Link>
                 </h2>
@@ -72,9 +70,7 @@ export default async function ResearchPage() {
                     {formatDate(item.published_date)}
                   </p>
                 ) : null}
-                {item.abstract ? (
-                  <p className="mt-2 text-foreground">{item.abstract}</p>
-                ) : null}
+                {item.abstract ? <p className="mt-2 text-foreground">{item.abstract}</p> : null}
               </ContentCard>
             </li>
           ))}

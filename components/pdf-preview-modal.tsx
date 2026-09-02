@@ -89,10 +89,7 @@ export function PdfPreviewModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-5">
-          <h3
-            id="pdf-preview-title"
-            className="font-display text-lg font-bold text-foreground"
-          >
+          <h3 id="pdf-preview-title" className="font-display text-lg font-bold text-foreground">
             {title} — Preview
           </h3>
           <button
@@ -116,9 +113,7 @@ export function PdfPreviewModal({
         </div>
         <div className="flex shrink-0 flex-col items-center justify-between gap-3 border-t border-border px-6 py-4 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            {pageCount
-              ? `Previewing document (${pageCount} pages)`
-              : "Previewing document"}
+            {pageCount ? `Previewing document (${pageCount} pages)` : "Previewing document"}
           </p>
           <a
             href={pdfUrl}

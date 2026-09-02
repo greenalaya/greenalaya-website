@@ -11,6 +11,9 @@ export const metadata = pageMetadata({
   path: "/about",
 });
 
+export const dynamic = "force-static";
+export const revalidate = 300;
+
 export default async function AboutPage() {
   const [
     { members: advisors, error: advisorsError },

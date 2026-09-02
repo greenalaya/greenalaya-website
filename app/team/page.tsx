@@ -14,6 +14,7 @@ export const metadata = pageMetadata({
 });
 
 export const revalidate = 300;
+export const dynamic = "force-static";
 
 export default async function TeamPage() {
   const { members, error } = await getTeamMembers();
@@ -27,10 +28,7 @@ export default async function TeamPage() {
           </div>
         </div>
       ) : null}
-      <ModernTeamShowcase
-        tagline={TEAM_TAGLINE}
-        teamMembers={members.map(toTeamShowcaseMember)}
-      />
+      <ModernTeamShowcase tagline={TEAM_TAGLINE} teamMembers={members.map(toTeamShowcaseMember)} />
     </>
   );
 }

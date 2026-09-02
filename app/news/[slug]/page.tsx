@@ -21,9 +21,7 @@ async function loadNewsPost(slug: string) {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("news")
-      .select(
-        "id, title, slug, excerpt, content, featured_image_url, published_at"
-      )
+      .select("id, title, slug, excerpt, content, featured_image_url, published_at")
       .eq("slug", slug)
       .maybeSingle();
 
@@ -85,34 +83,28 @@ export default async function NewsDetailPage({ params }: PageProps) {
         title={post.title}
         description={
           post.excerpt ??
-          (post.published_at
-            ? (formatDate(post.published_at) ?? "News update")
-            : "News update")
+          (post.published_at ? (formatDate(post.published_at) ?? "News update") : "News update")
         }
       >
-      <p className="mt-6">
-        <Link href="/news" className="text-sm text-primary hover:underline">
-          ← All news
-        </Link>
-      </p>
-
-      {post.published_at ? (
-        <p className="mt-2 text-sm text-muted-foreground">
-          {formatDate(post.published_at)}
+        <p className="mt-6">
+          <Link href="/news" className="text-sm text-primary hover:underline">
+            ← All news
+          </Link>
         </p>
-      ) : null}
 
-      {post.content ? (
-        <div className="mt-6 whitespace-pre-wrap text-lg leading-relaxed text-foreground">
-          {post.content}
-        </div>
-      ) : post.excerpt ? (
-        <p className="mt-6 text-lg leading-relaxed text-foreground">
-          {post.excerpt}
-        </p>
-      ) : (
-        <p className="mt-6 text-muted-foreground">Content coming soon.</p>
-      )}
+        {post.published_at ? (
+          <p className="mt-2 text-sm text-muted-foreground">{formatDate(post.published_at)}</p>
+        ) : null}
+
+        {post.content ? (
+          <div className="mt-6 whitespace-pre-wrap text-lg leading-relaxed text-foreground">
+            {post.content}
+          </div>
+        ) : post.excerpt ? (
+          <p className="mt-6 text-lg leading-relaxed text-foreground">{post.excerpt}</p>
+        ) : (
+          <p className="mt-6 text-muted-foreground">Content coming soon.</p>
+        )}
       </PageShell>
     </>
   );

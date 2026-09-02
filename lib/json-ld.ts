@@ -29,11 +29,7 @@ function organizationJsonLd() {
       addressLocality: "Pokhara",
       addressCountry: "NP",
     },
-    sameAs: [
-      siteConfig.social.facebook,
-      siteConfig.social.instagram,
-      siteConfig.social.linkedin,
-    ],
+    sameAs: [siteConfig.social.facebook, siteConfig.social.instagram, siteConfig.social.linkedin],
   };
 }
 

@@ -54,9 +54,7 @@ export async function getTeamMembers(): Promise<{
   return { members: withSeedPhotos(members), error: null };
 }
 
-export async function getTeamMemberBySlug(
-  slug: string,
-): Promise<TeamMember | null> {
+export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | null> {
   const seed = seedTeamMembers.find((member) => member.slug === slug) ?? null;
 
   if (!isSupabaseConfigured()) {

@@ -4,10 +4,7 @@ const PARALLAX_MAX_SCALE_ADD = 0.28;
 const PARALLAX_Y_FACTOR = 0.18;
 
 /** Same scroll-driven scale + vertical drift used by the homepage hero background. */
-export function computeParallaxTransform(
-  scrollY: number,
-  viewportScale = 1,
-): string {
+export function computeParallaxTransform(scrollY: number, viewportScale = 1): string {
   const scrollZoom =
     PARALLAX_BASE_SCALE + Math.min(scrollY / PARALLAX_SCROLL_RANGE, PARALLAX_MAX_SCALE_ADD);
   const pinchZoom = 1 + (viewportScale - 1) * 0.65;

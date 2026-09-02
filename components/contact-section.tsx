@@ -11,11 +11,7 @@ type ContactSectionProps = {
   defaultSubject?: string;
 };
 
-export function ContactSection({
-  description,
-  formEnabled,
-  defaultSubject,
-}: ContactSectionProps) {
+export function ContactSection({ description, formEnabled, defaultSubject }: ContactSectionProps) {
   return (
     <div className="grid gap-12 md:grid-cols-2">
       <div className="space-y-8">
@@ -31,10 +27,7 @@ export function ContactSection({
             </div>
             <div>
               <h3 className="mb-1 font-semibold text-foreground">Email</h3>
-              <a
-                href={`mailto:${siteContact.email}`}
-                className="text-foreground hover:underline"
-              >
+              <a href={`mailto:${siteContact.email}`} className="text-foreground hover:underline">
                 {siteContact.email}
               </a>
             </div>

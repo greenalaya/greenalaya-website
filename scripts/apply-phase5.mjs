@@ -12,22 +12,19 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !serviceKey) {
   console.error(
-    "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, or run supabase/phase5.sql in the SQL Editor."
+    "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, or run supabase/phase5.sql in the SQL Editor.",
   );
   process.exit(1);
 }
 
 const supabase = createClient(url, serviceKey);
 
-const { error } = await supabase
-  .from("newsletter_subscribers")
-  .select("id")
-  .limit(1);
+const { error } = await supabase.from("newsletter_subscribers").select("id").limit(1);
 
 if (error) {
   if (error.code === "42P01" || error.message?.includes("does not exist")) {
     console.error(
-      "Table newsletter_subscribers not found. Run supabase/phase5.sql in Supabase → SQL Editor, then re-run this script."
+      "Table newsletter_subscribers not found. Run supabase/phase5.sql in Supabase → SQL Editor, then re-run this script.",
     );
     process.exit(1);
   }

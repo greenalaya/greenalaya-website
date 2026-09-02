@@ -76,10 +76,7 @@ export function PublicationDetailContent({
           ) : null}
 
           <section aria-labelledby="publication-download-heading" className="mt-12">
-            <h2
-              id="publication-download-heading"
-              className="text-xl font-bold text-foreground"
-            >
+            <h2 id="publication-download-heading" className="text-xl font-bold text-foreground">
               Download
             </h2>
             {pdfSizeLabel ? (

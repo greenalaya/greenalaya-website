@@ -10,10 +10,7 @@ type PublicationCardProps = {
 export function PublicationCardItem({ publication }: PublicationCardProps) {
   return (
     <article className="group">
-      <Link
-        href={`/publications/${publication.slug}`}
-        className="block no-underline"
-      >
+      <Link href={`/publications/${publication.slug}`} className="block no-underline">
         <div className="relative aspect-[4/3] overflow-hidden bg-muted">
           <Image
             src={publication.coverImage}
@@ -32,9 +29,7 @@ export function PublicationCardItem({ publication }: PublicationCardProps) {
         <h3 className="mt-4 text-lg leading-snug font-normal text-foreground transition group-hover:text-primary sm:text-xl">
           {publication.title}
         </h3>
-        <p className="mt-2 text-base italic text-muted-foreground">
-          {publication.year}
-        </p>
+        <p className="mt-2 text-base italic text-muted-foreground">{publication.year}</p>
       </Link>
     </article>
   );

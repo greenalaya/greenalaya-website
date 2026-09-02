@@ -43,13 +43,7 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
-function LinkedinIcon({
-  href,
-  memberName,
-}: {
-  href?: string | null;
-  memberName: string;
-}) {
+function LinkedinIcon({ href, memberName }: { href?: string | null; memberName: string }) {
   const className = cn(
     "text-muted-foreground transition-all duration-300 opacity-0 group-hover:opacity-100",
     href
@@ -120,11 +114,7 @@ const TeamMemberCard = memo(function TeamMemberCard({
       viewport={{ once: true, amount: 0.5 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={
-        reducedMotion
-          ? undefined
-          : { rotateX, rotateY, transformStyle: "preserve-3d" }
-      }
+      style={reducedMotion ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
       className="group relative mx-auto flex min-h-[20rem] w-full max-w-[15rem] flex-col rounded-xl border border-border bg-card px-4 py-5 text-center shadow-sm"
     >
       <div
@@ -149,9 +139,7 @@ const TeamMemberCard = memo(function TeamMemberCard({
         <h3 className="text-balance text-xl font-semibold leading-snug text-card-foreground">
           {member.name}
         </h3>
-        {member.title ? (
-          <p className="mt-1 text-primary">{member.title}</p>
-        ) : null}
+        {member.title ? <p className="mt-1 text-primary">{member.title}</p> : null}
 
         <div className="mt-auto flex w-full items-center justify-center gap-4 pt-4">
           <LinkedinIcon href={member.linkedinUrl} memberName={member.name} />
@@ -199,9 +187,7 @@ export function ModernTeamShowcase({
       </div>
 
       {teamMembers.length === 0 ? (
-        <p className="relative z-10 text-center text-muted-foreground">
-          No team members yet.
-        </p>
+        <p className="relative z-10 text-center text-muted-foreground">No team members yet.</p>
       ) : (
         <div className="responsive-grid relative z-10 w-full max-w-6xl">
           {teamMembers.map((member, index) => (

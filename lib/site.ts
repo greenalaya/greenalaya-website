@@ -14,7 +14,9 @@ export const siteIcons: NonNullable<Metadata["icons"]> = {
     { url: `/favicon-32x32.png?v=${faviconVersion}`, sizes: "32x32", type: "image/png" },
     { url: `/favicon-16x16.png?v=${faviconVersion}`, sizes: "16x16", type: "image/png" },
   ],
-  apple: [{ url: `/apple-touch-icon.png?v=${faviconVersion}`, sizes: "180x180", type: "image/png" }],
+  apple: [
+    { url: `/apple-touch-icon.png?v=${faviconVersion}`, sizes: "180x180", type: "image/png" },
+  ],
 };
 
 export const siteConfig = {
@@ -89,26 +91,22 @@ export const strategicPillars = [
   },
   {
     title: "Technology",
-    description:
-      "Leveraging AI, GIS, and data systems for smart environmental monitoring",
+    description: "Leveraging AI, GIS, and data systems for smart environmental monitoring",
     icon: "technology",
   },
   {
     title: "Research",
-    description:
-      "Conducting credible environmental research to inform evidence-based action",
+    description: "Conducting credible environmental research to inform evidence-based action",
     icon: "research",
   },
   {
     title: "Nature",
-    description:
-      "Protecting and restoring ecosystems, biodiversity, and natural resources",
+    description: "Protecting and restoring ecosystems, biodiversity, and natural resources",
     icon: "nature",
   },
   {
     title: "Collaboration",
-    description:
-      "Partnering with communities, organizations, and government for systemic change",
+    description: "Partnering with communities, organizations, and government for systemic change",
     icon: "collaboration",
   },
 ] as const;
@@ -229,7 +227,7 @@ export const butterflyPublication = {
     "A comprehensive photographic collection documenting the diverse butterfly species found across the Kathmandu Valley. This visual guide showcases 174 species captured across different seasons and habitats, serving as an important reference for researchers, conservationists, and nature enthusiasts.",
   coverImage: "/images/butterfly-publication-cover.png",
   publishedDate: "April 2026",
-  pageCount: 124,
+  pageCount: 134,
 } as const;
 
 export type PublicationMetadata = {
@@ -244,15 +242,12 @@ export const publicationMetadata: Record<string, PublicationMetadata> = {
   [butterflyPublication.slug]: {
     language: "English",
     published: "2026",
-    publishers: "Greenalaya Nepal and TinyLife Finder",
+    publishers: "Greenalaya Nepal and TinyLife Finders",
     isbn: "9789905-0-0219-7",
   },
 };
 
-export function getPublicationMetadata(
-  slug: string,
-  year: string,
-): PublicationMetadata | null {
+export function getPublicationMetadata(slug: string, year: string): PublicationMetadata | null {
   const custom = publicationMetadata[slug];
   if (!custom) return null;
 
@@ -265,10 +260,7 @@ export function getPublicationMetadata(
 }
 
 /** Cover art and optional location overlay per publication slug. */
-export const publicationAssets: Record<
-  string,
-  { coverImage: string; locationLabel?: string }
-> = {
+export const publicationAssets: Record<string, { coverImage: string; locationLabel?: string }> = {
   [butterflyPublication.slug]: {
     coverImage: butterflyPublication.coverImage,
     locationLabel: "Kathmandu Valley",

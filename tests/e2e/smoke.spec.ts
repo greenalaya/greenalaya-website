@@ -23,9 +23,7 @@ for (const path of publicRoutes) {
 
 test("team page renders modern showcase", async ({ page }) => {
   await page.goto("/team");
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Our Team" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Our Team" })).toBeVisible();
   await expect(page.getByText("Nabin Sapkota")).toBeVisible();
   await expect(page.getByText("Siddhartha Sapkota")).toBeVisible();
 });
@@ -40,15 +38,15 @@ test("contact form renders required fields", async ({ page }) => {
 
 test("stay ahead section renders on home page", async ({ page }) => {
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: /Stay ahead with/i })
-  ).toBeVisible();
-  await expect(
-    page.getByRole("link", { name: "Become a Volunteer" })
-  ).toHaveAttribute("href", "/contact?intent=volunteer");
-  await expect(
-    page.getByRole("link", { name: "Research Internship" })
-  ).toHaveAttribute("href", "/contact?intent=internship");
+  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Become a Volunteer" })).toHaveAttribute(
+    "href",
+    "/contact?intent=volunteer",
+  );
+  await expect(page.getByRole("link", { name: "Research Internship" })).toHaveAttribute(
+    "href",
+    "/contact?intent=internship",
+  );
   await expect(page.getByRole("link", { name: "Partner With Us" })).toHaveAttribute(
     "href",
     "/contact?intent=partner",
@@ -65,9 +63,7 @@ test("home page hero and core sections render", async ({ page }) => {
       name: /Building a Resilient Nepal Through Data-Driven Conservation/i,
     }),
   ).toBeVisible();
-  await expect(
-    heroCta.getByRole("link", { name: "Explore Our Work", exact: true }),
-  ).toBeVisible();
+  await expect(heroCta.getByRole("link", { name: "Explore Our Work", exact: true })).toBeVisible();
   await expect(heroCta.getByRole("link", { name: "Get Involved" })).toHaveAttribute(
     "href",
     "#get-involved",
@@ -109,9 +105,7 @@ test("publications page matches reports catalog layout", async ({ page }) => {
   await page.goto("/publications");
 
   await expect(page.getByPlaceholder("Type the keyword here")).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Publications", level: 2 }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Publications", level: 2 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "All Publications" })).toHaveCount(0);
   await expect(
     page.getByRole("link", { name: /Butterfly Images of Kathmandu Valley/i }).first(),
@@ -137,9 +131,7 @@ test("publication detail page matches WWF-style layout", async ({ page }) => {
   await expect(page.getByText("Language:")).toBeVisible();
   await expect(page.getByText("English")).toBeVisible();
   await expect(page.getByText("Publisher(s):")).toBeVisible();
-  await expect(
-    page.getByText("Greenalaya Nepal and TinyLife Finder"),
-  ).toBeVisible();
+  await expect(page.getByText("Greenalaya Nepal and TinyLife Finders")).toBeVisible();
   await expect(page.getByText("ISBN:")).toBeVisible();
   await expect(page.getByText("9789905-0-0219-7")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Download", level: 2 })).toBeVisible();
@@ -149,9 +141,35 @@ test("publication detail page matches WWF-style layout", async ({ page }) => {
 
 test("research page links to publications", async ({ page }) => {
   await page.goto("/research");
+  await expect(page.getByRole("main").getByRole("link", { name: "Publications" })).toHaveAttribute(
+    "href",
+    "/publications",
+  );
+});
+
+test("butterfly project renders the full case study", async ({ page }) => {
+  await page.goto("/projects/kathmandu-valley-butterfly-documentation");
+
+  await expect(page.getByRole("heading", { level: 1, name: /Winged Wonders/i })).toBeVisible();
+  await expect(page.getByText("174").first()).toBeVisible();
+  await expect(page.getByText("503").first()).toBeVisible();
   await expect(
-    page.getByRole("main").getByRole("link", { name: "Publications" }),
-  ).toHaveAttribute("href", "/publications");
+    page.getByRole("heading", { name: "From field observation to field guide" }),
+  ).toBeVisible();
+  await expect(page.getByText("Explore the findings")).toHaveCount(0);
+});
+
+test("projects page lists only the butterfly documentation project", async ({ page }) => {
+  await page.goto("/projects");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Our Projects" })).toBeVisible();
+  await expect(
+    page.getByText("Greenalaya Nepal's conservation, research, and innovation programs."),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Kathmandu Valley Butterfly Documentation" }),
+  ).toHaveAttribute("href", "/projects/kathmandu-valley-butterfly-documentation");
+  await expect(page.getByRole("main").locator("li")).toHaveCount(1);
 });
 
 test("/research/:slug redirects to /publications/:slug", async ({ page }) => {
@@ -202,18 +220,13 @@ test("footer links route to dedicated pages", async ({ page }, testInfo) => {
   ] as const;
 
   for (const link of footerLinks) {
-    await expect(footer.getByRole("link", { name: link.name })).toHaveAttribute(
-      "href",
-      link.path,
-    );
+    await expect(footer.getByRole("link", { name: link.name })).toHaveAttribute("href", link.path);
   }
 });
 
 test("stay ahead section is not on other pages", async ({ page }) => {
   await page.goto("/about");
-  await expect(
-    page.getByRole("heading", { name: /Stay ahead with/i })
-  ).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toHaveCount(0);
 });
 
 async function openMobileNav(page: Page) {
@@ -236,9 +249,7 @@ test("header includes primary navigation links on desktop", async ({ page }, tes
   await expect(nav.getByRole("link", { name: "News" })).toBeVisible();
   await expect(nav.getByRole("link", { name: "Blog" })).toBeVisible();
   await expect(nav.getByRole("link", { name: "Research" })).toHaveCount(0);
-  await expect(
-    page.getByRole("banner").getByRole("link", { name: "Get Involved" })
-  ).toBeVisible();
+  await expect(page.getByRole("banner").getByRole("link", { name: "Get Involved" })).toBeVisible();
 });
 
 test("mobile menu exposes primary navigation links", async ({ page }, testInfo) => {
@@ -258,9 +269,7 @@ test("mobile menu exposes primary navigation links", async ({ page }, testInfo) 
   await expect(mobileNav.getByRole("link", { name: "News" })).toBeVisible();
   await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeVisible();
   await expect(mobileNav.getByRole("link", { name: "Research" })).toHaveCount(0);
-  await expect(
-    page.getByRole("dialog").getByRole("link", { name: "Get Involved" })
-  ).toBeVisible();
+  await expect(page.getByRole("dialog").getByRole("link", { name: "Get Involved" })).toBeVisible();
 
   await mobileNav.getByRole("link", { name: "Projects" }).click();
   await expect(page).toHaveURL(/\/projects$/);

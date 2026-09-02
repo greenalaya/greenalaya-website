@@ -49,9 +49,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
 
   const pdfSizeLabel = await getLocalPdfSizeLabel(publication.pdfUrl);
   const pageCount =
-    publication.slug === butterflyPublication.slug
-      ? butterflyPublication.pageCount
-      : undefined;
+    publication.slug === butterflyPublication.slug ? butterflyPublication.pageCount : undefined;
 
   return (
     <div className={playfair.className}>

@@ -7,10 +7,7 @@ type PublicationsSearchBarProps = {
   onChange: (value: string) => void;
 };
 
-export function PublicationsSearchBar({
-  value,
-  onChange,
-}: PublicationsSearchBarProps) {
+export function PublicationsSearchBar({ value, onChange }: PublicationsSearchBarProps) {
   return (
     <div className="border-b border-border bg-secondary px-5 py-10 pt-28 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-xl">

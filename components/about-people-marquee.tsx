@@ -16,10 +16,7 @@ type PersonMarqueeMember = {
 
 type PhotoSource = "team" | "collaborator";
 
-const photoResolvers: Record<
-  PhotoSource,
-  (member: { photo_url: string | null }) => string
-> = {
+const photoResolvers: Record<PhotoSource, (member: { photo_url: string | null }) => string> = {
   team: teamPhotoUrl,
   collaborator: collaboratorPhotoUrl,
 };
@@ -100,7 +97,7 @@ function PersonCard({
               "transition-all duration-300 group-hover/card:grayscale-0",
               imageFit === "contain"
                 ? "object-contain bg-white/95 p-8 grayscale"
-                : "object-cover grayscale",
+                : cn("object-cover grayscale", member.slug === "firoj-raut" && "object-top"),
             )}
             fill
             sizes="256px"
@@ -175,12 +172,7 @@ export function AboutPeopleMarquee({
             <div className="pointer-events-none absolute top-0 left-0 z-10 h-full w-24 bg-gradient-to-r from-[#0a0f0a] to-transparent sm:w-32" />
             <div className="pointer-events-none absolute top-0 right-0 z-10 h-full w-24 bg-gradient-to-l from-[#0a0f0a] to-transparent sm:w-32" />
 
-            <Marquee
-              className="[--gap:1.5rem]"
-              direction={direction}
-              pauseOnHover
-              speed={speed}
-            >
+            <Marquee className="[--gap:1.5rem]" direction={direction} pauseOnHover speed={speed}>
               {marqueeMembers.map((member, index) => (
                 <PersonCard
                   key={`${member.id}-${index}`}

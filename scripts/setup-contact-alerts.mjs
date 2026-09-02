@@ -15,17 +15,13 @@ import { spawnSync } from "node:child_process";
 
 const apiKey = process.env.RESEND_API_KEY?.trim();
 if (!apiKey) {
-  console.error(
-    "Missing RESEND_API_KEY. Create one at https://resend.com/api-keys then rerun."
-  );
+  console.error("Missing RESEND_API_KEY. Create one at https://resend.com/api-keys then rerun.");
   process.exit(1);
 }
 
-const notifyEmail =
-  process.env.CONTACT_NOTIFY_EMAIL?.trim() || "info@greenalayanepal.org.np";
+const notifyEmail = process.env.CONTACT_NOTIFY_EMAIL?.trim() || "info@greenalayanepal.org.np";
 const fromEmail =
-  process.env.CONTACT_FROM_EMAIL?.trim() ||
-  "Greenalaya Nepal <onboarding@resend.dev>";
+  process.env.CONTACT_FROM_EMAIL?.trim() || "Greenalaya Nepal <onboarding@resend.dev>";
 
 const vars = [
   ["RESEND_API_KEY", apiKey],
@@ -47,11 +43,7 @@ function run(command, args, input) {
 
 for (const [name, value] of vars) {
   console.log(`\nSetting production env: ${name}`);
-  run(
-    "npx",
-    ["vercel", "env", "add", name, "production", "--force"],
-    `${value}\n`
-  );
+  run("npx", ["vercel", "env", "add", name, "production", "--force"], `${value}\n`);
 }
 
 console.log("\nRedeploying production...");

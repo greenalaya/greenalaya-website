@@ -8,9 +8,7 @@ const root = path.join(__dirname, "..");
 const publicDir = path.join(root, "public");
 const brandDir = path.join(root, "brand");
 
-const logoSource = path.resolve(
-  process.argv[2] ?? path.join(brandDir, "logo-source.png")
-);
+const logoSource = path.resolve(process.argv[2] ?? path.join(brandDir, "logo-source.png"));
 
 /** Site theme surfaces — keep in sync with header/footer/OG styling. */
 const theme = {

@@ -9,10 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
-  const [state, formAction, pending] = useActionState(
-    submitContactForm,
-    contactFormInitialState
-  );
+  const [state, formAction, pending] = useActionState(submitContactForm, contactFormInitialState);
 
   if (state.ok && state.message) {
     return (

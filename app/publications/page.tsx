@@ -14,12 +14,12 @@ const playfair = Playfair_Display({
 
 export const metadata = pageMetadata({
   title: "Publications",
-  description:
-    "Browse research reports and open publications from Greenalaya Nepal.",
+  description: "Browse research reports and open publications from Greenalaya Nepal.",
   path: "/publications",
 });
 
 export const revalidate = 300;
+export const dynamic = "force-static";
 
 export default async function PublicationsPage() {
   const { all, error } = await getPublicationsPageData();

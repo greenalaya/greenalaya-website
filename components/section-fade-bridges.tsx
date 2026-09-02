@@ -2,10 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useSyncExternalStore, type CSSProperties, type RefObject } from "react";
-import {
-  buildSteppedSeamGradient,
-  SEAM_BAND_HEIGHT_PX,
-} from "@/lib/section-scroll-fade";
+import { buildSteppedSeamGradient, SEAM_BAND_HEIGHT_PX } from "@/lib/section-scroll-fade";
 
 type SectionFadeBridgesProps = {
   targetRef: RefObject<HTMLElement | null>;
@@ -57,17 +54,10 @@ function ScrollSeamBridge({
 }) {
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset:
-      position === "top"
-        ? ["start end", "start center"]
-        : ["end center", "end start"],
+    offset: position === "top" ? ["start end", "start center"] : ["end center", "end start"],
   });
 
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 1],
-    position === "top" ? [1, 0] : [0, 1],
-  );
+  const opacity = useTransform(scrollYProgress, [0, 1], position === "top" ? [1, 0] : [0, 1]);
 
   const gradient = buildSteppedSeamGradient(position === "top" ? "to-bottom" : "to-top");
 

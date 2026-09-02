@@ -46,12 +46,7 @@ export function SocialLinks({
         const Icon = socialIcons[label];
         return (
           <li key={label}>
-            <a
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={iconClassName}
-            >
+            <a href={href} target="_blank" rel="noopener noreferrer" className={iconClassName}>
               <span className="sr-only">{label}</span>
               <Icon className="size-[1em]" />
             </a>

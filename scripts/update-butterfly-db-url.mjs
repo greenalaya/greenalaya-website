@@ -10,9 +10,7 @@ const pdfUrl =
   "https://greenalayanepal.org.np/publications/butterfly_images_of_kathmandu_valley.pdf";
 
 if (!url || !serviceKey) {
-  console.error(
-    "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to run this script."
-  );
+  console.error("Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to run this script.");
   process.exit(1);
 }
 

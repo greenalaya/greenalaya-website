@@ -8,9 +8,7 @@ function formatFileSize(bytes: number) {
 }
 
 /** Returns a label like "PDF 746 KB" for files in /public. */
-export async function getLocalPdfSizeLabel(
-  pdfUrl: string,
-): Promise<string | null> {
+export async function getLocalPdfSizeLabel(pdfUrl: string): Promise<string | null> {
   if (!pdfUrl.startsWith("/")) return null;
 
   const publicDir = path.join(process.cwd(), "public");

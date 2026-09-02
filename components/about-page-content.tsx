@@ -29,10 +29,7 @@ export function AboutPageContent({
       <AboutMeshBackground />
 
       <div className="relative z-10 mx-auto max-w-6xl px-5 pt-24 pb-16 md:px-6 md:pt-28 md:pb-24">
-        <AboutPageIntro
-          title={aboutPageContent.title}
-          whatWeDo={aboutWhatWeDo}
-        />
+        <AboutPageIntro title={aboutPageContent.title} whatWeDo={aboutWhatWeDo} />
         <AboutPeopleMarquee
           id="advisors"
           direction="left"
@@ -68,9 +65,8 @@ export function AboutPageContent({
             Partner organizations
           </h2>
           <p className="mt-4 text-white/70">
-            We collaborate with universities, NGOs, and community groups on research,
-            restoration, and capacity-building initiatives. Partner highlights will
-            appear here soon.
+            We collaborate with universities, NGOs, and community groups on research, restoration,
+            and capacity-building initiatives. Partner highlights will appear here soon.
           </p>
           <Link
             href={contactHref("partner")}

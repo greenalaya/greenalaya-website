@@ -9,13 +9,11 @@ function isContactEmailConfigured() {
   return Boolean(
     process.env.RESEND_API_KEY &&
       process.env.CONTACT_NOTIFY_EMAIL &&
-      process.env.CONTACT_FROM_EMAIL
+      process.env.CONTACT_FROM_EMAIL,
   );
 }
 
-export async function notifyStaffOfContactSubmission(
-  payload: ContactPayload
-): Promise<void> {
+export async function notifyStaffOfContactSubmission(payload: ContactPayload): Promise<void> {
   if (!isContactEmailConfigured()) return;
 
   const subjectLine = payload.subject

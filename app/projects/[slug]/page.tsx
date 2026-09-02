@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { ButterflyProjectDetail } from "@/components/butterfly-project-detail";
 import { PageShell } from "@/components/page-shell";
+import { butterflyProject } from "@/lib/content/butterfly-project";
 import { getSeedProject } from "@/lib/content/seed";
 import { pageMetadata } from "@/lib/seo";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -33,6 +35,15 @@ async function loadProject(slug: string) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+
+  if (slug === butterflyProject.slug) {
+    return pageMetadata({
+      title: butterflyProject.title,
+      description: butterflyProject.summary,
+      path: `/projects/${butterflyProject.slug}`,
+    });
+  }
+
   const project = await loadProject(slug);
 
   if (!project) {
@@ -58,21 +69,20 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  if (slug === butterflyProject.slug) {
+    return <ButterflyProjectDetail />;
+  }
+
   return (
     <PageShell title={project.title} description="Greenalaya Nepal project">
       <p className="mt-6">
-        <Link
-          href="/projects"
-          className="text-sm text-primary hover:underline"
-        >
+        <Link href="/projects" className="text-sm text-primary hover:underline">
           ← All projects
         </Link>
       </p>
 
       {project.description ? (
-        <p className="mt-6 text-lg leading-relaxed text-foreground">
-          {project.description}
-        </p>
+        <p className="mt-6 text-lg leading-relaxed text-foreground">{project.description}</p>
       ) : (
         <p className="mt-6 text-muted-foreground">No description yet.</p>
       )}

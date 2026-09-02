@@ -27,9 +27,7 @@ const navLinkClass = (active: boolean) =>
 const mobileNavLinkClass = (active: boolean) =>
   cn(
     "flex min-h-11 items-center rounded-lg px-4 py-3 text-base font-medium no-underline transition-colors",
-    active
-      ? "bg-[#4caf50]/20 text-white"
-      : "text-white/85 hover:bg-[#4caf50]/15 hover:text-white",
+    active ? "bg-[#4caf50]/20 text-white" : "text-white/85 hover:bg-[#4caf50]/15 hover:text-white",
   );
 
 export function SiteHeader() {
@@ -152,7 +150,11 @@ export function SiteHeader() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((open) => !open)}
           >
-            {menuOpen ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
+            {menuOpen ? (
+              <X className="size-5" aria-hidden />
+            ) : (
+              <Menu className="size-5" aria-hidden />
+            )}
           </button>
         </div>
       </header>
@@ -186,7 +188,10 @@ export function SiteHeader() {
                 <X className="size-5" aria-hidden />
               </button>
             </div>
-            <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4" aria-label="Primary mobile">
+            <nav
+              className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-4"
+              aria-label="Primary mobile"
+            >
               {primaryNavItems.map((item) => {
                 const active = isNavItemActive(pathname, item.href);
                 return (

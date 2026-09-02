@@ -149,21 +149,18 @@ body {
   background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  mask:
-    linear-gradient(transparent, transparent),
-    linear-gradient(white, white);
+  mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
   mask-clip: padding-box, border-box;
   mask-composite: intersect;
 }
 
 [data-glow]::before {
   background-image: radial-gradient(
-    calc(var(--spotlight-size) * 0.75) calc(var(--spotlight-size) * 0.75) at
-      calc(var(--x, 0) * 1px)
+    calc(var(--spotlight-size) * 0.75) calc(var(--spotlight-size) * 0.75) at calc(var(--x, 0) * 1px)
       calc(var(--y, 0) * 1px),
     hsl(
-        var(--hue, 210) calc(var(--saturation, 100) * 1%)
-          calc(var(--lightness, 50) * 1%) / var(--border-spot-opacity, 1)
+        var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 50) * 1%) /
+          var(--border-spot-opacity, 1)
       )
       transparent 100%
   );
@@ -172,8 +169,7 @@ body {
 
 [data-glow]::after {
   background-image: radial-gradient(
-    calc(var(--spotlight-size) * 0.5) calc(var(--spotlight-size) * 0.5) at
-      calc(var(--x, 0) * 1px)
+    calc(var(--spotlight-size) * 0.5) calc(var(--spotlight-size) * 0.5) at calc(var(--x, 0) * 1px)
       calc(var(--y, 0) * 1px),
     hsl(0 100% 100% / var(--border-light-opacity, 1)),
     transparent 100%
@@ -235,11 +231,7 @@ body {
   left: 15%;
   width: 55%;
   height: 45%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(76, 175, 80, 0.35) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(ellipse at center, rgba(76, 175, 80, 0.35) 0%, transparent 70%);
 }
 
 .aurora-shape-2 {
@@ -247,11 +239,6 @@ body {
   bottom: 15%;
   width: 50%;
   height: 40%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(46, 125, 50, 0.3) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(ellipse at center, rgba(46, 125, 50, 0.3) 0%, transparent 70%);
   animation-delay: 2s;
 }
-

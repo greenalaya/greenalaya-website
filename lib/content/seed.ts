@@ -31,7 +31,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "siddhartha-sapkota",
     position: null,
     bio: "Supports Greenalaya Nepal's governance and strategic direction, linking conservation research with community-centered environmental action across Nepal.",
-    photo_url: "/images/team/siddartha-sapkota.jpg",
+    photo_url: "/images/team/siddhartha-sapkota.png",
     linkedin_url: "https://www.linkedin.com/in/siddartha-sapkota-133810290/",
   },
   {
@@ -40,7 +40,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "binay-dhakal",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/binay-dhakal.jpg",
   },
   {
     id: "seed-nirjal-sapkota",
@@ -48,7 +48,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "nirjal-sapkota",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/nirjal-sapkota.png",
   },
   {
     id: "seed-shreejana-bajracharya",
@@ -83,7 +83,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "aashish-shrestha",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/aashish-shrestha.jpg",
     linkedin_url: "https://www.linkedin.com/in/saashish1746/",
   },
   {
@@ -100,7 +100,7 @@ export const seedTeamMembers: TeamMember[] = [
     slug: "madhav-upadhya",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/madhav-upadhya.png",
     linkedin_url: "https://www.linkedin.com/in/madhav-upadhaya-283a4622a/",
   },
   {
@@ -111,6 +111,15 @@ export const seedTeamMembers: TeamMember[] = [
     bio: null,
     photo_url: "/images/team/pritam-thapa.jpg",
     linkedin_url: "https://www.linkedin.com/in/pritam-thapa-94640a32b/",
+  },
+  {
+    id: "seed-firoj-raut",
+    name: "Firoj Raut",
+    slug: "firoj-raut",
+    position: null,
+    bio: null,
+    photo_url: "/images/team/firoj-raut.jpeg",
+    linkedin_url: "https://www.linkedin.com/in/firojraut1/",
   },
 ];
 
@@ -125,7 +134,7 @@ export const seedAdvisors: TeamMember[] = [
     slug: "mahendra-singh-limbu",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/mahendra-singh-limbu-crop.png",
   },
   {
     id: "seed-ruman-shrestha",
@@ -133,7 +142,7 @@ export const seedAdvisors: TeamMember[] = [
     slug: "ruman-shrestha",
     position: null,
     bio: null,
-    photo_url: "/images/team/team-group.png",
+    photo_url: "/images/team/ruman-shrestha.jpg",
   },
   {
     id: "seed-prasanna-shrestha",
@@ -198,8 +207,8 @@ export const seedProjects: Project[] = [
     title: "Kathmandu Valley Butterfly Documentation",
     slug: "kathmandu-valley-butterfly-documentation",
     description:
-      "A field documentation initiative cataloguing butterfly diversity across the Kathmandu Valley, producing open reference material for research, education, and urban biodiversity conservation.",
-    image_url: null,
+      "A Greenalaya Nepal and TinyLife Finders initiative that brought together 503 photographs of 174 butterfly species from 34 locations across Kathmandu Valley.",
+    image_url: "/images/butterfly-publication-cover.png",
   },
   {
     id: "seed-conservation",

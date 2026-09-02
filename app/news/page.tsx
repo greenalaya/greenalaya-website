@@ -8,12 +8,12 @@ import type { NewsPost } from "@/lib/types/news";
 
 export const metadata = pageMetadata({
   title: "News",
-  description:
-    "Updates, publications, and announcements from Greenalaya Nepal.",
+  description: "Updates, publications, and announcements from Greenalaya Nepal.",
   path: "/news",
 });
 
 export const revalidate = 300;
+export const dynamic = "force-static";
 
 async function getNews(): Promise<NewsPost[]> {
   return fetchListWithFallback<NewsPost>({
@@ -39,10 +39,7 @@ export default async function NewsPage() {
   const posts = await getNews();
 
   return (
-    <PageShell
-      title="News"
-      description="Updates, events, and announcements from Greenalaya Nepal."
-    >
+    <PageShell title="News" description="Updates, events, and announcements from Greenalaya Nepal.">
       <ul className="mt-8 space-y-6">
         {posts.map((post) => (
           <li key={post.id}>
@@ -57,9 +54,7 @@ export default async function NewsPage() {
                   {formatDate(post.published_at)}
                 </p>
               ) : null}
-              {post.excerpt ? (
-                <p className="mt-2 text-foreground">{post.excerpt}</p>
-              ) : null}
+              {post.excerpt ? <p className="mt-2 text-foreground">{post.excerpt}</p> : null}
             </ContentCard>
           </li>
         ))}

@@ -10,7 +10,7 @@ function isValidEmail(value: string) {
 
 export async function submitContactForm(
   _prevState: ContactFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ContactFormState> {
   if (formData.get("website")) {
     return {
@@ -22,8 +22,7 @@ export async function submitContactForm(
   if (!isSupabaseConfigured()) {
     return {
       ok: false,
-      message:
-        "The contact form is temporarily unavailable. Please email us directly.",
+      message: "The contact form is temporarily unavailable. Please email us directly.",
     };
   }
 

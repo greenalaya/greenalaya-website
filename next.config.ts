@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/news/butterfly-watching-program-godavari-46-species",
+        destination: "/news/godawari-butterfly-watch",
+        permanent: true,
+      },
+      {
         source: "/resources",
         destination: "/publications",
         permanent: true,

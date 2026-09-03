@@ -417,7 +417,16 @@ export function TestProjectDetail() {
                   Taxonomic Identification &amp; Review
                 </p>
                 <ul className="mt-2 space-y-1 text-sm font-semibold text-foreground">
-                  <li>Mahendra Singh Limbu</li>
+                  <li>
+                    <a
+                      href="https://www.facebook.com/mslimbu"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+                    >
+                      Mahendra Singh Limbu
+                    </a>
+                  </li>
                   <li>Bimal Raj Shrestha</li>
                   <li>Sanej Prasad Suwal</li>
                 </ul>

@@ -18,10 +18,21 @@ create table if not exists public.team_members (
   position text,
   bio text,
   photo_url text,
+  linkedin_url text,
   created_at timestamptz not null default now()
 );
 
 create table if not exists public.collaborators (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  slug text not null unique,
+  position text,
+  bio text,
+  photo_url text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.supported_by (
   id uuid primary key default gen_random_uuid(),
   name text not null,
   slug text not null unique,
@@ -45,6 +56,7 @@ create table if not exists public.news (
 alter table public.research enable row level security;
 alter table public.team_members enable row level security;
 alter table public.collaborators enable row level security;
+alter table public.supported_by enable row level security;
 alter table public.news enable row level security;
 
 create policy "Public read research"
@@ -57,6 +69,10 @@ create policy "Public read team_members"
 
 create policy "Public read collaborators"
   on public.collaborators for select
+  using (true);
+
+create policy "Public read supported_by"
+  on public.supported_by for select
   using (true);
 
 create policy "Public read news"

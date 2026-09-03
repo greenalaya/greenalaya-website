@@ -1,4 +1,3 @@
-import { Playfair_Display } from "next/font/google";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
@@ -8,11 +7,6 @@ import { getPublicationBySlug } from "@/lib/content/resources";
 import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import { butterflyPublication } from "@/lib/site";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
 
 export const revalidate = 300;
 
@@ -52,7 +46,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
     publication.slug === butterflyPublication.slug ? butterflyPublication.pageCount : undefined;
 
   return (
-    <div className={playfair.className}>
+    <>
       <JsonLd
         data={articleJsonLd({
           title: publication.title,
@@ -66,6 +60,6 @@ export default async function PublicationDetailPage({ params }: PageProps) {
         pdfSizeLabel={pdfSizeLabel}
         pageCount={pageCount}
       />
-    </div>
+    </>
   );
 }

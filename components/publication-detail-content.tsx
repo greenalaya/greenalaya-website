@@ -44,7 +44,7 @@ export function PublicationDetailContent({
           </nav>
 
           <header className="mt-8">
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
+            <h1 className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
               {publication.title}
             </h1>
             {postedOn ? (
@@ -76,7 +76,10 @@ export function PublicationDetailContent({
           ) : null}
 
           <section aria-labelledby="publication-download-heading" className="mt-12">
-            <h2 id="publication-download-heading" className="text-xl font-bold text-foreground">
+            <h2
+              id="publication-download-heading"
+              className="font-display text-xl font-bold text-foreground"
+            >
               Download
             </h2>
             {pdfSizeLabel ? (

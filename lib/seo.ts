@@ -15,6 +15,7 @@ type PageMetaInput = {
   noIndex?: boolean;
   /** Use site name only — for homepage SERP title matching branded site name. */
   siteNameTitle?: boolean;
+  image?: string | null;
 };
 
 export function pageMetadata({
@@ -23,11 +24,11 @@ export function pageMetadata({
   path = "",
   noIndex = false,
   siteNameTitle = false,
+  image,
 }: PageMetaInput): Metadata {
   const url = `${siteConfig.url}${path}`;
-  const ogImage = siteConfig.ogImage.startsWith("http")
-    ? siteConfig.ogImage
-    : `${siteConfig.url}${siteConfig.ogImage}`;
+  const imagePath = image ?? siteConfig.ogImage;
+  const ogImage = imagePath.startsWith("http") ? imagePath : `${siteConfig.url}${imagePath}`;
   const fullTitle = siteNameTitle ? siteConfig.name : documentTitle(title);
 
   return {

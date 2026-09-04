@@ -1,4 +1,3 @@
-import { Playfair_Display } from "next/font/google";
 import { DataError } from "@/components/data-status";
 import { JsonLd } from "@/components/json-ld";
 import { PublicationsPageContent } from "@/components/publications-page-content";
@@ -6,11 +5,6 @@ import { getPublicationsPageData } from "@/lib/content/resources";
 import { publicationJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import { butterflyPublication } from "@/lib/site";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
 
 export const metadata = pageMetadata({
   title: "Publications",
@@ -26,7 +20,7 @@ export default async function PublicationsPage() {
   const primary = all[0];
 
   return (
-    <div className={playfair.className}>
+    <>
       {primary ? (
         <JsonLd
           data={publicationJsonLd({
@@ -48,6 +42,6 @@ export default async function PublicationsPage() {
       ) : null}
 
       <PublicationsPageContent publications={all} />
-    </div>
+    </>
   );
 }

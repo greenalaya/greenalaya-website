@@ -4,4 +4,5 @@ export type Project = {
   slug: string;
   description: string | null;
   image_url: string | null;
+  created_at: string | null;
 };

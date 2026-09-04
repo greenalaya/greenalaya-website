@@ -12,6 +12,7 @@ import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site";
 
 export const revalidate = 300;
+export const dynamic = "force-static";
 
 type PageProps = {
   params: Promise<{ slug: string }>;

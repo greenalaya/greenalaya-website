@@ -59,7 +59,7 @@ function HeroHeadline() {
           HERO_HEADLINE_LINE_2_DESKTOP,
         )}
       >
-        <span className={HERO_ACCENT}>Data-Driven</span> Conservation
+        <span className={HERO_ACCENT}>Tech-Powered</span> Conservation
       </span>
     </motion.h1>
   );

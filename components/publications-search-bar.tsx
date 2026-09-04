@@ -20,7 +20,7 @@ export function PublicationsSearchBar({ value, onChange }: PublicationsSearchBar
             type="search"
             value={value}
             onChange={(event) => onChange(event.target.value)}
-            placeholder="Type the keyword here"
+            placeholder="Search publications by title or date"
             className="w-full rounded-full border border-primary bg-card py-3.5 pr-12 pl-6 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
           />
           <Search

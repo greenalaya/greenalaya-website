@@ -9,6 +9,15 @@ type PublicationsPageContentProps = {
   publications: PublicationCard[];
 };
 
+function formatDate(value: string | null) {
+  if (!value) return null;
+  return new Date(value).toLocaleDateString("en-NP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 function filterPublications(items: PublicationCard[], query: string) {
   const normalized = query.trim().toLowerCase();
   if (!normalized) return items;
@@ -16,8 +25,9 @@ function filterPublications(items: PublicationCard[], query: string) {
   return items.filter(
     (item) =>
       item.title.toLowerCase().includes(normalized) ||
-      item.year.includes(normalized) ||
-      (item.locationLabel?.toLowerCase().includes(normalized) ?? false),
+      (item.publishedDateIso
+        ? formatDate(item.publishedDateIso)?.toLowerCase().includes(normalized)
+        : false),
   );
 }
 

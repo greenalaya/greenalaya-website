@@ -86,10 +86,6 @@ function seedPublicationCards(): PublicationCard[] {
     .filter((item): item is PublicationCard => item !== null);
 }
 
-export function researchHasPublication(item: Research): boolean {
-  return resolvePublicationPdfUrl(item.pdf_url) !== null;
-}
-
 export async function getPublicationsPageData(): Promise<PublicationsPageData> {
   if (!isSupabaseConfigured()) {
     return {

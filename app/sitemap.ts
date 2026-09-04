@@ -3,12 +3,12 @@ import { siteConfig } from "@/lib/site";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export const revalidate = 3600;
+export const dynamic = "force-static";
 
 const staticPaths = [
   "",
   "/about",
   "/projects",
-  "/research",
   "/publications",
   "/team",
   "/news",
@@ -32,11 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const supabase = await createClient();
-  const [projects, research, team, news] = await Promise.all([
+  const [projects, research, team, news, blogPosts] = await Promise.all([
     supabase.from("projects").select("slug, created_at"),
     supabase.from("research").select("slug, created_at"),
     supabase.from("team_members").select("slug, created_at"),
     supabase.from("news").select("slug, published_at, created_at"),
+    supabase.from("blog_posts").select("slug, published_at, created_at"),
   ]);
 
   for (const [label, result] of [
@@ -44,6 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ["research", research],
     ["team_members", team],
     ["news", news],
+    ["blog_posts", blogPosts],
   ] as const) {
     if (result.error) {
       console.error(`sitemap: failed to load ${label} from Supabase`, result.error.message);
@@ -80,6 +82,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const row of news.data ?? []) {
     entries.push({
       url: `${base}/news/${row.slug}`,
+      lastModified: new Date(row.published_at ?? row.created_at ?? now),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
+
+  for (const row of blogPosts.data ?? []) {
+    entries.push({
+      url: `${base}/blog/${row.slug}`,
       lastModified: new Date(row.published_at ?? row.created_at ?? now),
       changeFrequency: "monthly",
       priority: 0.6,

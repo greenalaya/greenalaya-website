@@ -7,6 +7,7 @@ import { getTeamMemberBySlug } from "@/lib/content/team";
 import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 300;
+export const dynamic = "force-static";
 
 type PageProps = {
   params: Promise<{ slug: string }>;

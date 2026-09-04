@@ -1,3 +1,4 @@
+import type { BlogPost } from "@/lib/types/blog";
 import type { Collaborator } from "@/lib/types/collaborator";
 import type { NewsPost } from "@/lib/types/news";
 import type { Project } from "@/lib/types/project";
@@ -209,6 +210,7 @@ export const seedProjects: Project[] = [
     description:
       "A Greenalaya Nepal and TinyLife Finders initiative that brought together 503 photographs of 174 butterfly species from 34 locations across Kathmandu Valley.",
     image_url: "/images/projects/godawari-butterfly-watch.webp",
+    created_at: "2026-04-01T00:00:00.000Z",
   },
   {
     id: "seed-conservation",
@@ -217,6 +219,7 @@ export const seedProjects: Project[] = [
     description:
       "Protecting and rehabilitating habitats to restore biodiversity and ecosystem function.",
     image_url: null,
+    created_at: null,
   },
 ];
 
@@ -259,3 +262,10 @@ export const seedNewsPosts: NewsPost[] = [
     published_at: "2026-04-13T00:00:00.000Z",
   },
 ];
+
+/** Shown when Supabase has no rows yet. Mirrors supabase/phase10-blog.sql. */
+export const seedBlogPosts: BlogPost[] = [];
+
+export function getSeedBlogPost(slug: string): BlogPost | null {
+  return seedBlogPosts.find((post) => post.slug === slug) ?? null;
+}

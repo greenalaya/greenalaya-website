@@ -22,9 +22,9 @@ export const siteIcons: NonNullable<Metadata["icons"]> = {
 export const siteConfig = {
   name: "Greenalaya Nepal",
   url: "https://greenalayanepal.org.np",
-  tagline: "Research & Innovation for Nature",
+  tagline: "Technology & Research for Nature",
   description:
-    "Data-driven conservation, green enterprise, and community collaboration for resilient ecosystems in Nepal.",
+    "Technology and research for nature conservation in Nepal; data-driven tools and evidence-based solutions for resilient ecosystems.",
   ogImage: "/og-image.png",
   social: {
     facebook: "https://www.facebook.com/greenalayanepal/",
@@ -56,15 +56,15 @@ export const siteLogo = {
 export const aboutPageContent = {
   title: "About Greenalaya Nepal",
   heroDescription:
-    "Greenalaya Nepal leverages research, technological innovation, and green enterprise to deliver data-driven solutions for resilient ecosystems through collaboration.",
+    "Greenalaya Nepal builds the technology and research nature conservation needs; biodiversity databases of images, video, and audio, early-warning systems for environmental disasters and pollution, and climate-tech innovation to cut pollution and rising temperatures.",
   leadMission:
-    "To generate credible environmental knowledge, advance community-centered conservation, and catalyze innovative eco-business solutions that protect biodiversity, strengthen local livelihoods, and influence sustainable development pathways in Nepal.",
+    "To build the technology and conduct the research nature conservation needs; from biodiversity databases of images, video, and audio, to early-warning systems for environmental disasters and pollution, to climate-tech innovation that reduces pollution and rising temperatures, advancing resilient ecosystems and sustainable development across Nepal.",
   intro: [
     "Greenalaya Nepal is a national environmental company that leverages research, technological innovation, and green enterprise to deliver data-driven solutions for resilient ecosystems through collaboration.",
-    "We work at the intersection of nature and technology, empowering communities to conserve and restore ecosystems while fostering sustainable green innovative enterprises in balance with nature.",
+    "We work at the intersection of technology and research, empowering communities to conserve and restore ecosystems through data-driven tools and scientific evidence.",
   ],
   vision:
-    "A resilient Nepal where empowered communities conserve ecosystems and foster sustainable green innovative enterprises in balance with nature and technology.",
+    "A Nepal where technology and research are the driving force behind nature conservation; equipping communities, scientists, and institutions with the tools to protect ecosystems and build a resilient future.",
   pillarsHeading: "Strategic Pillars",
   pillarsDescription:
     "Five strategic pillars shape how we design research, technology, and community programs across Nepal.",
@@ -84,25 +84,27 @@ export const aboutWhatWeDo = {
 
 export const strategicPillars = [
   {
-    title: "People",
-    description:
-      "Empowering communities through education, training, and participatory conservation",
-    icon: "people",
-  },
-  {
     title: "Technology",
-    description: "Leveraging AI, GIS, and data systems for smart environmental monitoring",
+    description:
+      "Building biodiversity databases of images, video, and audio, and early-warning systems for environmental disasters and pollution",
     icon: "technology",
   },
   {
     title: "Research",
-    description: "Conducting credible environmental research to inform evidence-based action",
+    description:
+      "Researching climate-tech innovations that cut pollution and reduce rising temperatures",
     icon: "research",
   },
   {
     title: "Nature",
     description: "Protecting and restoring ecosystems, biodiversity, and natural resources",
     icon: "nature",
+  },
+  {
+    title: "People",
+    description:
+      "Empowering communities through education, training, and participatory conservation",
+    icon: "people",
   },
   {
     title: "Collaboration",
@@ -163,13 +165,12 @@ export const footerAboutLinks = [
 
 export const footerWorkLinks = [
   { text: "Projects", href: "/projects" },
-  { text: "Research", href: "/research" },
   { text: "Publications", href: "/publications" },
 ] as const;
 
 export const footerMediaLinks = [
   { text: "Blog", href: "/blog" },
-  { text: "News", href: "/news" },
+  { text: "News & Updates", href: "/news" },
 ] as const;
 
 export const socialProfiles = [
@@ -180,24 +181,24 @@ export const socialProfiles = [
 
 export const thematicAreas = [
   {
+    title: "Environmental Technology & Data Systems",
+    description: "GIS, AI, and data-driven solutions",
+  },
+  {
+    title: "Climate-Tech & Pollution Management",
+    description: "Adaptation, mitigation, and reduction",
+  },
+  {
     title: "Emerging Environmental Issues & Research",
     description: "Addressing new and understudied challenges",
-  },
-  {
-    title: "Conservation & Ecosystem Restoration",
-    description: "Protecting and rehabilitating habitats",
-  },
-  {
-    title: "Climate Change & Pollution Management",
-    description: "Adaptation, mitigation, and reduction",
   },
   {
     title: "Innovation, Eco-Products & Circular Economy",
     description: "Linking conservation with livelihoods",
   },
   {
-    title: "Environmental Technology & Data Systems",
-    description: "GIS, AI, and data-driven solutions",
+    title: "Conservation & Ecosystem Restoration",
+    description: "Protecting and rehabilitating habitats",
   },
   {
     title: "Community Conservation & Capacity Building",

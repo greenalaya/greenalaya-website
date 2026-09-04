@@ -9,6 +9,7 @@ import { pageMetadata } from "@/lib/seo";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export const revalidate = 300;
+export const dynamic = "force-static";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -21,7 +22,7 @@ async function loadProject(slug: string) {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("projects")
-      .select("id, title, slug, description, image_url")
+      .select("id, title, slug, description, image_url, created_at")
       .eq("slug", slug)
       .maybeSingle();
 

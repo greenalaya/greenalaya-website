@@ -59,7 +59,7 @@ function FooterContactList({
           const content = (
             <>
               <Icon className="size-4 shrink-0 text-primary" />
-              <span className={`transition hover:opacity-70 ${footerBodyTextClass}`}>
+              <span className={`min-w-0 break-words transition hover:opacity-70 ${footerBodyTextClass}`}>
                 {item.text}
               </span>
             </>

@@ -12,9 +12,13 @@ function normalizeSupportedBy(members: Collaborator[]): Collaborator[] {
     const shouldUseSeedPhoto =
       seed.photo_url && (!existing.photo_url || existing.photo_url.includes("partner-logo"));
 
-    return shouldUseSeedPhoto
-      ? { ...existing, name: seed.name, position: seed.position, photo_url: seed.photo_url }
-      : { ...existing, name: seed.name, position: seed.position };
+    return {
+      ...seed,
+      ...existing,
+      name: seed.name,
+      position: seed.position,
+      photo_url: shouldUseSeedPhoto ? seed.photo_url : existing.photo_url,
+    };
   });
 }
 

@@ -159,11 +159,13 @@ export const seedAdvisors: TeamMember[] = [
 export const seedSupportedBy: Collaborator[] = [
   {
     id: "seed-idea-wild",
-    name: "IDEA WILD",
+    name: "Idea Wild",
     slug: "idea-wild",
     position: "Conservation partner",
     bio: null,
     photo_url: "/images/collaborators/supported-idea-wild.png",
+    website_url: "https://ideawild.org/",
+    logo_caption: "Idea Wild",
   },
   {
     id: "seed-ncsc",
@@ -172,18 +174,69 @@ export const seedSupportedBy: Collaborator[] = [
     position: "Conservation partner",
     bio: null,
     photo_url: "/images/collaborators/supported-ncsc.png",
+    website_url: "https://ncsc.org.np/",
+    logo_caption: "NCSC",
   },
 ];
 
 /** Shown when Supabase collaborators table has no rows yet. */
 export const seedCollaborators: Collaborator[] = [
+  // Preserve the order logos were shared; append new collaborators at the end.
   {
-    id: "seed-nast",
-    name: "Nepal Academy of Science and Technology",
-    slug: "nepal-academy-science-technology",
-    position: "Science & policy",
+    id: "seed-tinylife-finders",
+    name: "Tinylife Finders",
+    slug: "tinylife-finders",
+    position: null,
     bio: null,
-    photo_url: "/images/collaborators/partner-logo.png",
+    photo_url: "/images/collaborators/tinylife-finders.png",
+  },
+  {
+    id: "seed-butterfly-watchers-nepal",
+    name: "Butterfly Watchers Nepal",
+    slug: "butterfly-watchers-nepal",
+    position: null,
+    bio: null,
+    photo_url: "/images/collaborators/butterfly-watchers-nepal.png",
+  },
+  {
+    id: "seed-club-for-wildlife-conservation",
+    name: "Club for Wildlife Conservation (CWC)",
+    slug: "club-for-wildlife-conservation",
+    position: null,
+    bio: null,
+    photo_url: "/images/collaborators/club-for-wildlife-conservation.jpg",
+  },
+  {
+    id: "seed-wildlife-logo",
+    name: "Green and orange collaborator logo featuring wildlife",
+    slug: "wildlife-logo",
+    position: null,
+    bio: null,
+    photo_url: "/images/collaborators/wildlife-logo.png",
+  },
+  {
+    id: "seed-ifsa-hetauda",
+    name: "IFSA Hetauda",
+    slug: "ifsa-hetauda",
+    position: null,
+    bio: null,
+    photo_url: "/images/collaborators/ifsa-hetauda.png",
+  },
+  {
+    id: "seed-ifsa-pokhara",
+    name: "International Forestry Students' Association (IFSA) Pokhara",
+    slug: "ifsa-pokhara",
+    position: null,
+    bio: null,
+    photo_url: "/images/collaborators/ifsa-pokhara.png",
+  },
+  {
+    id: "seed-vision-green-organization",
+    name: "Vision Green Organization",
+    slug: "vision-green-organization",
+    position: null,
+    bio: null,
+    photo_url: "/images/collaborators/vision-green-organization.png",
   },
 ];
 

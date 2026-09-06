@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import { Marquee } from "@/components/ui/marquee";
 import { collaboratorPhotoUrl } from "@/lib/content/collaborator-photo";
@@ -12,6 +11,8 @@ type PersonMarqueeMember = {
   slug: string;
   position: string | null;
   photo_url: string | null;
+  website_url?: string | null;
+  logo_caption?: string | null;
 };
 
 type PhotoSource = "team" | "collaborator";
@@ -29,9 +30,7 @@ type AboutPeopleMarqueeProps = {
   direction?: "left" | "right";
   speed?: number;
   photoSource: PhotoSource;
-  linkPrefix?: string;
   className?: string;
-  imageFit?: "cover" | "contain";
   variant?: "portrait" | "logo";
   maxItems?: number;
   loop?: boolean;
@@ -51,20 +50,14 @@ function expandMembersForMarquee<T>(members: T[]): T[] {
 
 function PersonCard({
   member,
-  index,
   photo,
-  linkPrefix,
-  imageFit = "cover",
   variant = "portrait",
   logoSizeClass,
   logoImageSizes,
   logoUnoptimized = false,
 }: {
   member: PersonMarqueeMember;
-  index: number;
   photo: string;
-  linkPrefix?: string;
-  imageFit?: "cover" | "contain";
   variant?: "portrait" | "logo";
   logoSizeClass?: string;
   logoImageSizes?: string;
@@ -72,21 +65,26 @@ function PersonCard({
 }) {
   const card =
     variant === "logo" ? (
-      <div
-        className={cn(
-          "group/card relative shrink-0",
-          logoUnoptimized && "overflow-hidden rounded-xl bg-white/95 p-2",
-          logoSizeClass ?? "h-[59px] w-[59px] sm:h-[67px] sm:w-[67px]",
-        )}
-      >
-        <Image
-          alt={member.name}
-          className="object-contain object-center"
-          fill
-          sizes={logoImageSizes ?? "67px"}
-          src={photo}
-          unoptimized={logoUnoptimized}
-        />
+      <div className="flex shrink-0 flex-col items-center gap-3">
+        <div
+          className={cn(
+            "group/card relative shrink-0",
+            logoUnoptimized && "overflow-hidden rounded-xl bg-white/95 p-2",
+            logoSizeClass ?? "h-[59px] w-[59px] sm:h-[67px] sm:w-[67px]",
+          )}
+        >
+          <Image
+            alt={member.name}
+            className="object-contain object-center"
+            fill
+            sizes={logoImageSizes ?? "67px"}
+            src={photo}
+            unoptimized={logoUnoptimized}
+          />
+        </div>
+        {member.logo_caption ? (
+          <p className="text-center text-[28px] font-semibold text-white">{member.logo_caption}</p>
+        ) : null}
       </div>
     ) : (
       <div className="group/card flex w-64 shrink-0 flex-col">
@@ -95,9 +93,8 @@ function PersonCard({
             alt={member.name}
             className={cn(
               "transition-all duration-300 group-hover/card:grayscale-0",
-              imageFit === "contain"
-                ? "object-contain bg-white/95 p-8 grayscale"
-                : cn("object-cover grayscale", member.slug === "firoj-raut" && "object-top"),
+              "object-cover grayscale",
+              member.slug === "firoj-raut" && "object-top",
             )}
             fill
             sizes="256px"
@@ -113,23 +110,21 @@ function PersonCard({
       </div>
     );
 
-  if (linkPrefix && member.slug) {
+  if (variant === "logo" && member.website_url && /^https?:\/\//i.test(member.website_url)) {
     return (
-      <Link
-        href={`${linkPrefix}/${member.slug}`}
-        className="shrink-0"
-        key={`${member.id}-${index}`}
+      <a
+        href={member.website_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Visit ${member.name} website (opens in a new tab)`}
+        className="block shrink-0 rounded-xl transition hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
       >
         {card}
-      </Link>
+      </a>
     );
   }
 
-  return (
-    <div className="shrink-0" key={`${member.id}-${index}`}>
-      {card}
-    </div>
-  );
+  return <div className="shrink-0">{card}</div>;
 }
 
 export function AboutPeopleMarquee({
@@ -140,9 +135,7 @@ export function AboutPeopleMarquee({
   direction = "left",
   speed = 50,
   photoSource,
-  linkPrefix,
   className,
-  imageFit = "cover",
   variant = "portrait",
   maxItems,
   loop = true,
@@ -157,6 +150,17 @@ export function AboutPeopleMarquee({
   const limitedMembers = typeof maxItems === "number" ? members.slice(0, maxItems) : members;
   const marqueeMembers = loop ? expandMembersForMarquee(limitedMembers) : limitedMembers;
   const resolvePhoto = photoResolvers[photoSource];
+  const cards = marqueeMembers.map((member, index) => (
+    <PersonCard
+      key={`${member.id}-${index}`}
+      logoUnoptimized={logoUnoptimized}
+      logoImageSizes={logoImageSizes}
+      logoSizeClass={logoSizeClass}
+      member={member}
+      photo={resolvePhoto(member)}
+      variant={variant}
+    />
+  ));
 
   return (
     <section id={id} className={cn("relative mt-16 w-full scroll-mt-24 lg:mt-24", className)}>
@@ -173,38 +177,12 @@ export function AboutPeopleMarquee({
             <div className="pointer-events-none absolute top-0 right-0 z-10 h-full w-24 bg-gradient-to-l from-[#0a0f0a] to-transparent sm:w-32" />
 
             <Marquee className="[--gap:1.5rem]" direction={direction} pauseOnHover speed={speed}>
-              {marqueeMembers.map((member, index) => (
-                <PersonCard
-                  key={`${member.id}-${index}`}
-                  imageFit={imageFit}
-                  index={index}
-                  linkPrefix={linkPrefix}
-                  logoUnoptimized={logoUnoptimized}
-                  logoImageSizes={logoImageSizes}
-                  logoSizeClass={logoSizeClass}
-                  member={member}
-                  photo={resolvePhoto(member)}
-                  variant={variant}
-                />
-              ))}
+              {cards}
             </Marquee>
           </>
         ) : (
-          <div className="mx-auto flex w-full max-w-xl justify-center gap-[1.5rem]">
-            {marqueeMembers.map((member, index) => (
-              <PersonCard
-                key={`${member.id}-${index}`}
-                imageFit={imageFit}
-                index={index}
-                linkPrefix={linkPrefix}
-                logoUnoptimized={logoUnoptimized}
-                logoImageSizes={logoImageSizes}
-                logoSizeClass={logoSizeClass}
-                member={member}
-                photo={resolvePhoto(member)}
-                variant={variant}
-              />
-            ))}
+          <div className="mx-auto flex w-full max-w-xl flex-wrap justify-center gap-[1.5rem]">
+            {cards}
           </div>
         )}
       </div>

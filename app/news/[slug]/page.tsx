@@ -385,7 +385,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+                    <h2 id="gallery-heading" className="mt-3 font-display text-3xl font-bold sm:text-4xl">
                       A rainy day in the field
                     </h2>
                   </div>
@@ -679,7 +679,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+                    <h2 id="gallery-heading" className="mt-3 font-display text-3xl font-bold sm:text-4xl">
                       A day of shared discovery
                     </h2>
                   </div>

@@ -30,10 +30,23 @@ export async function getCollaborators(): Promise<{
     return { members: seedCollaborators, error: null };
   }
 
-  const members = data ?? [];
+  // Exclude our own logo, including the legacy partner placeholder.
+  const members = (data ?? []).filter(
+    (member) =>
+      !/greenalaya/i.test(`${member.name} ${member.slug}`) &&
+      !member.photo_url?.includes("/collaborators/partner-logo.png"),
+  );
   if (members.length === 0) {
     return { members: seedCollaborators, error: null };
   }
 
-  return { members, error: null };
+  // Preserve the order logos were shared, even when database entries exist.
+  const orderedCollaborators = seedCollaborators.map(
+    (seed) => ({ ...seed, ...members.find((member) => member.slug === seed.slug) }),
+  );
+  const additionalCollaborators = members.filter(
+    (member) => !seedCollaborators.some((seed) => seed.slug === member.slug),
+  );
+
+  return { members: [...orderedCollaborators, ...additionalCollaborators], error: null };
 }

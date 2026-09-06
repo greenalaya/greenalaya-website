@@ -52,9 +52,12 @@ export function AboutPageContent({
           variant="logo"
         />
         <AboutPeopleMarquee
-          direction="right"
           error={collaboratorsError}
+          logoUnoptimized
+          logoImageSizes="160px"
+          logoSizeClass="h-[140px] w-[140px] sm:h-[160px] sm:w-[160px]"
           members={collaborators}
+          loop={false}
           photoSource="collaborator"
           title="Collaborators"
           variant="logo"

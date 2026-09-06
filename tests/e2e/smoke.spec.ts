@@ -27,6 +27,47 @@ test("team page renders modern showcase", async ({ page }) => {
   await expect(page.getByText("Siddartha Sapkota")).toBeVisible();
 });
 
+test("about page preserves collaborator order and supporter links", async ({ page }) => {
+  await page.goto("/about");
+  const supporters = page.locator("section").filter({
+    has: page.getByRole("heading", { name: "Supported by", exact: true }),
+  });
+  for (const [name, url] of [
+    ["Idea Wild", "https://ideawild.org/"],
+    ["NCSC", "https://ncsc.org.np/"],
+  ]) {
+    const link = supporters.getByRole("link").filter({ hasText: name });
+    await expect(link).toHaveAttribute("href", url);
+    await expect(link).toHaveAttribute("target", "_blank");
+  }
+  const collaborators = page.locator("section").filter({
+    has: page.getByRole("heading", { name: "Collaborators", exact: true }),
+  });
+  await expect(collaborators.locator("p")).toHaveCount(0);
+  const images = collaborators.getByRole("img");
+  const expectedNames = [
+    "Tinylife Finders",
+    "Butterfly Watchers Nepal",
+    "Club for Wildlife Conservation (CWC)",
+    "Green and orange collaborator logo featuring wildlife",
+    "IFSA Hetauda",
+    "International Forestry Students' Association (IFSA) Pokhara",
+    "Vision Green Organization",
+  ];
+  for (const [index, name] of expectedNames.entries()) {
+    const logo = images.nth(index);
+    await expect(logo).toHaveAttribute("alt", name);
+    await logo.scrollIntoViewIfNeeded();
+    await expect(logo).toBeVisible();
+    await expect
+      .poll(() => logo.evaluate((image: HTMLImageElement) => image.naturalWidth))
+      .toBeGreaterThan(0);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+});
+
 test("contact form renders required fields", async ({ page }) => {
   await page.goto("/contact");
   await expect(page.getByLabel("Name")).toBeVisible();
@@ -162,9 +203,10 @@ test("projects page lists the known projects only", async ({ page }) => {
   await expect(
     page.getByRole("link", { name: "Kathmandu Valley Butterfly Documentation" }),
   ).toHaveAttribute("href", "/projects/kathmandu-valley-butterfly-documentation");
-  await expect(
-    page.getByRole("link", { name: /^Chinari/ }),
-  ).toHaveAttribute("href", "/projects/chinari-ai-wildlife-classification");
+  await expect(page.getByRole("link", { name: /^Chinari/ })).toHaveAttribute(
+    "href",
+    "/projects/chinari-ai-wildlife-classification",
+  );
   await expect(page.getByRole("main").locator("li")).toHaveCount(2);
 });
 

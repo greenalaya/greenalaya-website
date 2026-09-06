@@ -35,16 +35,8 @@ create policy "Public read supported_by"
   on public.supported_by for select
   using (true);
 
--- Seed collaborators (uses partner-logo.png in public/images/collaborators/)
-insert into public.collaborators (name, slug, position, photo_url)
-values
-  ('National Trust for Nature Conservation', 'national-trust-nature-conservation', 'Conservation partner', '/images/collaborators/partner-logo.png'),
-  ('Community Forest User Group', 'community-forest-user-group', 'Community programs', '/images/collaborators/partner-logo.png'),
-  ('Nepal Academy of Science and Technology', 'nepal-academy-science-technology', 'Science & policy', '/images/collaborators/partner-logo.png')
-on conflict (slug) do update set
-  name = excluded.name,
-  position = excluded.position,
-  photo_url = excluded.photo_url;
+-- Collaborator logos and their display order are maintained in lib/content/seed.ts.
+-- Add database entries only for confirmed collaborators with their own logos.
 
 insert into public.supported_by (name, slug, position, photo_url)
 values

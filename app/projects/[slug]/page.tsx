@@ -2,8 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ButterflyProjectDetail } from "@/components/butterfly-project-detail";
+import { ChinariProjectDetail } from "@/components/chinari-project-detail";
 import { PageShell } from "@/components/page-shell";
 import { butterflyProject } from "@/lib/content/butterfly-project";
+import { chinariProject } from "@/lib/content/chinari-project";
 import { getSeedProject } from "@/lib/content/seed";
 import { pageMetadata } from "@/lib/seo";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -45,6 +47,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
+  if (slug === chinariProject.slug) {
+    return pageMetadata({
+      title: chinariProject.title,
+      description: chinariProject.summary,
+      path: `/projects/${chinariProject.slug}`,
+    });
+  }
+
   const project = await loadProject(slug);
 
   if (!project) {
@@ -72,6 +82,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   if (slug === butterflyProject.slug) {
     return <ButterflyProjectDetail />;
+  }
+
+  if (slug === chinariProject.slug) {
+    return <ChinariProjectDetail />;
   }
 
   return (

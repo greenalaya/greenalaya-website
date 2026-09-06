@@ -24,7 +24,7 @@ test("team page renders modern showcase", async ({ page }) => {
   await page.goto("/team");
   await expect(page.getByRole("heading", { level: 1, name: "Our Team" })).toBeVisible();
   await expect(page.getByText("Nabin Sapkota")).toBeVisible();
-  await expect(page.getByText("Siddhartha Sapkota")).toBeVisible();
+  await expect(page.getByText("Siddartha Sapkota")).toBeVisible();
 });
 
 test("contact form renders required fields", async ({ page }) => {
@@ -103,6 +103,8 @@ test("contact intent pre-fills subject from home page CTA", async ({ page }) => 
 test("publications page matches reports catalog layout", async ({ page }) => {
   await page.goto("/publications");
 
+  await expect(page.getByPlaceholder("Search publications by title or date")).toHaveCount(0);
+  await page.getByRole("button", { name: "Search publications" }).click();
   await expect(page.getByPlaceholder("Search publications by title or date")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Publications", level: 2 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "All Publications" })).toHaveCount(0);
@@ -150,15 +152,34 @@ test("butterfly project renders the full case study", async ({ page }) => {
   await expect(page.getByText("Explore the findings")).toHaveCount(0);
 });
 
-test("projects page lists only the butterfly documentation project", async ({ page }) => {
+test("projects page lists the known projects only", async ({ page }) => {
   await page.goto("/projects");
 
   await expect(page.getByRole("heading", { level: 2, name: "Our Projects" })).toBeVisible();
+  await expect(page.getByPlaceholder("Search projects by title or date")).toHaveCount(0);
+  await page.getByRole("button", { name: "Search projects" }).click();
   await expect(page.getByPlaceholder("Search projects by title or date")).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Kathmandu Valley Butterfly Documentation" }),
   ).toHaveAttribute("href", "/projects/kathmandu-valley-butterfly-documentation");
-  await expect(page.getByRole("main").locator("li")).toHaveCount(1);
+  await expect(
+    page.getByRole("link", { name: /^Chinari/ }),
+  ).toHaveAttribute("href", "/projects/chinari-ai-wildlife-classification");
+  await expect(page.getByRole("main").locator("li")).toHaveCount(2);
+});
+
+test("chinari project page renders the condensed summary", async ({ page }) => {
+  await page.goto("/projects/chinari-ai-wildlife-classification");
+
+  await expect(page.getByRole("heading", { level: 1, name: /Chinari/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Structured biodiversity intelligence, built on human validation",
+      level: 2,
+    }),
+  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Why This Matters", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "How It Works", level: 2 })).toBeVisible();
 });
 
 test("/research/:slug redirects to /publications/:slug", async ({ page }) => {

@@ -24,7 +24,7 @@ export const siteConfig = {
   url: "https://greenalayanepal.org.np",
   tagline: "Technology & Research for Nature",
   description:
-    "Technology and research for nature conservation in Nepal; data-driven tools and evidence-based solutions for resilient ecosystems.",
+    "Technology and research for nature conservation in Nepal - data-driven tools and evidence-based solutions for resilient ecosystems.",
   ogImage: "/og-image.png",
   social: {
     facebook: "https://www.facebook.com/greenalayanepal/",
@@ -56,15 +56,15 @@ export const siteLogo = {
 export const aboutPageContent = {
   title: "About Greenalaya Nepal",
   heroDescription:
-    "Greenalaya Nepal builds the technology and research nature conservation needs; biodiversity databases of images, video, and audio, early-warning systems for environmental disasters and pollution, and climate-tech innovation to cut pollution and rising temperatures.",
+    "Greenalaya Nepal builds the technology and conducts the research nature conservation needs - biodiversity databases of images, videos, and audio recordings, early-warning systems for environmental disasters and pollution, and climate-tech innovation to cut pollution and rising temperatures.",
   leadMission:
-    "To build the technology and conduct the research nature conservation needs; from biodiversity databases of images, video, and audio, to early-warning systems for environmental disasters and pollution, to climate-tech innovation that reduces pollution and rising temperatures, advancing resilient ecosystems and sustainable development across Nepal.",
+    "To build the technology and conduct the research nature conservation needs - from biodiversity databases of images, videos, and audio recordings, to early-warning systems for environmental disasters and pollution, to climate-tech innovation that reduces pollution and rising temperatures, advancing resilient ecosystems and sustainable development across Nepal.",
   intro: [
     "Greenalaya Nepal is a national environmental company that leverages research, technological innovation, and green enterprise to deliver data-driven solutions for resilient ecosystems through collaboration.",
     "We work at the intersection of technology and research, empowering communities to conserve and restore ecosystems through data-driven tools and scientific evidence.",
   ],
   vision:
-    "A Nepal where technology and research are the driving force behind nature conservation; equipping communities, scientists, and institutions with the tools to protect ecosystems and build a resilient future.",
+    "A Nepal where technology and research are the driving force behind nature conservation - equipping communities, scientists, and institutions with the tools to protect ecosystems and build a resilient future.",
   pillarsHeading: "Strategic Pillars",
   pillarsDescription:
     "Five strategic pillars shape how we design research, technology, and community programs across Nepal.",
@@ -76,8 +76,9 @@ export const aboutPageContent = {
 export const aboutWhatWeDo = {
   heading: "What we do?",
   paragraphs: [
-    ...aboutPageContent.intro,
-    "We partner with researchers, communities, and institutions to protect biodiversity, strengthen livelihoods, and advance sustainable development pathways.",
+    "Greenalaya Nepal is a national environmental organization that builds the technology and resources nature conservation needs such as biodiversity databases, monitoring tools, and research that turns field observation into evidence.",
+    "We work at the intersection of technology and research, equipping communities, scientists, and institutions with the resources to protect and restore Nepal's ecosystems.",
+    "We partner with researchers, communities, and institutions to put these tools and resources to work, protecting biodiversity and strengthening livelihoods across Nepal.",
   ],
   image: siteConfig.images.communityHero,
 } as const;
@@ -86,7 +87,7 @@ export const strategicPillars = [
   {
     title: "Technology",
     description:
-      "Building biodiversity databases of images, video, and audio, and early-warning systems for environmental disasters and pollution",
+      "Building biodiversity databases of images, videos, and audio recordings, plus early-warning systems for environmental disasters and pollution",
     icon: "technology",
   },
   {

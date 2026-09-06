@@ -28,7 +28,7 @@ export const seedTeamMembers: TeamMember[] = [
   },
   {
     id: "seed-siddhartha-sapkota",
-    name: "Siddhartha Sapkota",
+    name: "Siddartha Sapkota",
     slug: "siddhartha-sapkota",
     position: null,
     bio: "Supports Greenalaya Nepal's governance and strategic direction, linking conservation research with community-centered environmental action across Nepal.",
@@ -147,7 +147,7 @@ export const seedAdvisors: TeamMember[] = [
   },
   {
     id: "seed-prasanna-shrestha",
-    name: "Prasanna Shrestha",
+    name: "Prasan Shrestha",
     slug: "prasanna-shrestha",
     position: null,
     bio: null,
@@ -213,13 +213,13 @@ export const seedProjects: Project[] = [
     created_at: "2026-04-01T00:00:00.000Z",
   },
   {
-    id: "seed-conservation",
-    title: "Conservation & Ecosystem Restoration",
-    slug: "conservation-ecosystem-restoration",
+    id: "seed-chinari",
+    title: "Chinari: AI-Based Vertebrate Classification Platform for Nepal",
+    slug: "chinari-ai-wildlife-classification",
     description:
-      "Protecting and rehabilitating habitats to restore biodiversity and ecosystem function.",
-    image_url: null,
-    created_at: null,
+      "An AI platform for the automated detection, tracking, and species-level identification of Nepal's vertebrate fauna from camera-trap imagery, ranger field reports, and citizen-submitted photos and video.",
+    image_url: "/images/projects/chinari-logo.png",
+    created_at: "2026-08-01T00:00:00.000Z",
   },
 ];
 
@@ -235,7 +235,7 @@ export const seedNewsPosts: NewsPost[] = [
     excerpt:
       "More than 45 nature enthusiasts joined a community field program in Godawari, recording over 46 butterfly species—including two rare highlights.",
     content:
-      "Greenalaya Nepal successfully hosted an engaging butterfly watching program in the ecologically rich region of Godawari. Organized in collaboration with Butterfly Watchers Nepal, TinyLife Finders, and the Club for Wildlife Conservation (CWC), the event brought together more than 45 nature lovers and conservation enthusiasts.\n\nThe day’s activities were led by Mr. Mahendra Singh Limbu, an advisor to Greenalaya Nepal. After the field observation, Mr. Limbu delivered an insightful presentation on butterfly ecology, behavior, and field identification techniques. His guidance helped participants reflect on their sightings and deepen their understanding of the biodiversity they had encountered in Godawari’s lush natural habitat.\n\nThe field expedition yielded remarkable results, with the group recording over 46 distinct butterfly species. Among the sightings were two rare and seldom-seen species, the Great Hockeystick Sailer and the Scarce Lilacfork, bringing immense excitement to amateur watchers and seasoned experts alike.\n\nThe event was further honored by the presence of distinguished guests Mr. Hem Sagar Baral and Mr. Rajendra Gurung. Their participation underscored the importance of community-driven conservation and wildlife observation in Nepal.\n\nGreenalaya Nepal extends its deepest gratitude to every participant, guest, and partner organization for making the program so fruitful. Building on its success, we remain committed to fostering nature appreciation and conservation through more community-driven programs in the near future.",
+      "Greenalaya Nepal successfully hosted an engaging butterfly-watching program in the ecologically rich region of Godawari. Organized in collaboration with Butterfly Watchers Nepal, TinyLife Finders, and the Club for Wildlife Conservation (CWC), the event brought together more than 45 nature lovers and conservation enthusiasts.\n\nThe day’s activities were led by Mr. Mahendra Singh Limbu, an advisor to Greenalaya Nepal. After the field observation, Mr. Limbu delivered an insightful presentation on butterfly ecology, behavior, and field identification techniques. His guidance helped participants reflect on their sightings and deepen their understanding of the biodiversity they had encountered in Godawari’s lush natural habitat.\n\nThe field expedition yielded remarkable results, with the group recording over 46 distinct butterfly species. Among the sightings were two rare and seldom-seen species, the Great Hockeystick Sailer and the Scarce Lilacfork, bringing immense excitement to amateur watchers and seasoned experts alike.\n\nThe event was further honored by the presence of distinguished guests Mr. Hem Sagar Baral and Mr. Rajendra Gurung. Their participation underscored the importance of community-driven conservation and wildlife observation in Nepal.\n\nGreenalaya Nepal extends its deepest gratitude to every participant, guest, and partner organization for making the program so fruitful. Building on its success, Greenalaya Nepal remains committed to fostering nature appreciation and conservation through more community-driven programs in the near future.",
     featured_image_url: "/images/news/butterfly-watching-godavari/participants-observing.jpg",
     published_at: "2026-06-06T00:00:00.000Z",
   },

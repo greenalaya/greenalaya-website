@@ -162,7 +162,7 @@ export function ButterflyProjectDetail() {
             From field observation to field guide
           </h2>
           <p className="mt-6 max-w-5xl text-lg leading-8 text-muted-foreground lg:whitespace-nowrap">
-            A collaborative four-step citizen science workflow connecting naturalists,
+            A collaborative four-step citizen-science workflow connecting naturalists,
             entomologists, and digital open-access tools.
           </p>
           <ol className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

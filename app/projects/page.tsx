@@ -15,7 +15,7 @@ export const revalidate = 300;
 export const dynamic = "force-static";
 
 async function getProjects(): Promise<Project[]> {
-  const projects = await fetchListWithFallback<Project>({
+  const remoteProjects = await fetchListWithFallback<Project>({
     table: "projects",
     columns: "id, title, slug, description, image_url, created_at",
     orderColumn: "title",
@@ -23,17 +23,22 @@ async function getProjects(): Promise<Project[]> {
     label: "projects",
   });
 
-  const butterfly = projects.find((project) => project.slug === butterflyProject.slug);
+  // Supabase's projects table carries legacy rows beyond our known projects
+  // (leftover thematic-area placeholders) — only ever show the projects we
+  // actually maintain in seedProjects, picking up a live override by slug
+  // where one exists.
+  const remoteBySlug = new Map(remoteProjects.map((project) => [project.slug, project]));
 
-  return butterfly
-    ? [
-        {
-          ...butterfly,
+  return seedProjects.map((project) => {
+    const current = remoteBySlug.get(project.slug) ?? project;
+    return current.slug === butterflyProject.slug
+      ? {
+          ...current,
           title: "Kathmandu Valley Butterfly Documentation",
-          image_url: butterfly.image_url ?? "/images/projects/godawari-butterfly-watch.webp",
-        },
-      ]
-    : seedProjects.filter((project) => project.slug === butterflyProject.slug);
+          image_url: current.image_url ?? "/images/projects/godawari-butterfly-watch.webp",
+        }
+      : current;
+  });
 }
 
 export default async function ProjectsPage() {

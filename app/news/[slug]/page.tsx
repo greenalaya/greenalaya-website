@@ -63,7 +63,7 @@ const butterflyGallery = [
   },
   {
     src: butterflyStoryImages.group,
-    alt: "Organizers and distinguished guests at the Godawari butterfly watching program",
+    alt: "Organizers and distinguished guests at the Godawari butterfly-watching program",
     caption: "Organizers and guests at the close of the program.",
     className: "md:col-span-5",
   },
@@ -219,7 +219,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
               <div className="max-w-3xl">
                 <p className="font-display text-2xl font-medium leading-9 text-foreground sm:text-3xl sm:leading-[1.4]">
                   In a celebrated effort to promote biodiversity awareness and citizen science,
-                  Greenalaya Nepal successfully hosted a highly engaging butterfly watching program
+                  Greenalaya Nepal successfully hosted a highly engaging butterfly-watching program
                   in the ecologically rich region of Godawari.
                 </p>
 

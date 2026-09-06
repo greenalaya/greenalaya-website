@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Search, CalendarDays } from "lucide-react";
@@ -32,30 +32,58 @@ function filterPosts(items: NewsPost[], query: string) {
 
 export function NewsPageContent({ posts }: NewsPageContentProps) {
   const [query, setQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const filtered = useMemo(() => filterPosts(posts, query), [posts, query]);
+
+  useEffect(() => {
+    if (searchOpen) inputRef.current?.focus();
+  }, [searchOpen]);
 
   return (
     <>
       {/* Search bar */}
       <div className="border-b border-border bg-secondary px-5 py-10 pt-28 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-xl">
-          <label htmlFor="news-search" className="sr-only">
-            Search news
-          </label>
-          <div className="relative">
-            <input
-              id="news-search"
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search news by title or date"
-              className="w-full rounded-full border border-primary bg-card py-3.5 pr-12 pl-6 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
-            />
-            <Search
-              aria-hidden
-              className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-primary"
-            />
-          </div>
+        <div className="mx-auto flex max-w-xl justify-center">
+          {searchOpen ? (
+            <div className="relative w-full">
+              <label htmlFor="news-search" className="sr-only">
+                Search news
+              </label>
+              <input
+                id="news-search"
+                ref={inputRef}
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onBlur={() => {
+                  if (!query.trim()) setSearchOpen(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") {
+                    setQuery("");
+                    setSearchOpen(false);
+                    inputRef.current?.blur();
+                  }
+                }}
+                placeholder="Search news by title or date"
+                className="w-full rounded-full border border-primary bg-card py-3.5 pr-12 pl-6 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
+              />
+              <Search
+                aria-hidden
+                className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-primary"
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="flex items-center gap-2 rounded-full border border-primary bg-card px-6 py-3.5 text-base font-medium text-primary transition hover:bg-primary hover:text-primary-foreground"
+            >
+              <Search className="size-4" aria-hidden />
+              Search news
+            </button>
+          )}
         </div>
       </div>
 

@@ -229,6 +229,17 @@ export function getSeedProject(slug: string): Project | null {
 
 export const seedNewsPosts: NewsPost[] = [
   {
+    id: "seed-big-butterfly-count-2026-godawari",
+    title: "Big Butterfly Count 2026: Butterfly Walk Records 16 Species in Godawari",
+    slug: "big-butterfly-count-2026-godawari-walk",
+    excerpt:
+      "Despite rainy weather, Greenalaya Nepal's opening walk for Big Butterfly Month 2026 recorded 16 butterfly species in Godawari, Lalitpur, including the notable Tamur Labyrinth.",
+    content:
+      "Greenalaya Nepal kicked off Big Butterfly Month 2026 with a butterfly walk in Godawari, Lalitpur. Despite persistent rainfall and overcast weather, the 13 participants recorded an impressive 16 butterfly species, including the notable Tamur Labyrinth.\n\nThe walk was led by our Advisor, Mahendra Singh Limbu, and coordinated by our Founder, Siddartha Sapkota. The event was supported by Butterfly Watchers Nepal.\n\nThis is just the beginning: more butterfly walks and counts are planned throughout September across Nepal as part of Big Butterfly Month 2026.",
+    featured_image_url: "/images/news/big-butterfly-count-2026-godawari/group-photo.jpg",
+    published_at: "2026-09-05T00:00:00.000Z",
+  },
+  {
     id: "seed-butterfly-watching-godawari",
     title: "Greenalaya Nepal’s Godawari Butterfly Watch Records 46+ Species",
     slug: "godawari-butterfly-watch",

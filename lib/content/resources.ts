@@ -34,7 +34,7 @@ export type PublicationCard = {
   metadata: PublicationMetadata | null;
 };
 
-export type PublicationsPageData = {
+type PublicationsPageData = {
   all: PublicationCard[];
 
   error: string | null;

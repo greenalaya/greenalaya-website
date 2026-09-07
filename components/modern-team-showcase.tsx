@@ -15,6 +15,24 @@ function IconLinkedin(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function IconWebsite(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
 const cardVariants = {
   offscreen: { y: 50, opacity: 0 },
   onscreen: (i: number) => ({
@@ -69,6 +87,22 @@ function LinkedinIcon({ href, memberName }: { href?: string | null; memberName: 
     <span aria-hidden className={className}>
       <IconLinkedin className="size-5" />
     </span>
+  );
+}
+
+function WebsiteIcon({ href, memberName }: { href?: string | null; memberName: string }) {
+  if (!href) return null;
+
+  return (
+    <a
+      href={href}
+      aria-label={`${memberName}'s website`}
+      className="text-muted-foreground opacity-0 transition-all duration-300 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring group-hover:opacity-100 rounded-full"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <IconWebsite className="size-5" />
+    </a>
   );
 }
 
@@ -143,6 +177,7 @@ const TeamMemberCard = memo(function TeamMemberCard({
 
         <div className="mt-auto flex w-full items-center justify-center gap-4 pt-4">
           <LinkedinIcon href={member.linkedinUrl} memberName={member.name} />
+          <WebsiteIcon href={member.websiteUrl} memberName={member.name} />
         </div>
       </div>
     </motion.div>

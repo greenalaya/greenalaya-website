@@ -122,9 +122,9 @@ export const siteContact = {
 
 export const contactIntents = {
   volunteer: {
-    label: "Become a Volunteer",
-    subject: "Volunteer inquiry",
-    description: "Tell us how you would like to contribute your time and skills.",
+    label: "Get Membership",
+    subject: "Membership inquiry",
+    description: "Tell us how you would like to become a member and support our work.",
   },
   internship: {
     label: "Research Internship",
@@ -149,6 +149,57 @@ export function contactHref(intent: ContactIntentKey) {
   return `/contact?intent=${intent}`;
 }
 
+export const membershipPageContent = {
+  title: "Become a Member",
+  intro:
+    "Greenalaya Nepal builds the technology and conducts the research that nature conservation needs - from biodiversity databases and early-warning systems to climate-tech innovation and community-led conservation. Become a member and join us in advancing environmental research, green technology, and sustainable enterprise across Nepal.",
+  focusAreas: ["Technology", "Research", "Nature", "People", "Collaboration"] as const,
+  whyJoinHeading: "Why Join Us?",
+  whyJoin: [
+    "Take part in our technology, research, and field conservation work.",
+    "Work alongside researchers, technologists, and communities across Nepal.",
+    "Contribute your knowledge, ideas, and skills to a greener Nepal.",
+  ],
+  optionsHeading: "Membership Options",
+  applicationHeading: "Membership Application",
+  closing:
+    "Thank you for your interest in Greenalaya Nepal. Together, we can build the technology and research a resilient Nepal needs.",
+} as const;
+
+export const membershipTiers = [
+  {
+    id: "life",
+    label: "Life Member",
+    fee: "NPR 3,000",
+    feeNote: "one-time fee",
+    renewal: null,
+  },
+  {
+    id: "general",
+    label: "General Member",
+    fee: "NPR 500",
+    feeNote: "initial fee",
+    renewal: "NPR 200 renewal fee",
+  },
+  {
+    id: "student",
+    label: "Student Member",
+    fee: "NPR 200",
+    feeNote: "initial fee",
+    renewal: "NPR 100 renewal fee",
+  },
+] as const;
+
+export const membershipEducationOptions = [
+  "SLC / SEE",
+  "Diploma",
+  "Higher School (+2)",
+  "Bachelor's Degree",
+  "Master's Degree",
+  "PhD",
+  "None",
+] as const;
+
 export const primaryNavItems = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
@@ -162,6 +213,7 @@ export const footerAboutLinks = [
   { text: "About Greenalaya Nepal", href: "/about" },
   { text: "Advisors & Partners", href: "/about#advisors" },
   { text: "Team", href: "/team" },
+  { text: "Membership", href: "/membership" },
 ] as const;
 
 export const footerWorkLinks = [
@@ -211,6 +263,12 @@ export const thematicAreas = [
   },
 ] as const;
 
+/** Areas of Interest on the membership form - the site's thematic areas, plus a free-text "Other". */
+export const membershipInterestOptions = [
+  ...thematicAreas.map((area) => area.title),
+  "Other",
+] as const;
+
 export const thematicAreasWithStyle = thematicAreas.map((area, index) => ({
   ...area,
   number: String(index + 1).padStart(2, "0"),
@@ -240,7 +298,7 @@ export type PublicationMetadata = {
 };
 
 /** Bibliographic details shown on publication detail pages. */
-export const publicationMetadata: Record<string, PublicationMetadata> = {
+const publicationMetadata: Record<string, PublicationMetadata> = {
   [butterflyPublication.slug]: {
     language: "English",
     published: "2026",

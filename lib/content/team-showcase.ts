@@ -7,6 +7,7 @@ export type TeamShowcaseMember = {
   title: string | null;
   avatar: string;
   linkedinUrl?: string | null;
+  websiteUrl?: string | null;
 };
 
 export function toTeamShowcaseMember(member: TeamMember): TeamShowcaseMember {
@@ -16,5 +17,6 @@ export function toTeamShowcaseMember(member: TeamMember): TeamShowcaseMember {
     title: member.position,
     avatar: teamPhotoUrl(member),
     linkedinUrl: member.linkedin_url,
+    websiteUrl: member.website_url,
   };
 }

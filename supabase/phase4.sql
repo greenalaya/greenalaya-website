@@ -10,10 +10,10 @@ where slug = 'butterfly-images-kathmandu-valley';
 insert into public.team_members (name, slug, position, bio, photo_url)
 values (
   'Siddartha Sapkota',
-  'siddartha-sapkota',
+  'siddhartha-sapkota',
   NULL,
   'Supports Greenalaya Nepal''s governance and strategic direction, linking conservation research with community-centered environmental action across Nepal.',
-  '/images/team/siddartha-sapkota.jpg'
+  '/images/team/siddhartha-sapkota.png'
 )
 on conflict (slug) do update set
   name = excluded.name,

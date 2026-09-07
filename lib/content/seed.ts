@@ -16,6 +16,7 @@ export const seedTeamMembers: TeamMember[] = [
     bio: null,
     photo_url: "/images/team/nabin-sapkota.jpg",
     linkedin_url: "https://www.linkedin.com/in/nabin1sapkota/",
+    website_url: "https://nabin-sapkota.com.np/",
   },
   {
     id: "seed-binit-timalsina",
@@ -25,6 +26,7 @@ export const seedTeamMembers: TeamMember[] = [
     bio: null,
     photo_url: "/images/team/binit-timalsina.jpg",
     linkedin_url: "https://www.linkedin.com/in/binit-timalsina-04a440266/",
+    website_url: "https://www.binittimalsina.com.np/",
   },
   {
     id: "seed-siddhartha-sapkota",

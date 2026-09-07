@@ -11,7 +11,7 @@ import { contactHref, contactIntents, siteConfig } from "@/lib/site";
 const involvementTabs = [
   {
     label: contactIntents.volunteer.label,
-    href: contactHref("volunteer"),
+    href: "/membership",
     variant: "cool" as const,
   },
   {

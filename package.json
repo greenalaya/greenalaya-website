@@ -13,7 +13,6 @@
     "test:e2e:ui": "playwright test --ui",
     "postinstall": "playwright install chromium",
     "db:apply-phase4": "node --env-file=.env.local scripts/apply-phase4.mjs",
-    "db:check-phase5": "node --env-file=.env.local scripts/apply-phase5.mjs",
     "favicons:generate": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {

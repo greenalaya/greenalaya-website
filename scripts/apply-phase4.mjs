@@ -34,10 +34,10 @@ const steps = [
     const { error } = await supabase.from("team_members").upsert(
       {
         name: "Siddartha Sapkota",
-        slug: "siddartha-sapkota",
+        slug: "siddhartha-sapkota",
         position: null,
         bio: "Supports Greenalaya Nepal's governance and strategic direction, linking conservation research with community-centered environmental action across Nepal.",
-        photo_url: "/images/team/siddartha-sapkota.jpg",
+        photo_url: "/images/team/siddhartha-sapkota.png",
       },
       { onConflict: "slug" },
     );

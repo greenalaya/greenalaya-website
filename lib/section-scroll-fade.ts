@@ -1,4 +1,4 @@
-export const SECTION_BLACK_RGB = "10, 15, 10";
+const SECTION_BLACK_RGB = "10, 15, 10";
 export const SEAM_BAND_HEIGHT_PX = 8;
 
 export type SeamGradientDirection = "to-top" | "to-bottom";

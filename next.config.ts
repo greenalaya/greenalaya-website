@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  experimental: {
+    serverActions: {
+      // Server Actions default to a 1MB body limit; the membership form
+      // uploads an identification document and a payment receipt (10MB each).
+      bodySizeLimit: "25mb",
+    },
+  },
   images: {
     qualities: [75, 92],
     localPatterns: [

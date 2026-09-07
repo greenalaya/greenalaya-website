@@ -9,6 +9,7 @@ const publicRoutes = [
   "/news",
   "/blog",
   "/contact",
+  "/membership",
 ];
 
 for (const path of publicRoutes) {
@@ -79,9 +80,9 @@ test("contact form renders required fields", async ({ page }) => {
 test("stay ahead section renders on home page", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Become a Volunteer" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "Get Membership" })).toHaveAttribute(
     "href",
-    "/contact?intent=volunteer",
+    "/membership",
   );
   await expect(page.getByRole("link", { name: "Research Internship" })).toHaveAttribute(
     "href",
@@ -130,15 +131,23 @@ test("home page anchor links scroll to target sections", async ({ page }) => {
   await expect(page.locator("#thematic")).toBeAttached();
 });
 
-test("contact intent pre-fills subject from home page CTA", async ({ page }) => {
+test("home page CTA links to the membership page", async ({ page }) => {
   await page.goto("/");
-  const volunteerLink = page
+  const membershipLink = page
     .locator("#get-involved")
-    .getByRole("link", { name: "Become a Volunteer" });
-  await expect(volunteerLink).toHaveAttribute("href", "/contact?intent=volunteer");
+    .getByRole("link", { name: "Get Membership" });
+  await expect(membershipLink).toHaveAttribute("href", "/membership");
+});
 
-  await page.goto("/contact?intent=volunteer");
-  await expect(page.getByLabel("Subject")).toHaveValue("Volunteer inquiry");
+test("membership page renders application form", async ({ page }) => {
+  await page.goto("/membership");
+  await expect(page.getByRole("heading", { level: 1, name: "Become a Member" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Membership Options" })).toBeVisible();
+  await expect(page.getByLabel("Full Name")).toBeVisible();
+  await expect(page.getByLabel("Membership Type")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Submit Membership Application" }),
+  ).toBeVisible();
 });
 
 test("publications page matches reports catalog layout", async ({ page }) => {

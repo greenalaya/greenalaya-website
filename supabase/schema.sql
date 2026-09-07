@@ -19,6 +19,7 @@ create table if not exists public.team_members (
   bio text,
   photo_url text,
   linkedin_url text,
+  website_url text,
   created_at timestamptz not null default now()
 );
 

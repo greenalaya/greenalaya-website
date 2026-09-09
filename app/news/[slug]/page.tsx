@@ -272,7 +272,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     Persistent rain and overcast skies didn&apos;t discourage the 13 participants who
                     turned out for the day&apos;s count, the first of many planned across Nepal this
                     September. Among the sightings was the notable{" "}
-                    <strong className="font-semibold text-foreground">Tamur Labyrinth</strong>,
+                    <strong className="font-semibold text-foreground">Spotted Jester</strong>,
                     drawing particular excitement from the group.
                   </p>
                   <p>
@@ -294,14 +294,14 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   <div className="relative aspect-[3/2] overflow-hidden rounded-2xl bg-muted">
                     <Image
                       src={bigCountImages.notableSpecies}
-                      alt="A participant photographing the notable Tamur Labyrinth butterfly resting on a car hood"
+                      alt="A participant photographing the notable Spotted Jester butterfly resting on a car hood"
                       fill
                       sizes="(min-width: 1024px) 760px, 100vw"
                       className="object-cover"
                     />
                   </div>
                   <figcaption className="mt-3 text-sm leading-6 text-muted-foreground">
-                    The Tamur Labyrinth, one of the day&apos;s most notable sightings.
+                    The Spotted Jester, one of the day&apos;s most notable sightings.
                   </figcaption>
                 </figure>
 

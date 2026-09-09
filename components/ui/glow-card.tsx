@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
-export type GlowCardColor = "blue" | "purple" | "green" | "red" | "orange";
+type GlowCardColor = "blue" | "purple" | "green" | "red" | "orange";
 
 interface GlowCardProps {
   children: ReactNode;

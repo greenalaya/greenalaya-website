@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 
 /** About sections use frosted white glass on dark backgrounds. */
 export const glassCardSurface = "border border-white/15 bg-white/8 backdrop-blur-md";
-export const glassCardSurfaceHover = "hover:bg-white/12";
+const glassCardSurfaceHover = "hover:bg-white/12";
 export const glassCardShadow = "shadow-lg";
-export const glassCardShadowHover = "hover:shadow-xl";
+const glassCardShadowHover = "hover:shadow-xl";
 
 type AboutGlassCardProps = {
   title?: string;

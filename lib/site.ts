@@ -213,7 +213,6 @@ export const footerAboutLinks = [
   { text: "About Greenalaya Nepal", href: "/about" },
   { text: "Advisors & Partners", href: "/about#advisors" },
   { text: "Team", href: "/team" },
-  { text: "Membership", href: "/membership" },
 ] as const;
 
 export const footerWorkLinks = [
@@ -232,7 +231,7 @@ export const socialProfiles = [
   { label: "LinkedIn", href: siteConfig.social.linkedin },
 ] as const;
 
-export const thematicAreas = [
+const thematicAreas = [
   {
     title: "Environmental Technology & Data Systems",
     description: "GIS, AI, and data-driven solutions",

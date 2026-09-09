@@ -3,7 +3,7 @@ export const chinariProject = {
   title: "Chinari: AI-Based Vertebrate Classification Platform for Nepal",
   shortTitle: "Chinari",
   summary:
-    "An AI platform for the automated detection, tracking, and species-level identification of Nepal's vertebrate fauna from camera-trap imagery, ranger field reports, and citizen-submitted photos and video.",
+    "An AI platform for the automated detection, tracking, and species-level identification of Nepal's vertebrate fauna from camera-trap imagery, ranger field reports, and citizen-submitted photos and videos.",
   mission: [
     "To transform wildlife observations into trusted, structured biodiversity intelligence through a licensed AI platform that automates the detection, tracking, and species-level identification of Nepal's vertebrate fauna.",
     "Chinari provides secure APIs and web-based applications that enable conservation organizations, researchers, government agencies, and approved partners to process camera-trap imagery, ranger field reports, and citizen-submitted photos and videos through scalable cloud.",

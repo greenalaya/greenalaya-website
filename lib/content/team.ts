@@ -2,7 +2,7 @@ import { seedTeamMembers } from "@/lib/content/seed";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { TeamMember } from "@/lib/types/team";
 
-export function applySeedTeamPhoto(member: TeamMember): TeamMember {
+function applySeedTeamPhoto(member: TeamMember): TeamMember {
   const seed = seedTeamMembers.find((item) => item.name === member.name);
   const seedPhoto = seed?.photo_url;
   const shouldUseSeedPhoto =

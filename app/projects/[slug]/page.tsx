@@ -3,9 +3,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ButterflyProjectDetail } from "@/components/butterfly-project-detail";
 import { ChinariProjectDetail } from "@/components/chinari-project-detail";
+import { MothsBagmatiProjectDetail } from "@/components/moths-bagmati-project-detail";
 import { PageShell } from "@/components/page-shell";
 import { butterflyProject } from "@/lib/content/butterfly-project";
 import { chinariProject } from "@/lib/content/chinari-project";
+import { mothsBagmatiProject } from "@/lib/content/moths-bagmati-project";
 import { getSeedProject } from "@/lib/content/seed";
 import { pageMetadata } from "@/lib/seo";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -55,6 +57,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
+  if (slug === mothsBagmatiProject.slug) {
+    return pageMetadata({
+      title: mothsBagmatiProject.title,
+      description: mothsBagmatiProject.summary,
+      path: `/projects/${mothsBagmatiProject.slug}`,
+    });
+  }
+
   const project = await loadProject(slug);
 
   if (!project) {
@@ -86,6 +96,10 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   if (slug === chinariProject.slug) {
     return <ChinariProjectDetail />;
+  }
+
+  if (slug === mothsBagmatiProject.slug) {
+    return <MothsBagmatiProjectDetail />;
   }
 
   return (

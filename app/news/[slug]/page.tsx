@@ -69,6 +69,10 @@ const butterflyGallery = [
   },
 ] as const;
 
+const mothsStorySlug = "announcing-moths-of-bagmati-province";
+const mothsStoryImage =
+  "/images/news/announcing-moths-of-bagmati-province/moth-on-forest-floor.jpg";
+
 const bigCountStorySlug = "big-butterfly-count-2026-godawari-walk";
 const bigCountImages = {
   hero: "/images/news/big-butterfly-count-2026-godawari/umbrella-walk-canopy.jpg",
@@ -707,6 +711,133 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 </div>
               </div>
             </section>
+          </article>
+        </main>
+      </>
+    );
+  }
+
+  if (post.slug === mothsStorySlug) {
+    const articleUrl = `${siteConfig.url}/news/${post.slug}`;
+    const shareText = encodeURIComponent(post.title);
+    const paragraphs = post.content ? post.content.split("\n\n") : [];
+
+    return (
+      <>
+        <JsonLd
+          data={articleJsonLd({
+            title: post.title,
+            description: post.excerpt ?? "News update from Greenalaya Nepal",
+            path: `/news/${post.slug}`,
+            datePublished: post.published_at,
+          })}
+        />
+        <main className="overflow-hidden pb-20 pt-20 md:pt-24">
+          <article>
+            <header className="relative bg-[#07150b] text-white">
+              <div className="absolute inset-0">
+                <Image
+                  src={mothsStoryImage}
+                  alt="A moth camouflaged against wet ground in Bagmati Province"
+                  fill
+                  loading="eager"
+                  fetchPriority="high"
+                  sizes="100vw"
+                  className="object-cover object-center opacity-45"
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,18,8,0.96)_0%,rgba(4,18,8,0.76)_48%,rgba(4,18,8,0.2)_100%)]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07150b]/90 via-transparent to-transparent" />
+              </div>
+
+              <div className="relative mx-auto flex min-h-[480px] max-w-7xl flex-col justify-between px-5 py-10 sm:min-h-[560px] sm:px-8 md:min-h-[680px] md:py-14 lg:px-10">
+                <Link
+                  href="/news"
+                  className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-white/20 bg-black/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-md transition hover:bg-white/10"
+                >
+                  <ArrowLeft className="size-4" aria-hidden /> All news
+                </Link>
+
+                <div className="max-w-4xl pb-5">
+                  <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">
+                    Citizen science &amp; biodiversity documentation
+                  </p>
+                  <h1 className="mt-5 font-display text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
+                    {post.title}
+                  </h1>
+                  {post.excerpt ? (
+                    <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
+                      {post.excerpt}
+                    </p>
+                  ) : null}
+                  <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-white/72">
+                    {post.published_at ? (
+                      <span className="inline-flex items-center gap-2">
+                        <CalendarDays className="size-4 text-[#8bd88f]" />
+                        {formatDate(post.published_at)}
+                      </span>
+                    ) : null}
+                    <span className="inline-flex items-center gap-2">
+                      <MapPin className="size-4 text-[#8bd88f]" />
+                      Bagmati Province, Nepal
+                    </span>
+                    <span className="inline-flex items-center gap-2">
+                      <span className="size-1.5 rounded-full bg-[#8bd88f]" />3 min read
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div className="mx-auto grid max-w-6xl gap-12 px-5 py-14 sm:px-8 md:py-20 lg:grid-cols-[minmax(0,1fr)_15rem] lg:px-10">
+              <div className="max-w-3xl space-y-7 text-[1.075rem] leading-8 text-muted-foreground">
+                {paragraphs.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+                <p>
+                  <Link
+                    href="/projects/moths-of-bagmati-province"
+                    className="font-semibold text-primary underline underline-offset-4 hover:opacity-80 transition-opacity"
+                  >
+                    Read more about the project, and how to contribute your moth photographs
+                  </Link>
+                </p>
+              </div>
+
+              <aside
+                className="h-fit rounded-2xl border border-border bg-card p-5 shadow-[0_14px_40px_rgba(13,55,22,0.06)] lg:sticky lg:top-28"
+                aria-label="Article details"
+              >
+                <div>
+                  <p className="text-[0.7rem] font-bold uppercase leading-5 tracking-[0.18em] text-muted-foreground">
+                    Share this story
+                  </p>
+                  <div className="mt-4 grid gap-2 text-sm font-semibold text-primary">
+                    <a
+                      href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-lg bg-secondary px-3 py-2.5 transition hover:bg-accent"
+                    >
+                      Facebook
+                    </a>
+                    <a
+                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded-lg bg-secondary px-3 py-2.5 transition hover:bg-accent"
+                    >
+                      LinkedIn
+                    </a>
+                    <a
+                      href={`mailto:?subject=${shareText}&body=${encodeURIComponent(articleUrl)}`}
+                      className="rounded-lg bg-secondary px-3 py-2.5 transition hover:bg-accent"
+                    >
+                      Email
+                    </a>
+                  </div>
+                </div>
+              </aside>
+            </div>
           </article>
         </main>
       </>

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Search, CalendarDays } from "lucide-react";
+import { mothsBagmatiProject } from "@/lib/content/moths-bagmati-project";
 import type { Project } from "@/lib/types/project";
 
 type ProjectsPageContentProps = {
@@ -113,7 +114,11 @@ export function ProjectsPageContent({ projects }: ProjectsPageContentProps) {
                               alt={project.title}
                               fill
                               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                              className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                              className={
+                                project.slug === mothsBagmatiProject.slug
+                                  ? "translate-x-[30px] scale-[1.5] object-cover object-[50%_56%] transition duration-300 group-hover:scale-[1.52]"
+                                  : "object-cover transition duration-300 group-hover:scale-[1.02]"
+                              }
                             />
                           ) : (
                             <div className="absolute inset-0 bg-gradient-to-br from-[#1b5e20] to-[#8bc34a]" />

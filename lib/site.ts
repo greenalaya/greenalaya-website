@@ -117,7 +117,7 @@ export const strategicPillars = [
 export const siteContact = {
   email: "info@greenalayanepal.org.np",
   location: "Pokhara, Nepal",
-  phone: "+977-9864835254",
+  phone: "+977-9823232424",
 } as const;
 
 export const contactIntents = {

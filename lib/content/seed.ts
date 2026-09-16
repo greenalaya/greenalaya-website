@@ -276,6 +276,15 @@ export const seedProjects: Project[] = [
     image_url: "/images/projects/chinari-logo.png",
     created_at: "2026-08-01T00:00:00.000Z",
   },
+  {
+    id: "seed-moths-bagmati-province",
+    title: "Moonlight Dancer: Documenting the Moths of Bagmati Province",
+    slug: "moths-of-bagmati-province",
+    description:
+      "Following the success of Butterfly Images of Kathmandu Valley, Greenalaya Nepal's next citizen-science initiative documents the moths of an entire province - from the plains of the Terai to the valleys, hills, and higher Central Himalayas of Bagmati Province.",
+    image_url: "/images/projects/moths-of-bagmati-province.jpg",
+    created_at: "2026-09-17T00:00:00.000Z",
+  },
 ];
 
 export function getSeedProject(slug: string): Project | null {
@@ -283,6 +292,18 @@ export function getSeedProject(slug: string): Project | null {
 }
 
 export const seedNewsPosts: NewsPost[] = [
+  {
+    id: "seed-moths-bagmati-province-launch",
+    title: "Announcing Our Next Project: Moths of Bagmati Province",
+    slug: "announcing-moths-of-bagmati-province",
+    excerpt:
+      "Following the success of Butterfly Images of Kathmandu Valley, Greenalaya Nepal is launching a province-wide citizen-science initiative to photograph and document the moths of Bagmati Province.",
+    content:
+      "Greenalaya Nepal is launching A Pictorial E-book of Moths of Bagmati Province, Nepal, a province-wide citizen-science initiative that builds on the success of Butterfly Images of Kathmandu Valley. The project scales up from a single valley to an entire province, capturing the wider ecological range Bagmati Province offers, from the plains of the Terai region to the valleys and mountains of the hills, extending to the higher Central Himalayas.\n\nMoths are one of the most overlooked groups in Nepal's biodiversity conversation. Far more numerous than butterflies yet drastically under-recorded, they make excellent bioindicators, and this project fills a genuine knowledge gap by contributing new baseline data on a chronically understudied group.\n\nThe project is built entirely on community participation, with photographers, students, and naturalists across the province invited to submit moth photographs. Every submission - of a moth on a wall, a windowsill, a light trap, or deep in the forest - adds a verified data point of species, date, and location, and every contributor is fully credited alongside their photograph in the project's photographer index.\n\nGreenalaya Nepal looks forward to building this baseline together with citizen scientists across Bagmati Province.",
+    featured_image_url:
+      "/images/news/announcing-moths-of-bagmati-province/moth-on-forest-floor.jpg",
+    published_at: "2026-09-17T00:00:00.000Z",
+  },
   {
     id: "seed-big-butterfly-count-2026-godawari",
     title: "Big Butterfly Count 2026: Butterfly Walk Records 16 Species in Godawari",

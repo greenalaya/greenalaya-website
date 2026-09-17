@@ -92,8 +92,8 @@ function PersonCard({
           <Image
             alt={member.name}
             className={cn(
-              "transition-all duration-300 group-hover/card:grayscale-0",
-              "object-cover grayscale",
+              "transition-all duration-300 lg:grayscale lg:group-hover/card:grayscale-0",
+              "object-cover",
               member.slug === "firoj-raut" && "object-top",
             )}
             fill

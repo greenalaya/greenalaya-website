@@ -61,6 +61,20 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
+function useIsCompactViewport() {
+  const [isCompact, setIsCompact] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsCompact(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return isCompact;
+}
+
 function LinkedinIcon({ href, memberName }: { href?: string | null; memberName: string }) {
   const className = cn(
     "text-muted-foreground transition-all duration-300 opacity-0 group-hover:opacity-100",
@@ -139,6 +153,24 @@ const TeamMemberCard = memo(function TeamMemberCard({
     y.set(0);
   }, [x, y]);
 
+  const isCompactViewport = useIsCompactViewport();
+  const photoHref = member.websiteUrl || member.linkedinUrl || null;
+  const isPhotoLinkable = isCompactViewport && Boolean(photoHref);
+
+  const photo = (
+    <div className="relative mb-4 h-32 w-32 shrink-0 overflow-hidden rounded-full border-2 border-border">
+      <Image
+        alt={`Portrait of ${member.name}`}
+        className="object-cover transition-transform duration-500 group-hover:scale-110"
+        fill
+        sizes="128px"
+        src={member.avatar}
+        unoptimized={member.avatar.startsWith("http")}
+      />
+      <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+    </div>
+  );
+
   return (
     <motion.div
       variants={cardVariants}
@@ -159,17 +191,19 @@ const TeamMemberCard = memo(function TeamMemberCard({
         }
         className="flex flex-1 flex-col items-center"
       >
-        <div className="relative mb-4 h-32 w-32 shrink-0 overflow-hidden rounded-full border-2 border-border">
-          <Image
-            alt={`Portrait of ${member.name}`}
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-            fill
-            sizes="128px"
-            src={member.avatar}
-            unoptimized={member.avatar.startsWith("http")}
-          />
-          <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-        </div>
+        {isPhotoLinkable ? (
+          <a
+            href={photoHref!}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View ${member.name}'s ${member.websiteUrl ? "website" : "LinkedIn"} (opens in a new tab)`}
+            className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+          >
+            {photo}
+          </a>
+        ) : (
+          photo
+        )}
         <h3 className="text-balance text-xl font-semibold leading-snug text-card-foreground">
           {member.name}
         </h3>

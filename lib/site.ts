@@ -138,7 +138,7 @@ export const contactIntents = {
   },
 } as const;
 
-export type ContactIntentKey = keyof typeof contactIntents;
+type ContactIntentKey = keyof typeof contactIntents;
 
 export function getContactIntent(key: string | undefined | null) {
   if (!key) return null;

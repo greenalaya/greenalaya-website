@@ -1,4 +1,4 @@
-﻿import { NewsPageContent } from "@/components/news-page-content";
+import { NewsPageContent } from "@/components/news-page-content";
 import { fetchListWithFallback } from "@/lib/content/fetch-list-with-fallback";
 import { seedNewsPosts } from "@/lib/content/seed";
 import { pageMetadata } from "@/lib/seo";

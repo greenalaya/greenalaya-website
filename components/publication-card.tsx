@@ -1,23 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
+import { formatLongDate } from "@/components/searchable-list-page";
 import type { PublicationCard } from "@/lib/content/resources";
 
 type PublicationCardProps = {
   publication: PublicationCard;
 };
 
-function formatDate(value: string | null) {
-  if (!value) return null;
-  return new Date(value).toLocaleDateString("en-NP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 export function PublicationCardItem({ publication }: PublicationCardProps) {
-  const publishedDate = formatDate(publication.publishedDateIso);
+  const publishedDate = formatLongDate(publication.publishedDateIso);
 
   return (
     <article className="group">

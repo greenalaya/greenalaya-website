@@ -1,7 +1,7 @@
 const SECTION_BLACK_RGB = "10, 15, 10";
 export const SEAM_BAND_HEIGHT_PX = 8;
 
-export type SeamGradientDirection = "to-top" | "to-bottom";
+type SeamGradientDirection = "to-top" | "to-bottom";
 
 /** Stepped seam: 2px 100%, 3px 70%, 2px 40%, 1px 10%, then transparent. */
 export function buildSteppedSeamGradient(direction: SeamGradientDirection): string {

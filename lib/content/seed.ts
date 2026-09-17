@@ -269,10 +269,10 @@ export const seedProjects: Project[] = [
   },
   {
     id: "seed-chinari",
-    title: "Chinari: AI-Based Vertebrate Classification Platform for Nepal",
+    title: "Chinari: AI-Based Animal Classification Platform for Nepal",
     slug: "chinari-ai-wildlife-classification",
     description:
-      "An AI platform for the automated detection, tracking, and species-level identification of Nepal's vertebrate fauna from camera-trap imagery, ranger field reports, and citizen-submitted photos and video.",
+      "An AI platform for the automated detection, tracking, and species-level identification of Nepal's animals - both vertebrates and invertebrates - from camera-trap imagery, ranger field reports, and citizen-submitted photos and video.",
     image_url: "/images/projects/chinari-logo.png",
     created_at: "2026-08-01T00:00:00.000Z",
   },

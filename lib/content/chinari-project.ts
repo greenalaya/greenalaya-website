@@ -1,11 +1,11 @@
 export const chinariProject = {
   slug: "chinari-ai-wildlife-classification",
-  title: "Chinari: AI-Based Vertebrate Classification Platform for Nepal",
+  title: "Chinari: AI-Based Animal Classification Platform for Nepal",
   shortTitle: "Chinari",
   summary:
-    "An AI platform for the automated detection, tracking, and species-level identification of Nepal's vertebrate fauna from camera-trap imagery, ranger field reports, and citizen-submitted photos and videos.",
+    "An AI platform for the automated detection, tracking, and species-level identification of Nepal's animals - both vertebrates and invertebrates - from camera-trap imagery, ranger field reports, and citizen-submitted photos and videos.",
   mission: [
-    "To transform wildlife observations into trusted, structured biodiversity intelligence through a licensed AI platform that automates the detection, tracking, and species-level identification of Nepal's vertebrate fauna.",
+    "To transform wildlife observations into trusted, structured biodiversity intelligence through a licensed AI platform that automates the detection, tracking, and species-level identification of Nepal's animals, spanning vertebrates and invertebrates alike.",
     "Chinari provides secure APIs and web-based applications that enable conservation organizations, researchers, government agencies, and approved partners to process camera-trap imagery, ranger field reports, and citizen-submitted photos and videos through scalable cloud.",
     "The platform automatically processes high-confidence observations while routing ambiguous or low-confidence cases - such as those affected by poor lighting, motion blur, occlusion, partial visibility, or visually similar species, to human-in-the-loop review workflows, where qualified experts validate or correct predictions before they become trusted biodiversity records.",
     "By combining AI automation with expert verification, Chinari accelerates biodiversity monitoring without replacing scientific judgment.",

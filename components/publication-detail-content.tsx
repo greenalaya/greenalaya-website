@@ -6,6 +6,7 @@ import { useState } from "react";
 import { PdfPreviewModal } from "@/components/pdf-preview-modal";
 import { PublicationMetadataSection } from "@/components/publication-metadata";
 import type { PublicationDetail } from "@/lib/content/resources";
+import { siteConfig } from "@/lib/site";
 
 type PublicationDetailContentProps = {
   publication: PublicationDetail;
@@ -28,6 +29,8 @@ export function PublicationDetailContent({
 }: PublicationDetailContentProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const postedOn = formatPostedDate(publication.publishedDateIso);
+  const publicationUrl = `${siteConfig.url}/publications/${publication.slug}`;
+  const shareText = encodeURIComponent(publication.title);
 
   return (
     <>
@@ -100,6 +103,36 @@ export function PublicationDetailContent({
               >
                 Preview
               </button>
+            </div>
+          </section>
+
+          <section className="mt-10 border-t border-border pt-6">
+            <p className="text-[0.7rem] font-bold uppercase leading-5 tracking-[0.18em] text-muted-foreground">
+              Share this publication
+            </p>
+            <div className="mt-4 grid gap-2 text-sm font-semibold text-primary lg:grid-cols-3">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(publicationUrl)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-lg bg-secondary px-3 py-2.5 transition hover:bg-accent"
+              >
+                Facebook
+              </a>
+              <a
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(publicationUrl)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-lg bg-secondary px-3 py-2.5 transition hover:bg-accent"
+              >
+                LinkedIn
+              </a>
+              <a
+                href={`mailto:?subject=${shareText}&body=${encodeURIComponent(publicationUrl)}`}
+                className="rounded-lg bg-secondary px-3 py-2.5 transition hover:bg-accent"
+              >
+                Email
+              </a>
             </div>
           </section>
         </article>

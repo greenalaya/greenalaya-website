@@ -1,10 +1,9 @@
-import { DataError } from "@/components/data-status";
 import { JsonLd } from "@/components/json-ld";
 import { PublicationsPageContent } from "@/components/publications-page-content";
-import { getPublicationsPageData } from "@/lib/content/resources";
+import { getPublications } from "@/lib/content/resources";
 import { publicationJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
-import { butterflyPublication } from "@/lib/site";
+import { publicationPageCounts, siteConfig } from "@/lib/site";
 
 export const metadata = pageMetadata({
   title: "Publications",
@@ -16,8 +15,8 @@ export const revalidate = 300;
 export const dynamic = "force-static";
 
 export default async function PublicationsPage() {
-  const { all, error } = await getPublicationsPageData();
-  const primary = all[0];
+  const publications = await getPublications();
+  const primary = publications[0];
 
   return (
     <>
@@ -25,23 +24,15 @@ export default async function PublicationsPage() {
         <JsonLd
           data={publicationJsonLd({
             title: primary.title,
-            description: primary.abstract ?? butterflyPublication.description,
+            description: primary.abstract ?? siteConfig.description,
             path: `/publications/${primary.slug}`,
             datePublished: primary.publishedDateIso,
-            numberOfPages: butterflyPublication.pageCount,
+            numberOfPages: publicationPageCounts[primary.slug],
           })}
         />
       ) : null}
 
-      {error ? (
-        <div className="px-5 pt-28">
-          <div className="mx-auto max-w-6xl">
-            <DataError message={error} />
-          </div>
-        </div>
-      ) : null}
-
-      <PublicationsPageContent publications={all} />
+      <PublicationsPageContent publications={publications} />
     </>
   );
 }

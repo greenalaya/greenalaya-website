@@ -4,7 +4,7 @@ import type { NewsPost } from "@/lib/types/news";
 import type { Project } from "@/lib/types/project";
 import type { Research } from "@/lib/types/research";
 import type { TeamMember } from "@/lib/types/team";
-import { butterflyPublication } from "@/lib/site";
+import { butterflyPublication, pollinatorWeekReport } from "@/lib/site";
 
 /** Shown when Supabase has no rows yet. Mirrors supabase/phase4.sql. */
 export const seedTeamMembers: TeamMember[] = [
@@ -247,6 +247,14 @@ export function getSeedNewsPost(slug: string): NewsPost | null {
 }
 
 export const seedResearch: Research[] = [
+  {
+    id: "seed-pollinator-week-2026-report",
+    title: pollinatorWeekReport.title,
+    slug: pollinatorWeekReport.slug,
+    abstract: pollinatorWeekReport.abstract,
+    pdf_url: pollinatorWeekReport.pdfUrl,
+    published_date: "2026-09-01",
+  },
   {
     id: "seed-butterfly-research",
     title: butterflyPublication.title,

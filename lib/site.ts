@@ -282,11 +282,18 @@ export const butterflyPublication = {
   pdfUrl: "/publications/butterfly_images_of_kathmandu_valley.pdf",
   abstract:
     "A comprehensive photographic collection documenting 174 butterfly species across the Kathmandu Valley, captured across different seasons and habitats.",
-  description:
-    "A comprehensive photographic collection documenting the diverse butterfly species found across the Kathmandu Valley. This visual guide showcases 174 species captured across different seasons and habitats, serving as an important reference for researchers, conservationists, and nature enthusiasts.",
   coverImage: "/images/butterfly-publication-cover.png",
-  publishedDate: "April 2026",
   pageCount: 134,
+} as const;
+
+export const pollinatorWeekReport = {
+  title: "Pollinator Week 2026: Official Event Report",
+  slug: "pollinator-week-2026-event-report",
+  pdfUrl: "/publications/pollinator_week_2026_event_report.pdf",
+  abstract:
+    "The official report of Pollinator Week 2026 in Nepal, held under the theme “Life on a Leaf: Celebrating Caterpillars and Host Plants”. Coordinated by Greenalaya Nepal with nine partner organizations, the program combined expert-led virtual sessions, field pollinator watches in Godawari, Hetauda and Ranibari, a seven-day social-media challenge and an iNaturalist Pollinator Marathon, reaching more than 200 participants and documenting pollinators observed during the field activities.",
+  coverImage: "/images/pollinator-week-2026-report-cover.jpg",
+  pageCount: 30,
 } as const;
 
 export type PublicationMetadata = {
@@ -304,6 +311,11 @@ const publicationMetadata: Record<string, PublicationMetadata> = {
     publishers: "Greenalaya Nepal and TinyLife Finders",
     isbn: "9789905-0-0219-7",
   },
+  [pollinatorWeekReport.slug]: {
+    language: "English",
+    published: "2026",
+    publishers: "Greenalaya Nepal",
+  },
 };
 
 export function getPublicationMetadata(slug: string, year: string): PublicationMetadata | null {
@@ -318,12 +330,16 @@ export function getPublicationMetadata(slug: string, year: string): PublicationM
   };
 }
 
-/** Cover art and optional location overlay per publication slug. */
-export const publicationAssets: Record<string, { coverImage: string; locationLabel?: string }> = {
-  [butterflyPublication.slug]: {
-    coverImage: butterflyPublication.coverImage,
-    locationLabel: "Kathmandu Valley",
-  },
+/** Cover art per publication slug. */
+export const publicationCovers: Record<string, string> = {
+  [butterflyPublication.slug]: butterflyPublication.coverImage,
+  [pollinatorWeekReport.slug]: pollinatorWeekReport.coverImage,
+};
+
+/** Page counts for the PDF preview, per publication slug. */
+export const publicationPageCounts: Record<string, number> = {
+  [butterflyPublication.slug]: butterflyPublication.pageCount,
+  [pollinatorWeekReport.slug]: pollinatorWeekReport.pageCount,
 };
 
 export const defaultPublicationCover = butterflyPublication.coverImage;

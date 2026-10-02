@@ -6,7 +6,7 @@ import { getLocalPdfSizeLabel } from "@/lib/content/pdf-size";
 import { getPublicationBySlug } from "@/lib/content/resources";
 import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
-import { butterflyPublication } from "@/lib/site";
+import { publicationPageCounts } from "@/lib/site";
 
 export const revalidate = 300;
 export const dynamic = "force-static";
@@ -43,8 +43,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
   }
 
   const pdfSizeLabel = await getLocalPdfSizeLabel(publication.pdfUrl);
-  const pageCount =
-    publication.slug === butterflyPublication.slug ? butterflyPublication.pageCount : undefined;
+  const pageCount = publicationPageCounts[publication.slug];
 
   return (
     <>

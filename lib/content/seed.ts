@@ -253,7 +253,7 @@ export const seedResearch: Research[] = [
     slug: pollinatorWeekReport.slug,
     abstract: pollinatorWeekReport.abstract,
     pdf_url: pollinatorWeekReport.pdfUrl,
-    published_date: "2026-09-01",
+    published_date: "2026-09-30",
   },
   {
     id: "seed-butterfly-research",

@@ -1,14 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Camera,
-  CheckCircle2,
-  FlaskConical,
-  Leaf,
-  MapPin,
-  Users,
-} from "lucide-react";
+import { ArrowLeft, Camera, CheckCircle2, FlaskConical, Leaf, MapPin, Users } from "lucide-react";
 import { mothsBagmatiProject } from "@/lib/content/moths-bagmati-project";
 
 const alignmentIcons = [FlaskConical, Users, Leaf] as const;
@@ -38,7 +30,7 @@ export function MothsBagmatiProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#a8dc9d]">
               Citizen science &amp; biodiversity documentation
             </p>
-            <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
               Moonlight Dancer
               <span className="mt-2 block text-2xl font-normal leading-tight text-white/90 sm:text-3xl lg:text-4xl">
                 Documenting the Moths of Bagmati Province
@@ -64,7 +56,7 @@ export function MothsBagmatiProjectDetail() {
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
           <div>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
               Scaling up from a valley to a province
             </h2>
           </div>
@@ -83,7 +75,7 @@ export function MothsBagmatiProjectDetail() {
         <div className="mx-auto max-w-7xl">
           <h2
             id="why-moths-heading"
-            className="max-w-3xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
+            className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
           >
             Why Moths?
           </h2>
@@ -99,7 +91,7 @@ export function MothsBagmatiProjectDetail() {
 
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
-          <h2 className="max-w-3xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <h2 className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
             How This Aligns With Greenalaya Nepal&apos;s Work
           </h2>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
@@ -114,9 +106,7 @@ export function MothsBagmatiProjectDetail() {
                   className="rounded-2xl border border-border bg-background p-6 sm:p-8"
                 >
                   <Icon aria-hidden="true" className="size-6 text-primary" />
-                  <h3 className="mt-4 font-display text-xl font-semibold text-foreground">
-                    {point.pillar}
-                  </h3>
+                  <h3 className="mt-4 text-xl font-semibold text-foreground">{point.pillar}</h3>
                   <p className="mt-3 leading-7 text-muted-foreground">{point.description}</p>
                 </div>
               );
@@ -126,8 +116,7 @@ export function MothsBagmatiProjectDetail() {
             It also speaks directly to two of our seven thematic focus areas:{" "}
             {mothsBagmatiProject.thematicAreas.map((area, index) => (
               <span key={area.title}>
-                <span className="font-semibold text-foreground">{area.title}</span> (
-                {area.note})
+                <span className="font-semibold text-foreground">{area.title}</span> ({area.note})
                 {index < mothsBagmatiProject.thematicAreas.length - 1 ? " and " : "."}
               </span>
             ))}
@@ -142,7 +131,7 @@ export function MothsBagmatiProjectDetail() {
         <div className="mx-auto max-w-7xl">
           <h2
             id="contributes-to-heading"
-            className="max-w-3xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
+            className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
           >
             What This Contributes To
           </h2>
@@ -166,7 +155,7 @@ export function MothsBagmatiProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
               Why your contribution matters
             </p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
               Every submission is a verified data point
             </h2>
           </div>
@@ -187,12 +176,12 @@ export function MothsBagmatiProjectDetail() {
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#a8dc9d]">
             Contribute your moth photographs
           </p>
-          <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-bold tracking-tight sm:text-5xl">
             Submit your sightings
           </h2>
           <p className="mx-auto mt-6 max-w-2xl leading-7 text-white/80">
-            Include the following details with every photograph so it can be recorded as a
-            verified data point:
+            Include the following details with every photograph so it can be recorded as a verified
+            data point:
           </p>
           <ul className="mt-6 flex flex-wrap justify-center gap-3">
             {mothsBagmatiProject.submission.requiredInfo.map((item) => (

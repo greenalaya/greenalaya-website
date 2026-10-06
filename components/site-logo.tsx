@@ -5,7 +5,7 @@ type SiteLogoProps = {
   className?: string;
   width?: number;
   height?: number;
-  priority?: boolean;
+  preload?: boolean;
   /** Surface behind the logo — picks a matching backdrop when needed. */
   surface?: "header" | "footer" | "default";
 };
@@ -20,7 +20,7 @@ export function SiteLogo({
   className = "h-12 w-auto object-contain lg:h-14",
   width = 55,
   height = 55,
-  priority = false,
+  preload = false,
   surface = "default",
 }: SiteLogoProps) {
   return (
@@ -33,8 +33,7 @@ export function SiteLogo({
         width={width}
         height={height}
         className={className}
-        priority={priority}
-        unoptimized
+        preload={preload}
       />
     </span>
   );

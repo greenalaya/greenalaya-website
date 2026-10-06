@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
 import { Button } from "@/components/ui/button";
 import { contactHref, contactIntents, siteConfig } from "@/lib/site";
@@ -38,13 +38,6 @@ const carouselImageAlts = [
 function FooterImageCarousel() {
   const [index, setIndex] = useState(0);
   const count = carouselImages.length;
-
-  useEffect(() => {
-    carouselImages.forEach((src) => {
-      const img = new window.Image();
-      img.src = src;
-    });
-  }, []);
 
   const prev = () => setIndex((i) => (i - 1 + count) % count);
   const next = () => setIndex((i) => (i + 1) % count);
@@ -100,7 +93,6 @@ function FooterImageCarousel() {
             className="object-cover"
             sizes="(max-width: 1024px) 320px, 400px"
             quality={75}
-            priority
           />
         </div>
       </div>
@@ -130,7 +122,7 @@ export function FooterStayAhead() {
       <div className="mx-auto max-w-screen-xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="text-center lg:text-left">
-            <h2 className="text-balance font-display text-[clamp(1.35rem,6vw,2.4375rem)] font-bold tracking-tight">
+            <h2 className="text-balance text-[clamp(1.35rem,6vw,2.4375rem)] font-bold tracking-tight">
               Stay ahead with {siteConfig.name}
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-white sm:mt-3.5 lg:mx-0 lg:mt-4">

@@ -15,20 +15,26 @@ function useIsClient() {
 }
 
 export function ModeToggle({ className }: { className?: string }) {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const isClient = useIsClient();
+  const toggleClass = cn(
+    "group size-9 cursor-pointer bg-secondary data-[state=on]:bg-transparent data-[state=on]:hover:bg-muted dark:bg-secondary",
+    className,
+  );
 
-  if (!isClient) return null;
+  // The theme is only known in the browser; reserve the button's space
+  // during server render so the header doesn't shift on load.
+  if (!isClient) return <span aria-hidden className={cn("inline-block rounded-md", toggleClass)} />;
+
+  // resolvedTheme reflects the OS setting when the theme is "system".
+  const isDark = resolvedTheme === "dark";
 
   return (
     <Toggle
-      className={cn(
-        "group size-9 cursor-pointer bg-secondary data-[state=on]:bg-transparent data-[state=on]:hover:bg-muted dark:bg-secondary",
-        className,
-      )}
-      pressed={theme === "dark"}
-      onPressedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      className={toggleClass}
+      pressed={isDark}
+      onPressedChange={() => setTheme(isDark ? "light" : "dark")}
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
       <Moon
         size={16}

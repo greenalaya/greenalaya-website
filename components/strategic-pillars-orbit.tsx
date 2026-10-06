@@ -2,6 +2,7 @@
 
 import { aboutPageContent, siteConfig, strategicPillars } from "@/lib/site";
 import { FlaskConical, Leaf, Monitor, User, Users, type LucideIcon } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
 import {
   useCallback,
@@ -87,9 +88,18 @@ function computeMaxOrbitRadius(
   return Number.isFinite(maxRadius) ? maxRadius : width / 2 - nodeHalfWidth;
 }
 
-function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+function Card({
+  children,
+  className = "",
+  id,
+}: {
+  children: ReactNode;
+  className?: string;
+  id?: string;
+}) {
   return (
     <div
+      id={id}
       className={`rounded-xl border border-[#4caf50]/25 bg-[#161c17]/95 text-white shadow-lg shadow-[#0a0f0a]/50 backdrop-blur-lg ${className}`}
     >
       {children}
@@ -104,6 +114,7 @@ export function StrategicPillarsOrbit() {
   const [circleInset, setCircleInset] = useState({ outer: 0, middle: 0, inner: 0 });
   const [autoRotate, setAutoRotate] = useState(true);
   const [isVisible, setIsVisible] = useState(true);
+  const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
 
@@ -183,8 +194,16 @@ export function StrategicPillarsOrbit() {
       collapseExpanded();
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") collapseExpanded();
+    };
+
     document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [hasExpanded, collapseExpanded]);
 
   const toggleItem = (id: number) => {
@@ -206,7 +225,7 @@ export function StrategicPillarsOrbit() {
   };
 
   useEffect(() => {
-    if (!autoRotate || !isVisible) return;
+    if (!autoRotate || !isVisible || prefersReducedMotion) return;
 
     const rotationTimer = setInterval(() => {
       if (document.hidden) return;
@@ -214,7 +233,7 @@ export function StrategicPillarsOrbit() {
     }, 50);
 
     return () => clearInterval(rotationTimer);
-  }, [autoRotate, isVisible]);
+  }, [autoRotate, isVisible, prefersReducedMotion]);
 
   const calculateNodePosition = (index: number, total: number) => {
     const angle = ((index / total) * 360 + rotationAngle) % 360;
@@ -253,7 +272,7 @@ export function StrategicPillarsOrbit() {
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center justify-items-center gap-12 px-4 py-16 sm:gap-14 lg:grid-cols-2 lg:justify-items-stretch lg:gap-16 lg:py-20">
         <header className="w-full text-center lg:text-left">
-          <h2 className="font-display text-3xl font-bold tracking-tight text-[#2196f3] uppercase [-webkit-text-stroke:2px_#000] [paint-order:stroke_fill] sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-tight text-[#2196f3] uppercase [-webkit-text-stroke:2px_#000] [paint-order:stroke_fill] sm:text-4xl md:text-5xl">
             {aboutPageContent.pillarsHeading}
           </h2>
           <p className="mx-auto mt-5 max-w-xl font-sans text-base leading-relaxed text-white sm:mt-6 sm:text-lg md:text-xl lg:mx-0">
@@ -290,9 +309,9 @@ export function StrategicPillarsOrbit() {
             />
 
             <div className="absolute left-1/2 top-1/2 z-10 flex h-[4.75rem] w-[4.75rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-br from-[#2e7d32] via-[#4caf50] to-[#1b5e20] shadow-lg shadow-[#2e7d32]/40 lg:h-16 lg:w-16">
-              <div className="absolute h-[5.5rem] w-[5.5rem] animate-ping rounded-full border border-[#4caf50]/40 opacity-70 lg:h-20 lg:w-20" />
+              <div className="absolute h-[5.5rem] w-[5.5rem] motion-safe:animate-ping rounded-full border border-[#4caf50]/40 opacity-70 lg:h-20 lg:w-20" />
               <div
-                className="absolute h-[6.25rem] w-[6.25rem] animate-ping rounded-full border border-[#2e7d32]/30 opacity-50 lg:h-24 lg:w-24"
+                className="absolute h-[6.25rem] w-[6.25rem] motion-safe:animate-ping rounded-full border border-[#2e7d32]/30 opacity-50 lg:h-24 lg:w-24"
                 style={{ animationDelay: "0.5s" }}
               />
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 backdrop-blur-md lg:h-8 lg:w-8">
@@ -312,20 +331,23 @@ export function StrategicPillarsOrbit() {
                 <div
                   key={item.id}
                   data-pillar-node
-                  className={`absolute left-1/2 top-1/2 cursor-pointer ${
+                  className={`absolute left-1/2 top-1/2 ${
                     autoRotate ? "" : "transition-transform duration-700 ease-out"
                   }`}
                   style={{
                     transform: pillarNodeTransform(position.x, position.y),
                     zIndex: isExpanded ? 200 : position.zIndex,
                   }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleItem(item.id);
-                  }}
                 >
-                  <div
-                    className={`relative flex flex-col items-center ${isExpanded ? "gap-4" : "gap-2.5 sm:gap-3"}`}
+                  <button
+                    type="button"
+                    aria-expanded={Boolean(isExpanded)}
+                    aria-controls={`pillar-panel-${item.id}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleItem(item.id);
+                    }}
+                    className={`relative flex cursor-pointer flex-col items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#81c784] ${isExpanded ? "gap-4" : "gap-2.5 sm:gap-3"}`}
                   >
                     <div className="relative">
                       <div
@@ -347,7 +369,7 @@ export function StrategicPillarsOrbit() {
                         }`}
                         style={!isExpanded ? { borderColor: accent.from } : undefined}
                       >
-                        <Icon className="size-5 lg:size-[18px]" />
+                        <Icon className="size-5 lg:size-[18px]" aria-hidden />
                       </div>
                     </div>
 
@@ -358,10 +380,13 @@ export function StrategicPillarsOrbit() {
                     >
                       {item.title}
                     </div>
-                  </div>
+                  </button>
 
                   {isExpanded && (
-                    <Card className="absolute top-full left-1/2 mt-4 w-[min(18rem,calc(100vw-2rem))] max-h-[min(16rem,50vh)] -translate-x-1/2 overflow-y-auto p-5 text-center shadow-2xl shadow-[#0a0f0a]/60">
+                    <Card
+                      id={`pillar-panel-${item.id}`}
+                      className="absolute top-full left-1/2 mt-4 w-[min(18rem,calc(100vw-2rem))] max-h-[min(16rem,50vh)] -translate-x-1/2 overflow-y-auto p-5 text-center shadow-2xl shadow-[#0a0f0a]/60"
+                    >
                       <div
                         className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2"
                         style={{

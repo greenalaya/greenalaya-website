@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
 import { getNewsList, getNewsPostBySlug } from "@/lib/content/news";
+import { formatLongDate } from "@/lib/format";
 import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -141,15 +142,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
-function formatDate(value: string | null) {
-  if (!value) return null;
-  return new Date(value).toLocaleDateString("en-NP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 export default async function NewsDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const post = await getNewsPostBySlug(slug);
@@ -201,7 +193,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">
                     Big Butterfly Month 2026
                   </p>
-                  <h1 className="mt-5 font-display text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
+                  <h1 className="mt-5 text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
                     Big Butterfly Count 2026: Godawari Walk Records 16 Species
                   </h1>
                   <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
@@ -212,7 +204,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     {post.published_at ? (
                       <span className="inline-flex items-center gap-2">
                         <CalendarDays className="size-4 text-[#8bd88f]" />
-                        {formatDate(post.published_at)}
+                        {formatLongDate(post.published_at)}
                       </span>
                     ) : null}
                     <span className="inline-flex items-center gap-2">
@@ -240,7 +232,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   >
                     <Icon className="size-5 text-primary sm:size-6" aria-hidden />
                     <div>
-                      <p className="font-display text-2xl font-bold text-foreground">{value}</p>
+                      <p className="text-2xl font-bold text-foreground">{value}</p>
                       <p className="text-xs text-muted-foreground sm:text-sm">{label}</p>
                     </div>
                   </div>
@@ -250,7 +242,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
 
             <div className="mx-auto grid max-w-6xl gap-12 px-5 py-14 sm:px-8 md:py-20 lg:grid-cols-[minmax(0,1fr)_15rem] lg:px-10">
               <div className="max-w-3xl">
-                <p className="font-display text-2xl font-medium leading-9 text-foreground sm:text-3xl sm:leading-[1.4]">
+                <p className="text-2xl font-medium leading-9 text-foreground sm:text-3xl sm:leading-[1.4]">
                   A great start to Big Butterfly Month 2026: despite rainfall and rainy weather,
                   Greenalaya Nepal recorded an impressive 16 butterfly species during a field walk
                   in Godawari, Lalitpur.
@@ -295,7 +287,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 </figure>
 
                 <div className="space-y-7 text-[1.075rem] leading-8 text-muted-foreground">
-                  <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                     A wet start, a strong count
                   </h2>
                   <p>
@@ -303,7 +295,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     the month ahead. Greenalaya Nepal extends its thanks to every participant and to
                     Butterfly Watchers Nepal for supporting the walk.
                   </p>
-                  <blockquote className="border-l-4 border-primary bg-secondary px-6 py-5 font-display text-xl font-medium leading-8 text-foreground sm:text-2xl">
+                  <blockquote className="border-l-4 border-primary bg-secondary px-6 py-5 text-xl font-medium leading-8 text-foreground sm:text-2xl">
                     Even the rain couldn&apos;t dampen sixteen species and one rare find - proof
                     that Godawari has plenty more to show us this September.
                   </blockquote>
@@ -374,10 +366,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2
-                      id="gallery-heading"
-                      className="mt-3 font-display text-3xl font-bold sm:text-4xl"
-                    >
+                    <h2 id="gallery-heading" className="mt-3 text-3xl font-bold sm:text-4xl">
                       A rainy day in the field
                     </h2>
                   </div>
@@ -454,7 +443,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">
                     Community conservation
                   </p>
-                  <h1 className="mt-5 font-display text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
+                  <h1 className="mt-5 text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
                     Greenalaya Nepal’s Godawari Butterfly Watch Records 46+ Species
                   </h1>
                   <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
@@ -465,7 +454,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     {post.published_at ? (
                       <span className="inline-flex items-center gap-2">
                         <CalendarDays className="size-4 text-[#8bd88f]" />
-                        {formatDate(post.published_at)}
+                        {formatLongDate(post.published_at)}
                       </span>
                     ) : null}
                     <span className="inline-flex items-center gap-2">
@@ -493,7 +482,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   >
                     <Icon className="size-5 text-primary sm:size-6" aria-hidden />
                     <div>
-                      <p className="font-display text-2xl font-bold text-foreground">{value}</p>
+                      <p className="text-2xl font-bold text-foreground">{value}</p>
                       <p className="text-xs text-muted-foreground sm:text-sm">{label}</p>
                     </div>
                   </div>
@@ -503,7 +492,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
 
             <div className="mx-auto grid max-w-6xl gap-12 px-5 py-14 sm:px-8 md:py-20 lg:grid-cols-[minmax(0,1fr)_15rem] lg:px-10">
               <div className="max-w-3xl">
-                <p className="font-display text-2xl font-medium leading-9 text-foreground sm:text-3xl sm:leading-[1.4]">
+                <p className="text-2xl font-medium leading-9 text-foreground sm:text-3xl sm:leading-[1.4]">
                   In a celebrated effort to promote biodiversity awareness and citizen science,
                   Greenalaya Nepal successfully hosted a highly engaging butterfly-watching program
                   in the ecologically rich region of Godawari.
@@ -551,7 +540,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 </figure>
 
                 <div className="space-y-7 text-[1.075rem] leading-8 text-muted-foreground">
-                  <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                     A remarkable day in the field
                   </h2>
                   <p>
@@ -563,7 +552,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     Hockeystick Sailer and the Scarce Lilacfork, bringing immense excitement to
                     amateur watchers and seasoned experts alike.
                   </p>
-                  <blockquote className="border-l-4 border-primary bg-secondary px-6 py-5 font-display text-xl font-medium leading-8 text-foreground sm:text-2xl">
+                  <blockquote className="border-l-4 border-primary bg-secondary px-6 py-5 text-xl font-medium leading-8 text-foreground sm:text-2xl">
                     Every observation adds to our shared understanding of Nepal’s biodiversity, and
                     every new observer strengthens the community protecting it.
                   </blockquote>
@@ -671,10 +660,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2
-                      id="gallery-heading"
-                      className="mt-3 font-display text-3xl font-bold sm:text-4xl"
-                    >
+                    <h2 id="gallery-heading" className="mt-3 text-3xl font-bold sm:text-4xl">
                       A day of shared discovery
                     </h2>
                   </div>
@@ -752,7 +738,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">
                     Citizen science &amp; biodiversity documentation
                   </p>
-                  <h1 className="mt-5 font-display text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
+                  <h1 className="mt-5 text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
                     {post.title}
                   </h1>
                   {post.excerpt ? (
@@ -764,7 +750,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     {post.published_at ? (
                       <span className="inline-flex items-center gap-2">
                         <CalendarDays className="size-4 text-[#8bd88f]" />
-                        {formatDate(post.published_at)}
+                        {formatLongDate(post.published_at)}
                       </span>
                     ) : null}
                     <span className="inline-flex items-center gap-2">
@@ -853,7 +839,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         </p>
 
         {post.published_at ? (
-          <p className="mt-2 text-sm text-muted-foreground">{formatDate(post.published_at)}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{formatLongDate(post.published_at)}</p>
         ) : null}
 
         {post.content ? (

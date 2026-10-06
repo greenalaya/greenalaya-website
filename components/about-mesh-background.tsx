@@ -2,7 +2,14 @@ import Image from "next/image";
 
 import { siteConfig } from "@/lib/site";
 
-export function AboutMeshBackground({ imageScale = 1 }: { imageScale?: number }) {
+export function AboutMeshBackground({
+  imageScale = 1,
+  preload = false,
+}: {
+  imageScale?: number;
+  /** Only when the background is above the fold (the About page, not the home page). */
+  preload?: boolean;
+}) {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f0a] via-[#0f1610] to-[#0a0f0a]" />
@@ -16,7 +23,7 @@ export function AboutMeshBackground({ imageScale = 1 }: { imageScale?: number })
             src={siteConfig.images.aboutBackground}
             alt=""
             fill
-            priority
+            preload={preload}
             sizes="100vw"
             className="object-cover object-top opacity-50 contrast-[1.05] saturate-[1.08]"
           />

@@ -4,16 +4,6 @@ import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
 
-/** Shared long-form date formatting used across list pages and cards. */
-export function formatLongDate(value: string | null) {
-  if (!value) return null;
-  return new Date(value).toLocaleDateString("en-NP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 type SearchableListPageProps<T> = {
   items: T[];
   heading: string;

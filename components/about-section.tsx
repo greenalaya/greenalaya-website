@@ -202,9 +202,9 @@ export function AboutSection() {
                     ref={sourceRef}
                     className={`rounded-2xl px-5 py-4 sm:rounded-3xl sm:px-10 sm:py-[10px] ${glassCardSurface} ${glassCardShadow}`}
                   >
-                    <h3 className="font-display text-xl font-bold uppercase tracking-[0.2em] text-[#2e7d32] sm:text-2xl">
+                    <h2 className="text-xl font-bold uppercase tracking-[0.2em] text-[#2e7d32] sm:text-2xl">
                       {siteConfig.name}
-                    </h3>
+                    </h2>
                     <p className="mt-3 text-base leading-relaxed text-white sm:mt-5">
                       {aboutPageContent.intro[1]}
                     </p>

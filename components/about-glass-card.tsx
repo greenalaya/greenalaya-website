@@ -37,9 +37,9 @@ export function AboutGlassCard({
       )}
     >
       {title ? (
-        <h4 className="font-display text-xl font-bold uppercase tracking-[0.2em] text-[#2e7d32] sm:text-2xl">
+        <h3 className="text-xl font-bold uppercase tracking-[0.2em] text-[#2e7d32] sm:text-2xl">
           {title}
-        </h4>
+        </h3>
       ) : null}
       <div
         className={cn("text-base leading-relaxed text-white", title ? "mt-3 sm:mt-5" : undefined)}

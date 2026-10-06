@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
-import { formatLongDate, SearchableListPage } from "@/components/searchable-list-page";
+import { SearchableListPage } from "@/components/searchable-list-page";
+import { formatLongDate } from "@/lib/format";
 import type { NewsPost } from "@/lib/types/news";
 
 type NewsPageContentProps = {

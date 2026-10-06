@@ -33,8 +33,8 @@ export function HomeSectionHeader({
       <h2
         className={
           outlinedTitle
-            ? "font-display text-4xl font-bold tracking-tight text-[#4caf50] uppercase [-webkit-text-stroke:1px_#000] [paint-order:stroke_fill] md:text-5xl"
-            : `font-display text-3xl font-bold sm:text-4xl lg:text-5xl ${
+            ? "text-4xl font-bold tracking-tight text-[#4caf50] uppercase [-webkit-text-stroke:1px_#000] [paint-order:stroke_fill] md:text-5xl"
+            : `text-3xl font-bold sm:text-4xl lg:text-5xl ${
                 isDark ? "text-white" : "text-foreground"
               }`
         }

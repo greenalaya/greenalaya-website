@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
 import { JsonLd } from "@/components/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -8,12 +7,6 @@ import { rootJsonLd } from "@/lib/json-ld";
 import { titleSeparator } from "@/lib/seo";
 import { siteConfig, siteIcons } from "@/lib/site";
 import "./globals.css";
-
-const roboto = Roboto({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -62,12 +55,13 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${roboto.variable} h-full scroll-smooth antialiased`}
+      className="h-full scroll-smooth antialiased"
+      data-scroll-behavior="smooth"
     >
       <head>
         <JsonLd data={rootJsonLd()} />
       </head>
-      <body className="flex min-h-full flex-col bg-background font-body text-foreground">
+      <body className="flex min-h-full flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

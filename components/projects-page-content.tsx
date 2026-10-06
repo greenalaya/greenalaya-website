@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { mothsBagmatiProject } from "@/lib/content/moths-bagmati-project";
-import { formatLongDate, SearchableListPage } from "@/components/searchable-list-page";
+import { SearchableListPage } from "@/components/searchable-list-page";
+import { formatLongDate } from "@/lib/format";
 import type { Project } from "@/lib/types/project";
 
 type ProjectsPageContentProps = {

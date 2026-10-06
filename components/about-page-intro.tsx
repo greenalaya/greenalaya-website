@@ -16,9 +16,7 @@ export function AboutPageIntro({ title, whatWeDo }: AboutPageIntroProps) {
       />
 
       <div className="mx-auto max-w-3xl text-center lg:max-w-4xl">
-        <h1 className="font-display text-3xl font-bold uppercase text-white lg:text-4xl xl:text-5xl">
-          {title}
-        </h1>
+        <h1 className="text-3xl font-bold uppercase text-white lg:text-4xl xl:text-5xl">{title}</h1>
       </div>
 
       <div className="relative mx-auto mt-14 grid max-w-5xl grid-cols-1 items-center gap-10 lg:mt-16 lg:max-w-6xl lg:grid-cols-2 lg:gap-16">
@@ -28,7 +26,7 @@ export function AboutPageIntro({ title, whatWeDo }: AboutPageIntroProps) {
               src={whatWeDo.image}
               alt="Greenalaya Nepal team and community collaboration"
               fill
-              priority
+              preload
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />

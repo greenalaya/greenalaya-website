@@ -31,7 +31,7 @@ export function ChinariProjectDetail() {
           </Link>
           <div className="mt-8 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
             <div className="max-w-2xl">
-              <h1 className="font-display text-4xl leading-[1.05] font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+              <h1 className="text-4xl leading-[1.05] font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
                 {chinariProject.shortTitle}
                 <span className="mt-2 block text-2xl leading-tight font-normal text-white/90 sm:text-3xl lg:text-4xl">
                   {subtitle}
@@ -57,13 +57,16 @@ export function ChinariProjectDetail() {
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
           <div>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
               Structured biodiversity intelligence, built on human validation
             </h2>
           </div>
           <ul className="space-y-5">
             {chinariProject.mission.map((point) => (
-              <li key={point} className="flex gap-3.5 text-base leading-7 text-muted-foreground sm:text-lg">
+              <li
+                key={point}
+                className="flex gap-3.5 text-base leading-7 text-muted-foreground sm:text-lg"
+              >
                 <CheckCircle2 aria-hidden="true" className="mt-1 size-5 shrink-0 text-primary" />
                 <span>{point}</span>
               </li>
@@ -79,7 +82,7 @@ export function ChinariProjectDetail() {
         <div className="mx-auto max-w-7xl">
           <h2
             id="why-it-matters-heading"
-            className="max-w-3xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
+            className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
           >
             Why This Matters
           </h2>
@@ -92,9 +95,7 @@ export function ChinariProjectDetail() {
                   className="rounded-2xl border border-border bg-background p-6 sm:p-8"
                 >
                   <Icon aria-hidden="true" className="size-6 text-primary" />
-                  <h3 className="mt-4 font-display text-xl font-semibold text-foreground">
-                    {point.title}
-                  </h3>
+                  <h3 className="mt-4 text-xl font-semibold text-foreground">{point.title}</h3>
                   <p className="mt-3 leading-7 text-muted-foreground">{point.description}</p>
                 </div>
               );
@@ -105,7 +106,7 @@ export function ChinariProjectDetail() {
 
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
-          <h2 className="max-w-3xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <h2 className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
             How It Works
           </h2>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
@@ -117,7 +118,7 @@ export function ChinariProjectDetail() {
               return (
                 <li key={step.title} className="flex flex-col">
                   <Icon aria-hidden="true" className="size-6 text-primary" />
-                  <h3 className="mt-4 font-display text-lg font-semibold text-foreground">
+                  <h3 className="mt-4 text-lg font-semibold text-foreground">
                     {index + 1}. {step.title}
                   </h3>
                   <p className="mt-3 leading-7 text-muted-foreground">{step.description}</p>

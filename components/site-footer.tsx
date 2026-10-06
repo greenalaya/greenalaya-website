@@ -60,7 +60,7 @@ function FooterContactList({
             <>
               <Icon className="size-4 shrink-0 text-primary" />
               <span
-                className={`min-w-0 break-words transition hover:opacity-70 lg:whitespace-nowrap ${footerBodyTextClass}`}
+                className={`min-w-0 break-words transition hover:opacity-70 ${footerBodyTextClass}`}
               >
                 {item.text}
               </span>
@@ -199,9 +199,7 @@ export function SiteFooter() {
                 surface="default"
                 className="-translate-y-[10px] h-[45px] w-auto object-contain sm:h-[49px]"
               />
-              <span className="font-display text-[26px] font-semibold text-[#2e7d32]">
-                {siteConfig.name}
-              </span>
+              <span className="text-[26px] font-semibold text-[#2e7d32]">{siteConfig.name}</span>
             </Link>
 
             <div className="-translate-y-[10px]">
@@ -265,7 +263,11 @@ export function SiteFooter() {
       <div className="border-t border-black/10 dark:border-white/10 dark:bg-[#050706]">
         <div className="mx-auto max-w-screen-xl px-4 pb-6 pt-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-4 text-center lg:grid-cols-3 lg:gap-8 lg:text-left">
-            <p className={`text-[16px] lg:col-span-1 ${footerBodyTextClass}`}>
+            {/* Prerendered pages carry the build year; the browser renders the current one. */}
+            <p
+              className={`text-[16px] lg:col-span-1 ${footerBodyTextClass}`}
+              suppressHydrationWarning
+            >
               &copy; {year} {siteConfig.name}
             </p>
 

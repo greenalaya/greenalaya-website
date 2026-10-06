@@ -1,7 +1,8 @@
 "use client";
 
 import { PublicationCardItem } from "@/components/publication-card";
-import { formatLongDate, SearchableListPage } from "@/components/searchable-list-page";
+import { SearchableListPage } from "@/components/searchable-list-page";
+import { formatLongDate } from "@/lib/format";
 import type { PublicationCard } from "@/lib/content/resources";
 
 type PublicationsPageContentProps = {

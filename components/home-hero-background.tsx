@@ -22,6 +22,13 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
+// The headline is the page's main content: keep it visible in the
+// server-rendered HTML and only slide it into place.
+const slideUp = {
+  hidden: { y: 20 },
+  visible: { y: 0 },
+};
+
 const heroButtonClass =
   "inline-flex min-h-12 items-center justify-center rounded-full px-8 text-[calc(18px-2px)] font-semibold no-underline transition-[transform,background-color,border-color,box-shadow] duration-200 ease-out active:scale-[0.98] motion-reduce:transition-none lg:text-[18px]";
 
@@ -35,8 +42,8 @@ const HERO_HEADLINE_LINE_2_DESKTOP = "lg:text-[clamp(2rem,6.2vw,68px)]";
 function HeroHeadline() {
   return (
     <motion.h1
-      className="font-display w-full text-balance"
-      variants={fadeUp}
+      className="w-full text-balance"
+      variants={slideUp}
       initial="hidden"
       animate="visible"
       transition={{ duration: 0.85, ease: easeOut, delay: 0.35 }}
@@ -83,7 +90,7 @@ function HeroOverlays() {
         }}
       />
       <div
-        className="pointer-events-none absolute inset-0 z-[3] motion-reduce:opacity-80 animate-[hero-mesh-pulse_8s_ease-in-out_infinite]"
+        className="pointer-events-none absolute inset-0 z-[3] motion-reduce:opacity-80 motion-safe:animate-[hero-mesh-pulse_8s_ease-in-out_infinite]"
         style={{
           background:
             "radial-gradient(ellipse at 50% 20%, rgba(76,175,80,0.08) 0%, transparent 50%)",
@@ -97,6 +104,8 @@ function HeroParallaxImage() {
   const [transform, setTransform] = useState(PARALLAX_INITIAL_TRANSFORM);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const update = rafThrottle(() => {
       const viewportScale = window.visualViewport?.scale ?? 1;
       setTransform(computeParallaxTransform(window.scrollY, viewportScale));
@@ -119,7 +128,7 @@ function HeroParallaxImage() {
       src={siteConfig.images.communityHero}
       alt="Greenalaya Nepal team gathered outdoors for a group photo"
       fill
-      priority
+      preload
       quality={92}
       className="object-cover object-center opacity-[0.72] contrast-[1.06] saturate-[1.08] brightness-[1.04] transition-transform duration-150 ease-out will-change-transform"
       style={{ transform }}
@@ -183,7 +192,7 @@ export function HeroContent({
           animate="visible"
           transition={{ duration: 0.7, ease: easeOut, delay: 0.15 }}
         >
-          <span className="font-display text-[calc(1.125rem-3px)] font-semibold tracking-tight text-white lg:text-lg">
+          <span className="text-[calc(1.125rem-3px)] font-semibold tracking-tight text-white lg:text-lg">
             {siteConfig.tagline}
           </span>
         </motion.p>

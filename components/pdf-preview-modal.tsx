@@ -89,7 +89,7 @@ export function PdfPreviewModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex shrink-0 items-center justify-between border-b border-border px-6 py-5">
-          <h3 id="pdf-preview-title" className="font-display text-lg font-bold text-foreground">
+          <h3 id="pdf-preview-title" className="text-lg font-bold text-foreground">
             {title} — Preview
           </h3>
           <button

@@ -26,7 +26,7 @@ export function AboutPageContent({
 }: AboutPageContentProps) {
   return (
     <div className="dark relative min-h-screen overflow-hidden bg-[#0a0f0a] text-white">
-      <AboutMeshBackground />
+      <AboutMeshBackground preload />
 
       <div className="relative z-10 mx-auto max-w-6xl px-5 pt-24 pb-16 md:px-6 md:pt-28 md:pb-24">
         <AboutPageIntro title={aboutPageContent.title} whatWeDo={aboutWhatWeDo} />
@@ -64,7 +64,7 @@ export function AboutPageContent({
         />
 
         <div className="mx-auto mt-16 max-w-3xl text-center lg:mt-24">
-          <h2 className="font-display text-3xl font-bold uppercase text-white lg:text-4xl">
+          <h2 className="text-3xl font-bold uppercase text-white lg:text-4xl">
             Partner organizations
           </h2>
           <p className="mt-4 text-white/70">

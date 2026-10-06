@@ -7,7 +7,7 @@ export function MembershipSection() {
   return (
     <main className="mx-auto max-w-4xl px-6 pt-24 pb-16 md:pt-28">
       <div className="text-center">
-        <h1 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           {membershipPageContent.title}
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
@@ -16,7 +16,11 @@ export function MembershipSection() {
         <p className="mx-auto mt-6 flex flex-wrap items-center justify-center gap-2 text-sm font-medium text-primary">
           {membershipPageContent.focusAreas.map((area, index) => (
             <span key={area} className="flex items-center gap-2">
-              {index > 0 && <span aria-hidden className="text-muted-foreground">|</span>}
+              {index > 0 && (
+                <span aria-hidden className="text-muted-foreground">
+                  |
+                </span>
+              )}
               {area}
             </span>
           ))}
@@ -47,9 +51,7 @@ export function MembershipSection() {
               <p className="font-semibold text-foreground">{tier.label}</p>
               <p className="mt-3 text-2xl font-bold text-primary">{tier.fee}</p>
               <p className="mt-1 text-xs text-muted-foreground">{tier.feeNote}</p>
-              {tier.renewal && (
-                <p className="mt-3 text-sm text-muted-foreground">{tier.renewal}</p>
-              )}
+              {tier.renewal && <p className="mt-3 text-sm text-muted-foreground">{tier.renewal}</p>}
             </Card>
           ))}
         </div>

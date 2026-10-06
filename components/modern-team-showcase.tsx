@@ -75,11 +75,15 @@ function useIsCompactViewport() {
   return isCompact;
 }
 
+/** Hover-revealed links must also show for keyboard focus and on touch screens (no hover). */
+const socialLinkRevealClass =
+  "group-focus-within:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100";
+
 function LinkedinIcon({ href, memberName }: { href?: string | null; memberName: string }) {
   const className = cn(
     "text-muted-foreground transition-all duration-300 opacity-0 group-hover:opacity-100",
     href
-      ? "hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring rounded-full"
+      ? `${socialLinkRevealClass} hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring rounded-full`
       : "opacity-0 group-hover:opacity-40 pointer-events-none",
   );
 
@@ -111,7 +115,10 @@ function WebsiteIcon({ href, memberName }: { href?: string | null; memberName: s
     <a
       href={href}
       aria-label={`${memberName}'s website`}
-      className="text-muted-foreground opacity-0 transition-all duration-300 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring group-hover:opacity-100 rounded-full"
+      className={cn(
+        "text-muted-foreground opacity-0 transition-all duration-300 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring group-hover:opacity-100 rounded-full",
+        socialLinkRevealClass,
+      )}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -230,7 +237,7 @@ export function ModernTeamShowcase({
   const reducedMotion = usePrefersReducedMotion();
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background p-8 pt-28 md:p-16 md:pt-32">
+    <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background p-8 pt-28 md:p-16 md:pt-32">
       <div className="aurora-bg absolute inset-0 z-0 opacity-20">
         <div className="aurora-shape-1" />
         <div className="aurora-shape-2" />
@@ -238,9 +245,9 @@ export function ModernTeamShowcase({
 
       <div className="relative z-10 mb-16 flex flex-col items-center text-center">
         <motion.h1
-          animate={{ opacity: 1, y: 0 }}
-          className="font-display text-5xl font-bold tracking-tighter text-foreground md:text-6xl"
-          initial={{ opacity: 0, y: -20 }}
+          animate={{ y: 0 }}
+          className="text-5xl font-bold tracking-tighter text-foreground md:text-6xl"
+          initial={{ y: -20 }}
           transition={{ delay: 0.2, duration: 0.8, ease: "easeInOut" }}
         >
           Our Team
@@ -269,6 +276,6 @@ export function ModernTeamShowcase({
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 }

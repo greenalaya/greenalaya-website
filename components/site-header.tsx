@@ -111,8 +111,8 @@ export function SiteHeader() {
         )}
       >
         <Link href="/" className="flex min-w-0 items-center gap-2 no-underline">
-          <SiteLogo surface="default" priority className="h-10 w-auto shrink-0 object-contain" />
-          <span className="min-w-0 translate-y-1 truncate font-display text-lg font-semibold text-[#2e7d32] sm:text-xl">
+          <SiteLogo surface="default" preload className="h-10 w-auto shrink-0 object-contain" />
+          <span className="min-w-0 translate-y-1 truncate text-lg font-semibold text-[#2e7d32] sm:text-xl">
             {siteConfig.name}
           </span>
         </Link>
@@ -176,7 +176,7 @@ export function SiteHeader() {
             className="absolute top-0 right-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-[#2e7d32]/25 bg-[#0a0f0a] shadow-2xl"
           >
             <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-              <p id={titleId} className="font-display text-lg font-semibold text-[#2e7d32]">
+              <p id={titleId} className="text-lg font-semibold text-[#2e7d32]">
                 Menu
               </p>
               <button

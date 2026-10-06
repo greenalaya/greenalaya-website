@@ -37,7 +37,7 @@ export function ButterflyProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#a8dc9d]">
               Citizen science &amp; urban biodiversity
             </p>
-            <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
               Winged Wonders
               <span className="mt-2 block text-2xl font-normal leading-tight text-white/90 sm:text-3xl lg:text-4xl xl:text-[2.75rem] lg:whitespace-nowrap">
                 Documenting the Butterflies of Kathmandu Valley
@@ -73,7 +73,7 @@ export function ButterflyProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
               Why it began
             </p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
               Turning observations into accessible knowledge
             </h2>
           </div>
@@ -105,7 +105,7 @@ export function ButterflyProjectDetail() {
           </p>
           <h2
             id="impact-heading"
-            className="mt-4 max-w-4xl font-display text-3xl font-bold tracking-tight sm:text-5xl lg:whitespace-nowrap"
+            className="mt-4 max-w-4xl text-3xl font-bold tracking-tight sm:text-5xl text-balance"
           >
             Butterfly photographs of Kathmandu Valley
           </h2>
@@ -115,7 +115,7 @@ export function ButterflyProjectDetail() {
                 key={metric.label}
                 className="flex flex-col bg-[#173d27] px-5 py-8 sm:px-8 sm:py-10"
               >
-                <dt className="text-lg sm:text-xl font-medium leading-snug text-white/85 whitespace-nowrap">
+                <dt className="text-lg sm:text-xl font-medium leading-snug text-white/85">
                   {metric.label}
                 </dt>
                 <dd className="order-first mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
@@ -128,13 +128,13 @@ export function ButterflyProjectDetail() {
             <div className="rounded-2xl border border-white/15 bg-white/[0.06] p-6 sm:p-8">
               <div className="flex items-center gap-3">
                 <MapPin aria-hidden="true" className="size-5 text-[#a8dc9d]" />
-                <h3 className="font-display text-xl font-semibold">34 observation locations</h3>
+                <h3 className="text-xl font-semibold">34 observation locations</h3>
               </div>
               <div className="mt-7 grid grid-cols-3 gap-3">
                 {butterflyProject.locations.map((location) => (
                   <div key={location.district}>
                     <p className="text-2xl font-bold sm:text-3xl">{location.count}</p>
-                    <p className="mt-1 text-lg font-medium leading-snug text-white/85 sm:text-xl whitespace-nowrap">
+                    <p className="mt-1 text-lg font-medium leading-snug text-white/85 sm:text-xl">
                       {location.district}
                     </p>
                   </div>
@@ -144,7 +144,7 @@ export function ButterflyProjectDetail() {
             <div className="rounded-2xl border border-white/15 bg-white/[0.06] p-6 sm:p-8">
               <div className="flex items-center gap-3">
                 <Camera aria-hidden="true" className="size-5 text-[#a8dc9d]" />
-                <h3 className="font-display text-xl font-semibold">Six butterfly families</h3>
+                <h3 className="text-xl font-semibold">Six butterfly families</h3>
               </div>
               <p className="mt-5 leading-7 text-white/70">
                 The guide represents Hesperiidae, Lycaenidae, Nymphalidae, Papilionidae, Pieridae,
@@ -158,10 +158,10 @@ export function ButterflyProjectDetail() {
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">Our approach</p>
-          <h2 className="mt-4 max-w-4xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl lg:whitespace-nowrap">
+          <h2 className="mt-4 max-w-4xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl text-balance">
             From field observation to field guide
           </h2>
-          <p className="mt-6 max-w-5xl text-lg leading-8 text-muted-foreground lg:whitespace-nowrap">
+          <p className="mt-6 max-w-5xl text-lg leading-8 text-muted-foreground">
             A collaborative four-step citizen-science workflow connecting naturalists,
             entomologists, and digital open-access tools.
           </p>
@@ -172,9 +172,7 @@ export function ButterflyProjectDetail() {
                   <span className="text-2xl font-bold text-primary">
                     {parseInt(step.number, 10)}
                   </span>
-                  <h3 className="font-display text-2xl font-semibold text-foreground">
-                    {step.title}
-                  </h3>
+                  <h3 className="text-2xl font-semibold text-foreground">{step.title}</h3>
                 </div>
                 <div className="mt-3.5 border-b-2 border-primary" />
                 <p className="mt-4 leading-7 text-muted-foreground">{step.description}</p>
@@ -197,7 +195,7 @@ export function ButterflyProjectDetail() {
           </div>
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">The outcome</p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl lg:whitespace-nowrap">
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl text-balance">
               A field guide made for discovery
             </h2>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
@@ -235,7 +233,7 @@ export function ButterflyProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
               Built together
             </p>
-            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
               A community effort, carefully credited
             </h2>
           </div>

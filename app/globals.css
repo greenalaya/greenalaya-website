@@ -71,8 +71,6 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-family-display: var(--font-display), "Roboto", sans-serif;
-  --font-family-body: var(--font-display), "Roboto", sans-serif;
 }
 
 body {

@@ -23,11 +23,11 @@ export function ThematicAreasGrid() {
           <article className="relative z-10 flex h-full flex-col justify-end gap-2 sm:gap-2.5 lg:gap-3">
             <p
               aria-hidden
-              className="font-display text-2xl font-bold leading-none text-white sm:text-3xl lg:text-4xl xl:text-5xl"
+              className="text-2xl font-bold leading-none text-white sm:text-3xl lg:text-4xl xl:text-5xl"
             >
               {area.number}
             </p>
-            <h3 className="font-display text-[11px] font-bold leading-snug text-white sm:text-xs lg:text-lg">
+            <h3 className="text-[11px] font-bold leading-snug text-white sm:text-xs lg:text-lg">
               {area.title}
             </h3>
           </article>

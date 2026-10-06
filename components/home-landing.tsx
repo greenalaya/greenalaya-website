@@ -6,7 +6,7 @@ import { ThematicAreasSection } from "@/components/thematic-areas-section";
 
 export function HomeLanding() {
   return (
-    <div className="bg-[#0a0f0a] text-foreground">
+    <main className="bg-[#0a0f0a] text-foreground">
       <HomeHero />
 
       <AboutSection />
@@ -16,6 +16,6 @@ export function HomeLanding() {
       <ThematicAreasSection />
 
       <FooterStayAhead />
-    </div>
+    </main>
   );
 }

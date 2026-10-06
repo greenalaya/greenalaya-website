@@ -150,24 +150,32 @@ export function AboutPeopleMarquee({
   const limitedMembers = typeof maxItems === "number" ? members.slice(0, maxItems) : members;
   const marqueeMembers = loop ? expandMembersForMarquee(limitedMembers) : limitedMembers;
   const resolvePhoto = photoResolvers[photoSource];
-  const cards = marqueeMembers.map((member, index) => (
-    <PersonCard
-      key={`${member.id}-${index}`}
-      logoUnoptimized={logoUnoptimized}
-      logoImageSizes={logoImageSizes}
-      logoSizeClass={logoSizeClass}
-      member={member}
-      photo={resolvePhoto(member)}
-      variant={variant}
-    />
-  ));
+  const cards = marqueeMembers.map((member, index) => {
+    const card = (
+      <PersonCard
+        key={`${member.id}-${index}`}
+        logoUnoptimized={logoUnoptimized}
+        logoImageSizes={logoImageSizes}
+        logoSizeClass={logoSizeClass}
+        member={member}
+        photo={resolvePhoto(member)}
+        variant={variant}
+      />
+    );
+    // Repeats added only to fill the marquee track are hidden from assistive tech.
+    return index < limitedMembers.length ? (
+      card
+    ) : (
+      <div key={`${member.id}-${index}`} aria-hidden inert className="contents">
+        {card}
+      </div>
+    );
+  });
 
   return (
     <section id={id} className={cn("relative mt-16 w-full scroll-mt-24 lg:mt-24", className)}>
       <div className="mx-auto mb-12 flex max-w-3xl flex-col items-center px-2 text-center lg:mb-16">
-        <h2 className="font-display text-3xl font-bold uppercase text-white lg:text-4xl">
-          {title}
-        </h2>
+        <h2 className="text-3xl font-bold uppercase text-white lg:text-4xl">{title}</h2>
       </div>
 
       <div className="relative w-full">

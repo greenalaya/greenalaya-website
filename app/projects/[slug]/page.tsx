@@ -14,7 +14,6 @@ import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 300;
 export const dynamic = "force-static";
-export const dynamicParams = false;
 
 type PageProps = {
   params: Promise<{ slug: string }>;

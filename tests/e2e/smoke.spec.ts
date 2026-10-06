@@ -145,9 +145,7 @@ test("membership page renders application form", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Membership Options" })).toBeVisible();
   await expect(page.getByLabel("Full Name")).toBeVisible();
   await expect(page.getByLabel("Membership Type")).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Submit Membership Application" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Submit Membership Application" })).toBeVisible();
 });
 
 test("publications page matches reports catalog layout", async ({ page }) => {
@@ -216,7 +214,10 @@ test("projects page lists the known projects only", async ({ page }) => {
     "href",
     "/projects/chinari-ai-wildlife-classification",
   );
-  await expect(page.getByRole("main").locator("li")).toHaveCount(2);
+  await expect(
+    page.getByRole("link", { name: /Moonlight Dancer|Moths of Bagmati/i }),
+  ).toHaveAttribute("href", "/projects/moths-of-bagmati-province");
+  await expect(page.getByRole("main").locator("li")).toHaveCount(3);
 });
 
 test("chinari project page renders the condensed summary", async ({ page }) => {
@@ -268,7 +269,7 @@ test("publications page uses theme background in dark mode", async ({ page }) =>
 test("footer links route to dedicated pages", async ({ page }, testInfo) => {
   test.skip(
     testInfo.project.name === "mobile-chrome",
-    "Desktop footer columns are hidden on mobile; covered by mobile accordion test.",
+    "Desktop footer columns are hidden on mobile; covered by the footer accordion test.",
   );
 
   await page.goto("/");
@@ -353,3 +354,84 @@ test("home page has no horizontal overflow on mobile", async ({ page }, testInfo
   });
   expect(hasOverflow).toBe(false);
 });
+
+test("footer accordion exposes links on mobile", async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name !== "mobile-chrome",
+    "Footer accordion is only shown on small viewports.",
+  );
+
+  await page.goto("/about");
+  const footer = page.getByRole("contentinfo");
+  const ourWork = footer.getByRole("button", { name: "Our Work" });
+  await expect(ourWork).toHaveAttribute("aria-expanded", "false");
+  await ourWork.click();
+  await expect(ourWork).toHaveAttribute("aria-expanded", "true");
+  await expect(footer.getByRole("link", { name: "Projects" })).toHaveAttribute("href", "/projects");
+});
+
+test("sitemap lists published pages only", async ({ request }) => {
+  const response = await request.get("/sitemap.xml");
+  expect(response.ok()).toBe(true);
+  const xml = await response.text();
+
+  for (const path of [
+    "/projects/chinari-ai-wildlife-classification",
+    "/projects/moths-of-bagmati-province",
+    "/publications/pollinator-week-2026-event-report",
+    "/news/big-butterfly-count-2026-godawari-walk",
+    "/membership",
+  ]) {
+    expect(xml).toContain(path);
+  }
+
+  expect(xml).not.toContain("/projects/emerging-environmental-issues-research");
+  expect(xml).not.toContain("/news/greenalaya-nepal-launch");
+});
+
+test("unknown project slugs return the branded 404", async ({ page }) => {
+  const response = await page.goto("/projects/emerging-environmental-issues-research");
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole("heading", { level: 1, name: "Page not found" })).toBeVisible();
+});
+
+test("retired news posts redirect", async ({ page }) => {
+  await page.goto("/news/butterfly-images-kathmandu-valley-released");
+  await expect(page).toHaveURL(/\/publications\/butterfly-images-kathmandu-valley$/);
+});
+
+test("strategic pillars are keyboard operable", async ({ page }) => {
+  await page.goto("/");
+  const pillar = page.locator("#pillars").getByRole("button").first();
+  await expect(pillar).toHaveAttribute("aria-expanded", "false");
+  await pillar.focus();
+  await page.keyboard.press("Enter");
+  await expect(pillar).toHaveAttribute("aria-expanded", "true");
+  await page.keyboard.press("Escape");
+  await expect(pillar).toHaveAttribute("aria-expanded", "false");
+});
+
+for (const path of [
+  "/",
+  "/about",
+  "/team",
+  "/projects/kathmandu-valley-butterfly-documentation",
+  "/publications/pollinator-week-2026-event-report",
+  "/news/godawari-butterfly-watch",
+]) {
+  test(`${path} renders without console errors or horizontal overflow`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
+
+    await page.goto(path, { waitUntil: "networkidle" });
+
+    expect(errors).toEqual([]);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+}

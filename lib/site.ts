@@ -141,8 +141,8 @@ export const contactIntents = {
 type ContactIntentKey = keyof typeof contactIntents;
 
 export function getContactIntent(key: string | undefined | null) {
-  if (!key) return null;
-  return contactIntents[key as ContactIntentKey] ?? null;
+  if (!key || !Object.hasOwn(contactIntents, key)) return null;
+  return contactIntents[key as ContactIntentKey];
 }
 
 export function contactHref(intent: ContactIntentKey) {

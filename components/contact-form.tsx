@@ -10,6 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 
 export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
   const [state, formAction, pending] = useActionState(submitContactForm, contactFormInitialState);
+  // React resets the form after each submission; refill it from the values the
+  // server returned so a rejected submission doesn't lose what was typed.
+  const values = state.values;
 
   if (state.ok && state.message) {
     return (
@@ -31,7 +34,10 @@ export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
       </div>
 
       {state.message && !state.ok && (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
+        <p
+          role="alert"
+          className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200"
+        >
           {state.message}
         </p>
       )}
@@ -39,7 +45,10 @@ export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="mb-2 block text-sm font-semibold text-foreground">
-            Name <span className="text-red-600">*</span>
+            Name{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Input
             id="name"
@@ -48,12 +57,16 @@ export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
             required
             maxLength={120}
             autoComplete="name"
+            defaultValue={values?.name}
             placeholder="Your name"
           />
         </div>
         <div>
           <label htmlFor="email" className="mb-2 block text-sm font-semibold text-foreground">
-            Email <span className="text-red-600">*</span>
+            Email{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Input
             id="email"
@@ -62,6 +75,7 @@ export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
             required
             maxLength={254}
             autoComplete="email"
+            defaultValue={values?.email}
             placeholder="Your email"
           />
         </div>
@@ -76,7 +90,7 @@ export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
           name="subject"
           type="text"
           maxLength={200}
-          defaultValue={defaultSubject ?? ""}
+          defaultValue={values?.subject ?? defaultSubject ?? ""}
           key={defaultSubject ?? "default"}
           placeholder="What is this regarding?"
         />
@@ -84,7 +98,10 @@ export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
 
       <div>
         <label htmlFor="message" className="mb-2 block text-sm font-semibold text-foreground">
-          Message <span className="text-red-600">*</span>
+          Message{" "}
+          <span className="text-red-600" aria-hidden="true">
+            *
+          </span>
         </label>
         <Textarea
           id="message"
@@ -93,6 +110,7 @@ export function ContactForm({ defaultSubject }: { defaultSubject?: string }) {
           minLength={10}
           maxLength={5000}
           rows={6}
+          defaultValue={values?.message}
           placeholder="Your message"
         />
       </div>

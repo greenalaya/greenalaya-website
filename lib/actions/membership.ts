@@ -1,19 +1,23 @@
 "use server";
 
-import type { MembershipFormState } from "@/lib/actions/membership-types";
+import {
+  MAX_MEMBERSHIP_UPLOAD_BYTES,
+  MAX_MEMBERSHIP_UPLOAD_LABEL,
+  type MembershipFormState,
+} from "@/lib/actions/membership-types";
 import {
   isMembershipEmailConfigured,
   sendMembershipApplicationEmail,
 } from "@/lib/notify-membership";
 import { membershipEducationOptions, membershipInterestOptions, membershipTiers } from "@/lib/site";
 
-const MAX_FILE_BYTES = 10 * 1024 * 1024;
-const ALLOWED_DOCUMENT_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "application/pdf",
-]);
+/** File extension per accepted type; the extension never comes from the user's filename. */
+const DOCUMENT_EXTENSIONS: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "application/pdf": "pdf",
+};
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -25,24 +29,38 @@ function requiredText(formData: FormData, field: string, maxLength: number) {
     .slice(0, maxLength);
 }
 
-function extensionFor(file: File) {
-  const fromName = file.name.includes(".") ? file.name.split(".").pop() : null;
-  if (fromName) return fromName.toLowerCase();
-  if (file.type === "application/pdf") return "pdf";
-  if (file.type === "image/png") return "png";
-  if (file.type === "image/webp") return "webp";
-  return "jpg";
+/** Checks the file's leading bytes match its declared type (the browser-supplied type is untrusted). */
+function matchesSignature(bytes: Uint8Array, type: string) {
+  const startsWith = (signature: number[], offset = 0) =>
+    signature.every((byte, index) => bytes[offset + index] === byte);
+
+  switch (type) {
+    case "application/pdf":
+      return startsWith([0x25, 0x50, 0x44, 0x46]); // %PDF
+    case "image/png":
+      return startsWith([0x89, 0x50, 0x4e, 0x47]);
+    case "image/jpeg":
+      return startsWith([0xff, 0xd8, 0xff]);
+    case "image/webp":
+      return startsWith([0x52, 0x49, 0x46, 0x46]) && startsWith([0x57, 0x45, 0x42, 0x50], 8); // RIFF....WEBP
+    default:
+      return false;
+  }
 }
 
-function validateDocument(file: FormDataEntryValue | null, label: string): string | null {
+async function validateDocument(
+  file: FormDataEntryValue | null,
+  label: string,
+): Promise<string | null> {
   if (!(file instanceof File) || file.size === 0) {
     return `Please attach your ${label}.`;
   }
-  if (file.size > MAX_FILE_BYTES) {
-    return `${label} must be smaller than 10 MB.`;
+  if (!DOCUMENT_EXTENSIONS[file.type]) {
+    return `The ${label} must be a JPG, PNG, WebP, or PDF file.`;
   }
-  if (!ALLOWED_DOCUMENT_TYPES.has(file.type)) {
-    return `${label} must be a JPG, PNG, or PDF file.`;
+  const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  if (!matchesSignature(header, file.type)) {
+    return `The ${label} doesn't appear to be a valid ${DOCUMENT_EXTENSIONS[file.type].toUpperCase()} file.`;
   }
   return null;
 }
@@ -131,17 +149,24 @@ export async function submitMembershipApplication(
     return { ok: false, message: "Please accept the declaration to submit your application." };
   }
 
-  const identificationError = validateDocument(
+  const identificationError = await validateDocument(
     formData.get("identification"),
     "identification document",
   );
   if (identificationError) return { ok: false, message: identificationError };
 
-  const receiptError = validateDocument(formData.get("receipt"), "payment receipt");
+  const receiptError = await validateDocument(formData.get("receipt"), "payment receipt");
   if (receiptError) return { ok: false, message: receiptError };
 
   const identification = formData.get("identification") as File;
   const receipt = formData.get("receipt") as File;
+
+  if (identification.size + receipt.size > MAX_MEMBERSHIP_UPLOAD_BYTES) {
+    return {
+      ok: false,
+      message: `Your two documents must be under ${MAX_MEMBERSHIP_UPLOAD_LABEL} combined. Please upload smaller files.`,
+    };
+  }
 
   const [identificationContent, receiptContent] = await Promise.all([
     toBase64(identification),
@@ -165,10 +190,10 @@ export async function submitMembershipApplication(
     updatesOptIn: updatesOptIn === "yes",
     attachments: [
       {
-        filename: `identification.${extensionFor(identification)}`,
+        filename: `identification.${DOCUMENT_EXTENSIONS[identification.type]}`,
         content: identificationContent,
       },
-      { filename: `payment-receipt.${extensionFor(receipt)}`, content: receiptContent },
+      { filename: `payment-receipt.${DOCUMENT_EXTENSIONS[receipt.type]}`, content: receiptContent },
     ],
   });
 

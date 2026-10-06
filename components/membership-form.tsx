@@ -1,11 +1,21 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { Send } from "lucide-react";
 import { submitMembershipApplication } from "@/lib/actions/membership";
-import { membershipFormInitialState } from "@/lib/actions/membership-types";
-import { membershipEducationOptions, membershipInterestOptions, membershipTiers } from "@/lib/site";
+import {
+  MAX_MEMBERSHIP_UPLOAD_BYTES,
+  MAX_MEMBERSHIP_UPLOAD_LABEL,
+  membershipFormInitialState,
+} from "@/lib/actions/membership-types";
+import { compressImage } from "@/lib/compress-image";
+import {
+  membershipEducationOptions,
+  membershipInterestOptions,
+  membershipTiers,
+  siteContact,
+} from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -18,7 +28,10 @@ function YesNoField({ name, question }: { name: string; question: string }) {
   return (
     <fieldset>
       <legend className={fieldsetLegendClass}>
-        {question} <span className="text-red-600">*</span>
+        {question}{" "}
+        <span className="text-red-600" aria-hidden="true">
+          *
+        </span>
       </legend>
       <div className="flex gap-6">
         {["Yes", "No"].map((option) => (
@@ -50,6 +63,49 @@ export function MembershipForm() {
   const [permanentAddress, setPermanentAddress] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
   const [sameAsPermanent, setSameAsPermanent] = useState(false);
+  const [clientError, setClientError] = useState<string | null>(null);
+  const [preparing, setPreparing] = useState(false);
+  const busy = pending || preparing;
+
+  // Submitting through onSubmit (rather than <form action>) stops React from
+  // resetting the form, so a rejected application keeps everything entered,
+  // including the attached files.
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setClientError(null);
+
+    if (interests.length === 0) {
+      setClientError("Please select at least one area of interest.");
+      return;
+    }
+
+    setPreparing(true);
+    try {
+      const formData = new FormData(event.currentTarget);
+      let totalBytes = 0;
+
+      for (const field of ["identification", "receipt"]) {
+        const file = formData.get(field);
+        if (!(file instanceof File) || file.size === 0) continue;
+        const compressed = await compressImage(file);
+        formData.set(field, compressed, compressed.name);
+        totalBytes += compressed.size;
+      }
+
+      if (totalBytes > MAX_MEMBERSHIP_UPLOAD_BYTES) {
+        setClientError(
+          `Your two documents must be under ${MAX_MEMBERSHIP_UPLOAD_LABEL} combined. Please upload a smaller PDF or a photo instead.`,
+        );
+        return;
+      }
+
+      startTransition(() => formAction(formData));
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  const errorMessage = clientError ?? (state.message && !state.ok ? state.message : null);
 
   if (state.ok && state.message) {
     return (
@@ -64,46 +120,78 @@ export function MembershipForm() {
   }
 
   return (
-    <form action={formAction} className="space-y-10">
+    <form onSubmit={handleSubmit} className="space-y-10">
       <div className="hidden" aria-hidden="true">
         <label htmlFor="website">Website</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      {state.message && !state.ok && (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
-          {state.message}
+      {errorMessage && (
+        <p
+          role="alert"
+          className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200"
+        >
+          {errorMessage}
         </p>
       )}
 
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="fullName" className={labelClass}>
-            Full Name <span className="text-red-600">*</span>
+            Full Name{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
-          <Input id="fullName" name="fullName" type="text" required maxLength={120} autoComplete="name" />
+          <Input
+            id="fullName"
+            name="fullName"
+            type="text"
+            required
+            maxLength={120}
+            autoComplete="name"
+          />
         </div>
         <div>
           <label htmlFor="dateOfBirth" className={labelClass}>
-            Date of Birth <span className="text-red-600">*</span>
+            Date of Birth{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Input id="dateOfBirth" name="dateOfBirth" type="date" required />
         </div>
         <div>
           <label htmlFor="email" className={labelClass}>
-            Email Address <span className="text-red-600">*</span>
+            Email Address{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
-          <Input id="email" name="email" type="email" required maxLength={254} autoComplete="email" />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            required
+            maxLength={254}
+            autoComplete="email"
+          />
         </div>
         <div>
           <label htmlFor="phone" className={labelClass}>
-            Phone Number <span className="text-red-600">*</span>
+            Phone Number{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Input id="phone" name="phone" type="tel" required maxLength={30} autoComplete="tel" />
         </div>
         <div>
           <label htmlFor="organization" className={labelClass}>
-            Organization or Affiliation <span className="text-red-600">*</span>
+            Organization or Affiliation{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Input
             id="organization"
@@ -116,7 +204,10 @@ export function MembershipForm() {
         </div>
         <div>
           <label htmlFor="education" className={labelClass}>
-            Highest Level of Education <span className="text-red-600">*</span>
+            Highest Level of Education{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Select id="education" name="education" required defaultValue="">
             <option value="" disabled>
@@ -137,7 +228,10 @@ export function MembershipForm() {
         </div>
         <div>
           <label htmlFor="membershipType" className={labelClass}>
-            Membership Type <span className="text-red-600">*</span>
+            Membership Type{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Select id="membershipType" name="membershipType" required defaultValue="">
             <option value="" disabled>
@@ -155,7 +249,10 @@ export function MembershipForm() {
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="permanentAddress" className={labelClass}>
-            Permanent Address <span className="text-red-600">*</span>
+            Permanent Address{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Input
             id="permanentAddress"
@@ -169,7 +266,10 @@ export function MembershipForm() {
         </div>
         <div>
           <label htmlFor="currentAddress" className={labelClass}>
-            Current Address <span className="text-red-600">*</span>
+            Current Address{" "}
+            <span className="text-red-600" aria-hidden="true">
+              *
+            </span>
           </label>
           <Input
             id="currentAddress"
@@ -196,12 +296,18 @@ export function MembershipForm() {
 
       <fieldset>
         <legend className={fieldsetLegendClass}>
-          Areas of Interest <span className="text-red-600">*</span>{" "}
+          Areas of Interest{" "}
+          <span className="text-red-600" aria-hidden="true">
+            *
+          </span>{" "}
           <span className="font-normal text-muted-foreground">(select at least one)</span>
         </legend>
         <div className="grid gap-3 sm:grid-cols-2">
           {membershipInterestOptions.map((option) => (
-            <label key={option} className="flex cursor-pointer items-center gap-2 text-sm text-foreground">
+            <label
+              key={option}
+              className="flex cursor-pointer items-center gap-2 text-sm text-foreground"
+            >
               <input
                 type="checkbox"
                 name="interests"
@@ -224,7 +330,10 @@ export function MembershipForm() {
         {interests.includes("Other") && (
           <div className="mt-4">
             <label htmlFor="interestOther" className={labelClass}>
-              Please specify <span className="text-red-600">*</span>
+              Please specify{" "}
+              <span className="text-red-600" aria-hidden="true">
+                *
+              </span>
             </label>
             <Input id="interestOther" name="interestOther" type="text" required maxLength={200} />
           </div>
@@ -233,7 +342,10 @@ export function MembershipForm() {
 
       <div className="space-y-6 border-t border-border pt-6">
         <h3 className="text-lg font-semibold text-foreground">Communication Preferences</h3>
-        <YesNoField name="whatsappOptIn" question="Would you like to join our members’ WhatsApp group?" />
+        <YesNoField
+          name="whatsappOptIn"
+          question="Would you like to join our members’ WhatsApp group?"
+        />
         <YesNoField
           name="updatesOptIn"
           question="Would you like to receive updates about our events and activities?"
@@ -256,9 +368,9 @@ export function MembershipForm() {
             className="size-[200px] rounded-md border border-border bg-card object-contain"
           />
           <p className="text-xs text-muted-foreground">
-            If the QR code has not loaded yet, email {" "}
-            <a href="mailto:info@greenalayanepal.org.np" className="underline hover:opacity-70">
-              info@greenalayanepal.org.np
+            If the QR code has not loaded yet, email{" "}
+            <a href={`mailto:${siteContact.email}`} className="underline hover:opacity-70">
+              {siteContact.email}
             </a>{" "}
             for payment details.
           </p>
@@ -267,10 +379,17 @@ export function MembershipForm() {
 
       <div className="space-y-6 border-t border-border pt-6">
         <h3 className="text-lg font-semibold text-foreground">Required Documents</h3>
+        <p className="text-sm text-muted-foreground">
+          JPG, PNG, WebP, or PDF. Photos are resized automatically; the two files must be under{" "}
+          {MAX_MEMBERSHIP_UPLOAD_LABEL} combined.
+        </p>
         <div className="grid gap-6 sm:grid-cols-2">
           <div>
             <label htmlFor="identification" className={labelClass}>
-              Identification (Student ID, or citizenship/national ID) <span className="text-red-600">*</span>
+              Identification (Student ID, or citizenship/national ID){" "}
+              <span className="text-red-600" aria-hidden="true">
+                *
+              </span>
             </label>
             <Input
               id="identification"
@@ -283,7 +402,10 @@ export function MembershipForm() {
           </div>
           <div>
             <label htmlFor="receipt" className={labelClass}>
-              Payment Receipt (JPG, PNG, or PDF) <span className="text-red-600">*</span>
+              Payment Receipt{" "}
+              <span className="text-red-600" aria-hidden="true">
+                *
+              </span>
             </label>
             <Input
               id="receipt"
@@ -308,13 +430,15 @@ export function MembershipForm() {
           I confirm that the information provided is correct and agree to follow the objectives and
           policies of Greenalaya Nepal. I understand that membership will be confirmed after
           verification of my application and payment.{" "}
-          <span className="text-red-600">*</span>
+          <span className="text-red-600" aria-hidden="true">
+            *
+          </span>
         </span>
       </label>
 
-      <Button type="submit" disabled={pending} size="lg" className="w-full">
+      <Button type="submit" disabled={busy} size="lg" className="w-full">
         <Send className="h-4 w-4" aria-hidden />
-        {pending ? "Submitting…" : "Submit Membership Application"}
+        {busy ? "Submitting…" : "Submit Membership Application"}
       </Button>
     </form>
   );

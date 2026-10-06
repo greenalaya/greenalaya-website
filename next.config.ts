@@ -11,8 +11,9 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       // Server Actions default to a 1MB body limit; the membership form
-      // uploads an identification document and a payment receipt (10MB each).
-      bodySizeLimit: "25mb",
+      // uploads two documents, capped at 4 MB combined so requests stay under
+      // Vercel's 4.5 MB body limit (see MAX_MEMBERSHIP_UPLOAD_BYTES).
+      bodySizeLimit: "5mb",
     },
   },
   images: {
@@ -31,6 +32,23 @@ const nextConfig: NextConfig = {
     ],
   },
   allowedDevOrigins: ["127.0.0.1", "localhost"],
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=()",
+          },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {

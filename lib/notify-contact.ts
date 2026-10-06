@@ -32,20 +32,27 @@ export async function notifyStaffOfContactSubmission(payload: ContactPayload): P
     .filter(Boolean)
     .join("\n");
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: process.env.CONTACT_FROM_EMAIL,
-      to: [process.env.CONTACT_NOTIFY_EMAIL],
-      reply_to: payload.email,
-      subject: subjectLine,
-      text,
-    }),
-  });
+  let response: Response;
+  try {
+    response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      signal: AbortSignal.timeout(15_000),
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: process.env.CONTACT_FROM_EMAIL,
+        to: [process.env.CONTACT_NOTIFY_EMAIL],
+        reply_to: payload.email,
+        subject: subjectLine,
+        text,
+      }),
+    });
+  } catch (error) {
+    console.error("Contact notification email could not be sent:", error);
+    return;
+  }
 
   if (!response.ok) {
     console.error("Contact notification email failed:", await response.text());

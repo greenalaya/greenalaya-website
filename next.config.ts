@@ -38,6 +38,17 @@ const nextConfig: NextConfig = {
         destination: "/news/godawari-butterfly-watch",
         permanent: true,
       },
+      // Retired news posts (see hiddenNewsSlugs in lib/content/news.ts).
+      {
+        source: "/news/butterfly-images-kathmandu-valley-released",
+        destination: "/publications/butterfly-images-kathmandu-valley",
+        permanent: true,
+      },
+      {
+        source: "/news/greenalaya-nepal-launch",
+        destination: "/about",
+        permanent: true,
+      },
       {
         source: "/resources",
         destination: "/publications",

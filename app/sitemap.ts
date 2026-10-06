@@ -1,4 +1,9 @@
 import type { MetadataRoute } from "next";
+import { getNewsList } from "@/lib/content/news";
+import { getProjectList } from "@/lib/content/projects";
+import { getPublications } from "@/lib/content/resources";
+import { seedBlogPosts } from "@/lib/content/seed";
+import { getTeamMembers } from "@/lib/content/team";
 import { siteConfig } from "@/lib/site";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
@@ -13,85 +18,92 @@ const staticPaths = [
   "/team",
   "/news",
   "/blog",
+  "/membership",
   "/contact",
 ];
 
+function toDate(value: string | null | undefined) {
+  return value ? new Date(value) : undefined;
+}
+
+async function getBlogSlugs(): Promise<{ slug: string; published_at: string | null }[]> {
+  const postsBySlug = new Map(
+    seedBlogPosts.map((post) => [post.slug, { slug: post.slug, published_at: post.published_at }]),
+  );
+
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    const { data, error } = await supabase.from("blog_posts").select("slug, published_at");
+    if (error) {
+      console.warn("sitemap: could not load blog_posts from Supabase.", error.message);
+    }
+    (data ?? []).forEach((post) => postsBySlug.set(post.slug, post));
+  }
+
+  return [...postsBySlug.values()];
+}
+
+/**
+ * Built from the same content resolvers as the list and detail pages, so the
+ * sitemap only advertises URLs the site actually serves.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
-  const now = new Date();
+
+  const [projects, publications, { members }, news, blogPosts] = await Promise.all([
+    getProjectList(),
+    getPublications(),
+    getTeamMembers(),
+    getNewsList(),
+    getBlogSlugs(),
+  ]);
 
   const entries: MetadataRoute.Sitemap = staticPaths.map((path) => ({
     url: `${base}${path}`,
-    lastModified: now,
     changeFrequency: path === "" ? "weekly" : "monthly",
     priority: path === "" ? 1 : 0.8,
   }));
 
-  if (!isSupabaseConfigured()) {
-    return entries;
-  }
-
-  const supabase = await createClient();
-  const [projects, research, team, news, blogPosts] = await Promise.all([
-    supabase.from("projects").select("slug, created_at"),
-    supabase.from("research").select("slug, created_at"),
-    supabase.from("team_members").select("slug, created_at"),
-    supabase.from("news").select("slug, published_at, created_at"),
-    supabase.from("blog_posts").select("slug, published_at, created_at"),
-  ]);
-
-  for (const [label, result] of [
-    ["projects", projects],
-    ["research", research],
-    ["team_members", team],
-    ["news", news],
-    ["blog_posts", blogPosts],
-  ] as const) {
-    if (result.error) {
-      console.error(`sitemap: failed to load ${label} from Supabase`, result.error.message);
-    }
-  }
-
-  for (const row of projects.data ?? []) {
+  for (const project of projects) {
     entries.push({
-      url: `${base}/projects/${row.slug}`,
-      lastModified: row.created_at ? new Date(row.created_at) : now,
+      url: `${base}/projects/${project.slug}`,
+      lastModified: toDate(project.created_at),
       changeFrequency: "monthly",
       priority: 0.7,
     });
   }
 
-  for (const row of research.data ?? []) {
+  for (const publication of publications) {
     entries.push({
-      url: `${base}/publications/${row.slug}`,
-      lastModified: row.created_at ? new Date(row.created_at) : now,
+      url: `${base}/publications/${publication.slug}`,
+      lastModified: toDate(publication.publishedDateIso),
       changeFrequency: "monthly",
       priority: 0.7,
     });
   }
 
-  for (const row of team.data ?? []) {
+  // Profiles without a bio are noindexed placeholders (see app/team/[slug]).
+  for (const member of members.filter((member) => member.bio)) {
     entries.push({
-      url: `${base}/team/${row.slug}`,
-      lastModified: row.created_at ? new Date(row.created_at) : now,
+      url: `${base}/team/${member.slug}`,
       changeFrequency: "yearly",
       priority: 0.6,
     });
   }
 
-  for (const row of news.data ?? []) {
+  for (const post of news) {
     entries.push({
-      url: `${base}/news/${row.slug}`,
-      lastModified: new Date(row.published_at ?? row.created_at ?? now),
+      url: `${base}/news/${post.slug}`,
+      lastModified: toDate(post.published_at),
       changeFrequency: "monthly",
       priority: 0.6,
     });
   }
 
-  for (const row of blogPosts.data ?? []) {
+  for (const post of blogPosts) {
     entries.push({
-      url: `${base}/blog/${row.slug}`,
-      lastModified: new Date(row.published_at ?? row.created_at ?? now),
+      url: `${base}/blog/${post.slug}`,
+      lastModified: toDate(post.published_at),
       changeFrequency: "monthly",
       priority: 0.6,
     });

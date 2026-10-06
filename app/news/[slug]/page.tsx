@@ -5,10 +5,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { PageShell } from "@/components/page-shell";
-import { getSeedNewsPost } from "@/lib/content/seed";
+import { getNewsList, getNewsPostBySlug } from "@/lib/content/news";
 import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site";
 
 export const revalidate = 300;
@@ -117,34 +116,20 @@ const bigCountGallery = [
   },
 ] as const;
 
-async function loadNewsPost(slug: string) {
-  let post = getSeedNewsPost(slug);
-
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("news")
-      .select("id, title, slug, excerpt, content, featured_image_url, published_at")
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (!error && data) {
-      post = data;
-    }
-  }
-
-  return post;
+export async function generateStaticParams() {
+  const posts = await getNewsList();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await loadNewsPost(slug);
+  const post = await getNewsPostBySlug(slug);
 
   if (!post) {
     return pageMetadata({
-      title: "News",
+      title: "News not found",
       description: "News update from Greenalaya Nepal",
-      path: `/news/${slug}`,
+      noIndex: true,
     });
   }
 
@@ -167,7 +152,7 @@ function formatDate(value: string | null) {
 
 export default async function NewsDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = await loadNewsPost(slug);
+  const post = await getNewsPostBySlug(slug);
 
   if (!post) {
     notFound();
@@ -273,9 +258,9 @@ export default async function NewsDetailPage({ params }: PageProps) {
 
                 <div className="mt-10 space-y-7 text-[1.075rem] leading-8 text-muted-foreground">
                   <p>
-                    Persistent rain and overcast skies didn&apos;t discourage the 13 participants who
-                    turned out for the day&apos;s count, the first of many planned across Nepal this
-                    September. Among the sightings was the notable{" "}
+                    Persistent rain and overcast skies didn&apos;t discourage the 13 participants
+                    who turned out for the day&apos;s count, the first of many planned across Nepal
+                    this September. Among the sightings was the notable{" "}
                     <strong className="font-semibold text-foreground">Spotted Jester</strong>,
                     drawing particular excitement from the group.
                   </p>
@@ -314,17 +299,17 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     A wet start, a strong count
                   </h2>
                   <p>
-                    Sixteen species in the rain is no small feat, and it set an encouraging tone
-                    for the month ahead. Greenalaya Nepal extends its thanks to every participant
-                    and to Butterfly Watchers Nepal for supporting the walk.
+                    Sixteen species in the rain is no small feat, and it set an encouraging tone for
+                    the month ahead. Greenalaya Nepal extends its thanks to every participant and to
+                    Butterfly Watchers Nepal for supporting the walk.
                   </p>
                   <blockquote className="border-l-4 border-primary bg-secondary px-6 py-5 font-display text-xl font-medium leading-8 text-foreground sm:text-2xl">
-                    Even the rain couldn&apos;t dampen sixteen species and one rare find - proof that
-                    Godawari has plenty more to show us this September.
+                    Even the rain couldn&apos;t dampen sixteen species and one rare find - proof
+                    that Godawari has plenty more to show us this September.
                   </blockquote>
                   <p>
-                    More butterfly walks and counts are planned throughout September across Nepal
-                    as part of Big Butterfly Month 2026.
+                    More butterfly walks and counts are planned throughout September across Nepal as
+                    part of Big Butterfly Month 2026.
                   </p>
                 </div>
               </div>
@@ -389,7 +374,10 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2 id="gallery-heading" className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+                    <h2
+                      id="gallery-heading"
+                      className="mt-3 font-display text-3xl font-bold sm:text-4xl"
+                    >
                       A rainy day in the field
                     </h2>
                   </div>
@@ -683,7 +671,10 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2 id="gallery-heading" className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+                    <h2
+                      id="gallery-heading"
+                      className="mt-3 font-display text-3xl font-bold sm:text-4xl"
+                    >
                       A day of shared discovery
                     </h2>
                   </div>
@@ -854,13 +845,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           datePublished: post.published_at,
         })}
       />
-      <PageShell
-        title={post.title}
-        description={
-          post.excerpt ??
-          (post.published_at ? (formatDate(post.published_at) ?? "News update") : "News update")
-        }
-      >
+      <PageShell title={post.title} description={post.excerpt ?? "News update"}>
         <p className="mt-6">
           <Link href="/news" className="text-sm text-primary hover:underline">
             ← All news
@@ -875,9 +860,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           <div className="mt-6 whitespace-pre-wrap text-lg leading-relaxed text-foreground">
             {post.content}
           </div>
-        ) : post.excerpt ? (
-          <p className="mt-6 text-lg leading-relaxed text-foreground">{post.excerpt}</p>
-        ) : (
+        ) : post.excerpt ? null : (
           <p className="mt-6 text-muted-foreground">Content coming soon.</p>
         )}
       </PageShell>

@@ -41,9 +41,10 @@ export async function getCollaborators(): Promise<{
   }
 
   // Preserve the order logos were shared, even when database entries exist.
-  const orderedCollaborators = seedCollaborators.map(
-    (seed) => ({ ...seed, ...members.find((member) => member.slug === seed.slug) }),
-  );
+  const orderedCollaborators = seedCollaborators.map((seed) => ({
+    ...seed,
+    ...members.find((member) => member.slug === seed.slug),
+  }));
   const additionalCollaborators = members.filter(
     (member) => !seedCollaborators.some((seed) => seed.slug === member.slug),
   );

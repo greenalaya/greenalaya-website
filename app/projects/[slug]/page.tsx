@@ -8,34 +8,20 @@ import { PageShell } from "@/components/page-shell";
 import { butterflyProject } from "@/lib/content/butterfly-project";
 import { chinariProject } from "@/lib/content/chinari-project";
 import { mothsBagmatiProject } from "@/lib/content/moths-bagmati-project";
-import { getSeedProject } from "@/lib/content/seed";
+import { getProjectBySlug } from "@/lib/content/projects";
+import { seedProjects } from "@/lib/content/seed";
 import { pageMetadata } from "@/lib/seo";
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export const revalidate = 300;
 export const dynamic = "force-static";
+export const dynamicParams = false;
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-async function loadProject(slug: string) {
-  let project = getSeedProject(slug);
-
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("projects")
-      .select("id, title, slug, description, image_url, created_at")
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (!error && data) {
-      project = data;
-    }
-  }
-
-  return project;
+export function generateStaticParams() {
+  return seedProjects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -65,13 +51,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
-  const project = await loadProject(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     return pageMetadata({
-      title: "Projects",
+      title: "Project not found",
       description: "Greenalaya Nepal project",
-      path: `/projects/${slug}`,
+      noIndex: true,
     });
   }
 
@@ -84,7 +70,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = await loadProject(slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     notFound();

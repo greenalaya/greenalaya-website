@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
 import { PublicationDetailContent } from "@/components/publication-detail-content";
 import { getLocalPdfSizeLabel } from "@/lib/content/pdf-size";
-import { getPublicationBySlug } from "@/lib/content/resources";
+import { getPublicationBySlug, getPublications } from "@/lib/content/resources";
 import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import { publicationPageCounts } from "@/lib/site";
@@ -15,15 +15,20 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateStaticParams() {
+  const publications = await getPublications();
+  return publications.map((publication) => ({ slug: publication.slug }));
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const publication = await getPublicationBySlug(slug);
 
   if (!publication) {
     return pageMetadata({
-      title: "Publication",
+      title: "Publication not found",
       description: "Publication from Greenalaya Nepal",
-      path: `/publications/${slug}`,
+      noIndex: true,
     });
   }
 

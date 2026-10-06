@@ -1,7 +1,10 @@
 "use server";
 
 import type { MembershipFormState } from "@/lib/actions/membership-types";
-import { isMembershipEmailConfigured, sendMembershipApplicationEmail } from "@/lib/notify-membership";
+import {
+  isMembershipEmailConfigured,
+  sendMembershipApplicationEmail,
+} from "@/lib/notify-membership";
 import { membershipEducationOptions, membershipInterestOptions, membershipTiers } from "@/lib/site";
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
@@ -116,7 +119,10 @@ export async function submitMembershipApplication(
     return { ok: false, message: "Please specify your other area of interest." };
   }
   if (whatsappOptIn !== "yes" && whatsappOptIn !== "no") {
-    return { ok: false, message: "Please let us know if you would like to join the WhatsApp group." };
+    return {
+      ok: false,
+      message: "Please let us know if you would like to join the WhatsApp group.",
+    };
   }
   if (updatesOptIn !== "yes" && updatesOptIn !== "no") {
     return { ok: false, message: "Please let us know if you would like to receive updates." };
@@ -125,7 +131,10 @@ export async function submitMembershipApplication(
     return { ok: false, message: "Please accept the declaration to submit your application." };
   }
 
-  const identificationError = validateDocument(formData.get("identification"), "identification document");
+  const identificationError = validateDocument(
+    formData.get("identification"),
+    "identification document",
+  );
   if (identificationError) return { ok: false, message: identificationError };
 
   const receiptError = validateDocument(formData.get("receipt"), "payment receipt");
@@ -155,7 +164,10 @@ export async function submitMembershipApplication(
     whatsappOptIn: whatsappOptIn === "yes",
     updatesOptIn: updatesOptIn === "yes",
     attachments: [
-      { filename: `identification.${extensionFor(identification)}`, content: identificationContent },
+      {
+        filename: `identification.${extensionFor(identification)}`,
+        content: identificationContent,
+      },
       { filename: `payment-receipt.${extensionFor(receipt)}`, content: receiptContent },
     ],
   });
@@ -163,7 +175,8 @@ export async function submitMembershipApplication(
   if (!emailSent) {
     return {
       ok: false,
-      message: "Something went wrong submitting your application. Please try again or email us directly.",
+      message:
+        "Something went wrong submitting your application. Please try again or email us directly.",
     };
   }
 

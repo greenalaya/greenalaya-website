@@ -1,27 +1,23 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
-export async function createClient() {
-  const cookieStore = await cookies();
+type CreateClientOptions = {
+  /** Extra request headers forwarded to PostgREST (e.g. the visitor IP for rate limiting). */
+  headers?: Record<string, string>;
+};
 
-  return createServerClient(
+/**
+ * Anonymous, cookie-less Supabase client. The site only reads public content
+ * and inserts public form submissions, so no auth session is involved — and
+ * avoiding `cookies()` keeps it usable in static routes, the sitemap and
+ * `generateStaticParams`.
+ */
+export async function createClient({ headers }: CreateClientOptions = {}) {
+  return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
-            );
-          } catch {
-            // Called from a Server Component; safe to ignore.
-          }
-        },
-      },
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: headers ? { headers } : undefined,
     },
   );
 }

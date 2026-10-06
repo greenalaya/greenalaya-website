@@ -34,7 +34,7 @@ export const mothsBagmatiProject = {
   thematicAreas: [
     {
       title: "Emerging Environmental Issues & Research",
-      note: "moths are precisely the kind of \"new and understudied\" subject this pillar exists for",
+      note: 'moths are precisely the kind of "new and understudied" subject this pillar exists for',
     },
     {
       title: "Conservation & Ecosystem Restoration",
@@ -54,7 +54,8 @@ export const mothsBagmatiProject = {
     ],
     acknowledgment:
       "Every contributor will be fully acknowledged - your name will be credited directly alongside every photograph you submit, in the project's photographer index.",
-    closing: "If you've ever paused to look twice at a moth, this is your invitation to make that moment count.",
+    closing:
+      "If you've ever paused to look twice at a moth, this is your invitation to make that moment count.",
   },
   submission: {
     formUrl: "https://forms.cloud.microsoft/r/ThPaibCQtG",

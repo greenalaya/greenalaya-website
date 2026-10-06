@@ -3,7 +3,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
-import { getTeamMemberBySlug } from "@/lib/content/team";
+import { getTeamMemberBySlug, getTeamMembers } from "@/lib/content/team";
 import { pageMetadata } from "@/lib/seo";
 
 export const revalidate = 300;
@@ -12,6 +12,11 @@ export const dynamic = "force-static";
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
+
+export async function generateStaticParams() {
+  const { members } = await getTeamMembers();
+  return members.map((member) => ({ slug: member.slug }));
+}
 
 /** Matches next.config.ts remotePatterns (Supabase storage); other external hosts aren't optimizable. */
 function isOptimizableRemotePhoto(url: string): boolean {
@@ -24,9 +29,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!member) {
     return pageMetadata({
-      title: "Team",
+      title: "Team member not found",
       description: "Greenalaya Nepal team member",
-      path: `/team/${slug}`,
+      noIndex: true,
     });
   }
 
@@ -34,6 +39,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: member.name,
     description: member.position ?? "Greenalaya Nepal team member",
     path: `/team/${member.slug}`,
+    // Profiles without a bio are thin placeholder pages; keep them out of search.
+    noIndex: !member.bio,
   });
 }
 

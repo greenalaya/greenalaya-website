@@ -94,6 +94,13 @@ export async function getPublicationBySlug(slug: string): Promise<PublicationDet
     .eq("slug", slug)
     .maybeSingle();
 
+  if (error) {
+    console.warn(
+      `Could not load publication "${slug}" from Supabase. Using seed data.`,
+      error.message,
+    );
+  }
+
   if (error || !data) {
     return seed ? toPublicationCard(seed) : null;
   }

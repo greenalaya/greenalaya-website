@@ -11,6 +11,7 @@ function documentTitle(pageTitle: string) {
 type PageMetaInput = {
   title: string;
   description: string;
+  /** Omit for pages that shouldn't claim a canonical URL (e.g. not-found branches). */
   path?: string;
   noIndex?: boolean;
   /** Use site name only — for homepage SERP title matching branded site name. */
@@ -21,12 +22,12 @@ type PageMetaInput = {
 export function pageMetadata({
   title,
   description,
-  path = "",
+  path,
   noIndex = false,
   siteNameTitle = false,
   image,
 }: PageMetaInput): Metadata {
-  const url = `${siteConfig.url}${path}`;
+  const url = path === undefined ? undefined : `${siteConfig.url}${path}`;
   const imagePath = image ?? siteConfig.ogImage;
   const ogImage = imagePath.startsWith("http") ? imagePath : `${siteConfig.url}${imagePath}`;
   const fullTitle = siteNameTitle ? siteConfig.name : documentTitle(title);
@@ -38,7 +39,7 @@ export function pageMetadata({
     description,
     applicationName: siteConfig.name,
     icons: siteIcons,
-    alternates: { canonical: url },
+    alternates: url ? { canonical: url } : undefined,
     openGraph: {
       type: "website",
       locale: "en_NP",

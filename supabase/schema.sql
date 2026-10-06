@@ -60,22 +60,27 @@ alter table public.collaborators enable row level security;
 alter table public.supported_by enable row level security;
 alter table public.news enable row level security;
 
+drop policy if exists "Public read research" on public.research;
 create policy "Public read research"
   on public.research for select
   using (true);
 
+drop policy if exists "Public read team_members" on public.team_members;
 create policy "Public read team_members"
   on public.team_members for select
   using (true);
 
+drop policy if exists "Public read collaborators" on public.collaborators;
 create policy "Public read collaborators"
   on public.collaborators for select
   using (true);
 
+drop policy if exists "Public read supported_by" on public.supported_by;
 create policy "Public read supported_by"
   on public.supported_by for select
   using (true);
 
+drop policy if exists "Public read news" on public.news;
 create policy "Public read news"
   on public.news for select
   using (true);

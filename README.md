@@ -34,14 +34,15 @@ Never commit `.env.local` or expose the service role key in the browser.
 Run SQL files in order in **Supabase → SQL Editor**:
 
 1. [`supabase/schema.sql`](supabase/schema.sql) — base tables (`research`, `team_members`, `news`)
-2. [`supabase/phase2-migrate.sql`](supabase/phase2-migrate.sql) — legacy content from GitHub Pages
-3. [`supabase/phase3.sql`](supabase/phase3.sql) — projects, contact form, storage
+2. [`supabase/phase3.sql`](supabase/phase3.sql) — projects, contact form, storage
+3. [`supabase/phase2-migrate.sql`](supabase/phase2-migrate.sql) — legacy content from GitHub Pages (needs the `projects` table from phase3)
 4. [`supabase/phase4.sql`](supabase/phase4.sql) — content seeds, PDF URL sync
 5. [`supabase/phase6.sql`](supabase/phase6.sql) — `collaborators` and `supported_by` tables for the About page marquee
 6. [`supabase/phase7-hardening.sql`](supabase/phase7-hardening.sql) — DB-level rate limiting on contact form inserts
 7. [`supabase/phase9-team-linkedin.sql`](supabase/phase9-team-linkedin.sql) — `linkedin_url` column on `team_members`
 8. [`supabase/phase10-team-website.sql`](supabase/phase10-team-website.sql) — `website_url` column on `team_members`
 9. [`supabase/phase10-blog.sql`](supabase/phase10-blog.sql) — `blog_posts` table
+10. [`supabase/phase11-hardening.sql`](supabase/phase11-hardening.sql) — missing columns, removes legacy project rows, fixes the contact rate limit (run last; re-run after phase2-migrate)
 
 There is no staff/admin login — all content is edited directly in Supabase Table Editor (see below). If you previously applied an older version of phase3/phase7 that added staff RLS policies and an `is_staff()` function, run [`supabase/phase8-remove-staff-access.sql`](supabase/phase8-remove-staff-access.sql) once to drop them.
 
@@ -59,15 +60,15 @@ node scripts/setup-contact-alerts.mjs
 
 This project uses **Supabase Table Editor** as the CMS — there is no in-app content editor or admin panel. Edit tables directly in the Supabase dashboard.
 
-| Table                    | Public page | Notes                                     |
-| ------------------------ | ----------- | ----------------------------------------- |
-| `research`               | `/research` | Publications; set `pdf_url` for downloads |
-| `team_members`           | `/team`     | `slug` must be URL-safe                   |
-| `news`                   | `/news`     | `published_at` controls sort order        |
-| `projects`               | `/projects` | Thematic and field initiatives            |
-| `contact_submissions`    | —           | View in Supabase Table Editor             |
+| Table                 | Public page     | Notes                                                          |
+| --------------------- | --------------- | -------------------------------------------------------------- |
+| `research`            | `/publications` | Publications; set `pdf_url` for downloads                      |
+| `team_members`        | `/team`         | `slug` must be URL-safe                                        |
+| `news`                | `/news`         | `published_at` controls sort order                             |
+| `projects`            | `/projects`     | Overrides seed projects by `slug`; new slugs are not published |
+| `contact_submissions` | —               | View in Supabase Table Editor                                  |
 
-**Upload assets:** Supabase → Storage → `public-assets` bucket. Use [`lib/storage.ts`](lib/storage.ts) URL helper in content rows.
+**Upload assets:** Supabase → Storage → `public-assets` bucket. Use the file's public URL (`https://<project>.supabase.co/storage/v1/object/public/public-assets/...`) in content rows.
 
 **PDFs:** Host under `public/publications/` or Storage; update `pdf_url` in `research`.
 

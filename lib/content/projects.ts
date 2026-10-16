@@ -21,12 +21,16 @@ export async function getProjectList(): Promise<Project[]> {
 
   const remoteBySlug = new Map(remoteProjects.map((project) => [project.slug, project]));
 
-  return seedProjects.map((project) => {
-    const remote = remoteBySlug.get(project.slug);
-    return remote
-      ? { ...project, ...remote, image_url: remote.image_url ?? project.image_url }
-      : project;
-  });
+  return seedProjects
+    .map((project) => {
+      const remote = remoteBySlug.get(project.slug);
+      return remote
+        ? { ...project, ...remote, image_url: remote.image_url ?? project.image_url }
+        : project;
+    })
+    .sort(
+      (a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime(),
+    );
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {

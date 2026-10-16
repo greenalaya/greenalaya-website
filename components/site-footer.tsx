@@ -216,7 +216,7 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <div className="hidden grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:grid lg:grid-cols-4 lg:items-start lg:gap-x-8 lg:gap-y-0">
+          <div className="hidden grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 lg:flex lg:items-start lg:justify-between lg:gap-x-8">
             <div className="text-center sm:text-left">
               <p className={footerColumnTitleClass}>About</p>
               <ul className={footerColumnListClass}>
@@ -250,7 +250,7 @@ export function SiteFooter() {
               </ul>
             </div>
 
-            <div className="text-center sm:text-left">
+            <div className="text-center sm:text-left lg:shrink-0">
               <p className={footerColumnTitleClass}>Contact</p>
               <FooterContactList className={footerColumnListClass} />
             </div>

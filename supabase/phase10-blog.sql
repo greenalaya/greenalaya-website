@@ -8,9 +8,19 @@ create table if not exists public.blog_posts (
   excerpt text,
   content text,
   featured_image_url text,
+  author text,
+  author_url text,
+  author_role text,
+  source_url text,
   published_at timestamptz default now(),
   created_at timestamptz not null default now()
 );
+
+alter table public.blog_posts
+  add column if not exists author text,
+  add column if not exists author_url text,
+  add column if not exists author_role text,
+  add column if not exists source_url text;
 
 alter table public.blog_posts enable row level security;
 

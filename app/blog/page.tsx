@@ -17,7 +17,8 @@ export const dynamic = "force-static";
 async function getBlogPosts(): Promise<BlogPost[]> {
   const remotePosts = await fetchListWithFallback<BlogPost>({
     table: "blog_posts",
-    columns: "id, title, slug, excerpt, content, featured_image_url, published_at",
+    columns:
+      "id, title, slug, excerpt, content, featured_image_url, published_at, author, author_url, author_role, source_url",
     orderColumn: "published_at",
     ascending: false,
     seed: seedBlogPosts,
@@ -25,7 +26,9 @@ async function getBlogPosts(): Promise<BlogPost[]> {
   });
 
   const postsBySlug = new Map(seedBlogPosts.map((post) => [post.slug, post]));
-  remotePosts.forEach((post) => postsBySlug.set(post.slug, post));
+  remotePosts.forEach((post) =>
+    postsBySlug.set(post.slug, { ...postsBySlug.get(post.slug), ...post }),
+  );
 
   return [...postsBySlug.values()].sort(
     (a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime(),

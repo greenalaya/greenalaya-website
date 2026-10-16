@@ -234,6 +234,19 @@ test("chinari project page renders the condensed summary", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "How It Works", level: 2 })).toBeVisible();
 });
 
+test("blog page lists posts and navigates to detail", async ({ page }) => {
+  await page.goto("/blog");
+  await expect(page.getByRole("heading", { level: 2, name: "Blog" })).toBeVisible();
+  const postLink = page.getByRole("link", { name: /From Glaciers to Algorithms/i }).first();
+  await expect(postLink).toBeVisible();
+  await postLink.click();
+  await expect(page).toHaveURL(/\/blog\/ai-environment-nepal$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: /From Glaciers to Algorithms/i }),
+  ).toBeVisible();
+  await expect(page.getByText("Pritam Thapa").first()).toBeVisible();
+});
+
 test("/research/:slug redirects to /publications/:slug", async ({ page }) => {
   await page.goto("/research/butterfly-images-kathmandu-valley");
   await expect(page).toHaveURL(/\/publications\/butterfly-images-kathmandu-valley$/);

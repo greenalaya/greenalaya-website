@@ -3,3 +3,12 @@ node_modules
 test-results
 playwright-report
 public/publications
+# Installed AI agent skills and design-tool output (third-party, not site code)
+.cursor
+.claude
+.agents
+.codex
+.impeccable
+.taste-skill
+.vscode
+skills-lock.json

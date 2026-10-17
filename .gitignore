@@ -44,3 +44,7 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# design-tool output (taste-skill inspector screenshots, impeccable hook cache)
+/.taste-skill/
+/.impeccable/hook.cache.json

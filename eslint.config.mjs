@@ -12,7 +12,13 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Installed AI agent skills and design-tool output (third-party, not site code).
     ".cursor/**",
+    ".claude/**",
+    ".agents/**",
+    ".codex/**",
+    ".impeccable/**",
+    ".taste-skill/**",
   ]),
 ]);
 

@@ -18,6 +18,11 @@ interface GlowCardProps {
   glassTone?: "grey" | "black";
   /** Use a static glass card below lg; glow effects from lg upward. */
   staticBelowLg?: boolean;
+  /**
+   * Use the homepage redesign surface tokens (light card in light mode, dark in dark mode)
+   * instead of the dark glass. The pointer-following glow is unchanged.
+   */
+  themed?: boolean;
 }
 
 const glowColorMap = {
@@ -92,6 +97,7 @@ function GlowCard({
   backdropOpacity = 0.12,
   glassTone = "grey",
   staticBelowLg = false,
+  themed = false,
 }: GlowCardProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   // SSR-safe initial value: the real viewport-based value (matchMedia) is only
@@ -130,11 +136,17 @@ function GlowCard({
     return sizeMap[size];
   };
 
+  const glassLightness = glassTone === "black" ? 0 : 60;
+  const backdrop = themed
+    ? "var(--home-surface)"
+    : `hsl(0 0% ${glassLightness}% / ${backdropOpacity})`;
+
   const getStaticStyles = (): CSSProperties => {
-    const glassLightness = glassTone === "black" ? 0 : 60;
     const styles: CSSProperties = {
-      backgroundColor: `hsl(0 0% ${glassLightness}% / ${backdropOpacity})`,
-      border: "1px solid hsl(0 0% 100% / 0.15)",
+      backgroundColor: backdrop,
+      border: themed
+        ? "1px solid color-mix(in srgb, var(--home-accent) 25%, transparent)"
+        : "1px solid hsl(0 0% 100% / 0.15)",
       position: "relative",
     };
 
@@ -149,14 +161,16 @@ function GlowCard({
   };
 
   const getInlineStyles = (): CSSProperties & Record<string, string | number> => {
-    const glassLightness = glassTone === "black" ? 0 : 60;
     const baseStyles: CSSProperties & Record<string, string | number> = {
       "--base": base,
-      "--spread": spread,
+      // Themed cards stay within brand greens instead of sweeping towards blue and purple.
+      "--spread": themed ? 30 : spread,
       "--radius": "14",
       "--border": "3",
-      "--backdrop": `hsl(0 0% ${glassLightness}% / ${backdropOpacity})`,
-      "--backup-border": "var(--backdrop)",
+      "--backdrop": backdrop,
+      "--backup-border": themed
+        ? "color-mix(in srgb, var(--home-accent) 25%, transparent)"
+        : "var(--backdrop)",
       "--size": "200",
       "--outer": "1",
       "--border-size": "calc(var(--border, 2) * 1px)",
@@ -191,13 +205,21 @@ function GlowCard({
     <div
       ref={rootRef}
       {...(isStatic ? {} : { "data-glow": true })}
+      {...(themed ? { "data-glow-themed": true } : {})}
       style={isStatic ? getStaticStyles() : getInlineStyles()}
       className={`
           ${getSizeClasses()}
           ${!customSize ? "aspect-[3/4]" : ""}
           rounded-2xl
           relative
-          ${isStatic ? "touch-auto shadow-lg backdrop-blur-md" : "shadow-[0_1rem_2rem_-1rem_black] backdrop-blur-[5px] touch-none"}
+          ${
+            themed
+              ? "shadow-[0_10px_30px_-12px_rgba(13,55,22,0.25)] dark:shadow-[0_1rem_2rem_-1rem_black]"
+              : isStatic
+                ? "shadow-lg backdrop-blur-md"
+                : "shadow-[0_1rem_2rem_-1rem_black] backdrop-blur-[5px]"
+          }
+          ${isStatic ? "touch-auto" : "touch-none"}
           p-4
           ${className}
         `}

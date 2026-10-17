@@ -4,6 +4,7 @@ import { aboutPageContent, siteConfig, strategicPillars } from "@/lib/site";
 import { FlaskConical, Leaf, Monitor, User, Users, type LucideIcon } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
+import { cn } from "@/lib/utils";
 import {
   useCallback,
   useEffect,
@@ -38,6 +39,9 @@ const pillarAccent: Record<PillarIconKey, { from: string; to: string }> = {
   nature: { from: "#4caf50", to: "#2e7d32" },
   collaboration: { from: "#2196f3", to: "#1976d2" },
 };
+
+/** One brand green for every pillar when the orbit follows the theme. */
+const themedAccent = { from: "#4caf50", to: "#2e7d32" };
 
 const TIMELINE_DATA: TimelineItem[] = strategicPillars.map((pillar, index) => ({
   id: index + 1,
@@ -92,22 +96,40 @@ function Card({
   children,
   className = "",
   id,
+  themed = false,
 }: {
   children: ReactNode;
   className?: string;
   id?: string;
+  themed?: boolean;
 }) {
   return (
     <div
       id={id}
-      className={`rounded-xl border border-[#4caf50]/25 bg-[#161c17]/95 text-white shadow-lg shadow-[#0a0f0a]/50 backdrop-blur-lg ${className}`}
+      className={
+        themed
+          ? cn(
+              "rounded-xl border border-home-accent/25 bg-home-surface text-home-ink shadow-[0_16px_40px_rgba(13,55,22,0.14)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.5)]",
+              className,
+            )
+          : // Original string kept verbatim (not merged), so the default look is unchanged.
+            `rounded-xl border border-[#4caf50]/25 bg-[#161c17]/95 text-white shadow-lg shadow-[#0a0f0a]/50 backdrop-blur-lg ${className}`
+      }
     >
       {children}
     </div>
   );
 }
 
-export function StrategicPillarsOrbit() {
+type StrategicPillarsOrbitProps = {
+  /**
+   * Follow the light/dark theme with the homepage redesign palette instead of the always-dark
+   * original look. Used by /home-preview; the rotation and interactions are unchanged.
+   */
+  themed?: boolean;
+};
+
+export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitProps) {
   const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
   const [rotationAngle, setRotationAngle] = useState(0);
   const [orbitRadius, setOrbitRadius] = useState(200);
@@ -249,10 +271,17 @@ export function StrategicPillarsOrbit() {
     <section
       ref={sectionRef}
       id="pillars"
-      className="relative -mt-[8px] scroll-mt-24 overflow-x-clip bg-gradient-to-b from-[#0a0f0a] via-[#0f1610] to-[#0a0f0a] text-white lg:min-h-[720px]"
+      className={cn(
+        "relative scroll-mt-24 overflow-x-clip lg:min-h-[720px]",
+        themed
+          ? "bg-home-field text-home-ink"
+          : "-mt-[8px] bg-gradient-to-b from-[#0a0f0a] via-[#0f1610] to-[#0a0f0a] text-white",
+      )}
     >
-      <SectionFadeBridges targetRef={sectionRef} showTop showBottom />
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {themed ? null : <SectionFadeBridges targetRef={sectionRef} showTop showBottom />}
+      <div
+        className={cn("pointer-events-none absolute inset-0 overflow-hidden", themed && "hidden")}
+      >
         <div
           className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{ backgroundImage: `url('${siteConfig.images.foundationBackground}')` }}
@@ -270,12 +299,29 @@ export function StrategicPillarsOrbit() {
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(76,175,80,0.06)_0%,transparent_50%,rgba(0,0,0,0.2)_100%)]" />
       </div>
 
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center justify-items-center gap-12 px-4 py-16 sm:gap-14 lg:grid-cols-2 lg:justify-items-stretch lg:gap-16 lg:py-20">
+      <div
+        className={cn(
+          "relative z-10 mx-auto grid items-center justify-items-center gap-12 py-16 sm:gap-14 lg:grid-cols-2 lg:justify-items-stretch lg:gap-16 lg:py-20",
+          // Themed: share the redesigned homepage's container width and gutters.
+          themed ? "max-w-[1200px] px-5 sm:px-8" : "max-w-7xl px-4",
+        )}
+      >
         <header className="w-full text-center lg:text-left">
-          <h2 className="text-3xl font-bold tracking-tight text-[#2196f3] uppercase [-webkit-text-stroke:2px_#000] [paint-order:stroke_fill] sm:text-4xl md:text-5xl">
+          <h2
+            className={
+              themed
+                ? "font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.08] font-medium tracking-[-0.02em] text-balance text-home-ink"
+                : "text-3xl font-bold tracking-tight text-[#2196f3] uppercase [-webkit-text-stroke:2px_#000] [paint-order:stroke_fill] sm:text-4xl md:text-5xl"
+            }
+          >
             {aboutPageContent.pillarsHeading}
           </h2>
-          <p className="mx-auto mt-5 max-w-xl font-sans text-base leading-relaxed text-white sm:mt-6 sm:text-lg md:text-xl lg:mx-0">
+          <p
+            className={cn(
+              "mx-auto mt-5 max-w-xl font-sans text-base leading-relaxed sm:mt-6 sm:text-lg md:text-xl lg:mx-0",
+              themed ? "text-home-ink" : "text-white",
+            )}
+          >
             {aboutPageContent.pillarsDescription}
           </p>
         </header>
@@ -287,21 +333,30 @@ export function StrategicPillarsOrbit() {
             style={{ perspective: "1000px" } as CSSProperties}
           >
             <div
-              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#2e7d32]/15"
+              className={cn(
+                "pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border",
+                themed ? "border-home-accent/20" : "border-[#2e7d32]/15",
+              )}
               style={{
                 width: Math.max(0, orbitRadius * 2.4 - circleInset.outer),
                 height: Math.max(0, orbitRadius * 2.4 - circleInset.outer),
               }}
             />
             <div
-              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#4caf50]/20"
+              className={cn(
+                "pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border",
+                themed ? "border-home-accent/30" : "border-[#4caf50]/20",
+              )}
               style={{
                 width: Math.max(0, orbitRadius * 1.6 - circleInset.middle),
                 height: Math.max(0, orbitRadius * 1.6 - circleInset.middle),
               }}
             />
             <div
-              className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#4caf50]/25"
+              className={cn(
+                "pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed",
+                themed ? "border-home-accent/40" : "border-[#4caf50]/25",
+              )}
               style={{
                 width: Math.max(0, orbitRadius * 1.3 - circleInset.inner),
                 height: Math.max(0, orbitRadius * 1.3 - circleInset.inner),
@@ -323,7 +378,7 @@ export function StrategicPillarsOrbit() {
               const position = calculateNodePosition(index, TIMELINE_DATA.length);
               const isExpanded = expandedItems[item.id];
               const Icon = item.icon;
-              const accent = pillarAccent[item.iconKey];
+              const accent = themed ? themedAccent : pillarAccent[item.iconKey];
               const auraSize = 64;
               const nodeSize = 56;
 
@@ -347,7 +402,13 @@ export function StrategicPillarsOrbit() {
                       e.stopPropagation();
                       toggleItem(item.id);
                     }}
-                    className={`relative flex cursor-pointer flex-col items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#81c784] ${isExpanded ? "gap-4" : "gap-2.5 sm:gap-3"}`}
+                    className={cn(
+                      "relative flex cursor-pointer flex-col items-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4",
+                      themed
+                        ? "focus-visible:outline-home-accent"
+                        : "focus-visible:outline-[#81c784]",
+                      isExpanded ? "gap-4" : "gap-2.5 sm:gap-3",
+                    )}
                   >
                     <div className="relative">
                       <div
@@ -365,9 +426,11 @@ export function StrategicPillarsOrbit() {
                         className={`flex h-14 w-14 items-center justify-center rounded-full border-2 transition-all duration-300 lg:h-12 lg:w-12 ${
                           isExpanded
                             ? "scale-150 border-[#4caf50] bg-gradient-to-br from-[#2e7d32] to-[#1b5e20] text-white shadow-lg shadow-[#2e7d32]/40"
-                            : "border-[#4caf50] bg-[#0f1410] text-[#c8e6c9] hover:scale-110 hover:border-[#81c784]"
+                            : themed
+                              ? "border-home-accent bg-home-ground text-home-accent hover:scale-110"
+                              : "border-[#4caf50] bg-[#0f1410] text-[#c8e6c9] hover:scale-110 hover:border-[#81c784]"
                         }`}
-                        style={!isExpanded ? { borderColor: accent.from } : undefined}
+                        style={!isExpanded && !themed ? { borderColor: accent.from } : undefined}
                       >
                         <Icon className="size-5 lg:size-[18px]" aria-hidden />
                       </div>
@@ -375,7 +438,13 @@ export function StrategicPillarsOrbit() {
 
                     <div
                       className={`max-w-[6rem] text-center text-[11px] font-semibold leading-tight tracking-wide uppercase transition-all duration-300 sm:text-xs sm:tracking-wider lg:max-w-none ${
-                        isExpanded ? "scale-110 text-[#81c784] sm:scale-125" : "text-[#c8e6c9]"
+                        isExpanded
+                          ? themed
+                            ? "scale-110 text-home-accent sm:scale-125"
+                            : "scale-110 text-[#81c784] sm:scale-125"
+                          : themed
+                            ? "text-home-ink"
+                            : "text-[#c8e6c9]"
                       }`}
                     >
                       {item.title}
@@ -384,8 +453,12 @@ export function StrategicPillarsOrbit() {
 
                   {isExpanded && (
                     <Card
+                      themed={themed}
                       id={`pillar-panel-${item.id}`}
-                      className="absolute top-full left-1/2 mt-4 w-[min(18rem,calc(100vw-2rem))] max-h-[min(16rem,50vh)] -translate-x-1/2 overflow-y-auto p-5 text-center shadow-2xl shadow-[#0a0f0a]/60"
+                      className={cn(
+                        "absolute top-full left-1/2 mt-4 w-[min(18rem,calc(100vw-2rem))] max-h-[min(16rem,50vh)] -translate-x-1/2 overflow-y-auto p-5 text-center",
+                        !themed && "shadow-2xl shadow-[#0a0f0a]/60",
+                      )}
                     >
                       <div
                         className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2"
@@ -393,8 +466,22 @@ export function StrategicPillarsOrbit() {
                           background: `linear-gradient(to bottom, ${accent.from}, transparent)`,
                         }}
                       />
-                      <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-                      <p className="mt-3 text-base leading-relaxed text-white/80">{item.content}</p>
+                      <h3
+                        className={cn(
+                          "text-xl font-semibold",
+                          themed ? "text-home-ink" : "text-white",
+                        )}
+                      >
+                        {item.title}
+                      </h3>
+                      <p
+                        className={cn(
+                          "mt-3 text-base leading-relaxed",
+                          themed ? "text-home-ink" : "text-white/80",
+                        )}
+                      >
+                        {item.content}
+                      </p>
                     </Card>
                   )}
                 </div>

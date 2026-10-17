@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SiteLogo } from "@/components/site-logo";
-import { primaryNavItems, siteConfig } from "@/lib/site";
+import { homePreviewPath, primaryNavItems, siteConfig } from "@/lib/site";
 import { cn, rafThrottle } from "@/lib/utils";
 
 const MOBILE_MENU_ID = "mobile-primary-nav";
@@ -100,7 +100,8 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [menuOpen, closeMenu]);
 
-  const ctaHref = pathname === "/" ? "#get-involved" : "/#get-involved";
+  const ctaHref =
+    pathname === "/" || pathname === homePreviewPath ? "#get-involved" : "/#get-involved";
 
   return (
     <>

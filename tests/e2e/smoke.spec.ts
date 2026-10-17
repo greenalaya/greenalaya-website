@@ -10,6 +10,7 @@ const publicRoutes = [
   "/blog",
   "/contact",
   "/membership",
+  "/home-preview",
 ];
 
 for (const path of publicRoutes) {
@@ -431,6 +432,8 @@ for (const path of [
   "/projects/kathmandu-valley-butterfly-documentation",
   "/publications/pollinator-week-2026-event-report",
   "/news/godawari-butterfly-watch",
+  "/blog/ai-environment-nepal",
+  "/home-preview",
 ]) {
   test(`${path} renders without console errors or horizontal overflow`, async ({ page }) => {
     const errors: string[] = [];
@@ -448,3 +451,44 @@ for (const path of [
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
+
+test("homepage preview renders every redesigned section", async ({ page }) => {
+  await page.goto("/home-preview");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Research. Innovation. Conservation." }),
+  ).toBeVisible();
+  for (const name of [
+    "About Greenalaya Nepal",
+    "Strategic Pillars",
+    "Thematic Areas",
+    "Our Work in Action",
+    "Publications",
+    "News & Updates",
+  ]) {
+    await expect(page.getByRole("heading", { level: 2, name, exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
+
+  const heroActions = page.locator("#home-hero-actions");
+  await expect(heroActions.getByRole("link", { name: "Explore Our Work" })).toHaveAttribute(
+    "href",
+    "#our-work",
+  );
+  await expect(heroActions.getByRole("link", { name: "Get Involved" })).toHaveAttribute(
+    "href",
+    "#get-involved",
+  );
+
+  for (const [section, href] of [
+    ["#our-work", "/projects"],
+    ["#publications", "/publications"],
+    ["#news", "/news"],
+  ] as const) {
+    await expect(page.locator(`${section} a[href="${href}"]`)).toBeVisible();
+  }
+});
+
+test("homepage preview is hidden from search engines", async ({ page }) => {
+  await page.goto("/home-preview");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+});

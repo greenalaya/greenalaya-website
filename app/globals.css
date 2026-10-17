@@ -23,6 +23,20 @@
   --input: #e5e5e5;
   --ring: #2e7d32;
   --radius: 0.5rem;
+
+  /* Homepage redesign palette (used by /home-preview). */
+  --home-ground: #f7f7f2;
+  --home-ink: #000000;
+  --home-muted: #000000;
+  --home-field: #dde6d7;
+  --home-surface: #ffffff;
+  --home-accent: #1f5f23;
+  --home-forest: #183d32;
+  --home-on-forest: #ffffff;
+  --home-on-forest-muted: #ffffff;
+  --home-action: #183d32;
+  --home-action-foreground: #f7f7f2;
+  --home-sage: #a9baa1;
 }
 
 .dark {
@@ -45,6 +59,19 @@
   --border: #2a352b;
   --input: #2a352b;
   --ring: #4caf50;
+
+  --home-ground: #0f1410;
+  --home-ink: #ffffff;
+  --home-muted: #ffffff;
+  --home-field: #18211a;
+  --home-surface: #161c17;
+  --home-accent: #8bd88f;
+  --home-forest: #1b2e22;
+  --home-on-forest: #ffffff;
+  --home-on-forest-muted: #ffffff;
+  --home-action: #8bd88f;
+  --home-action-foreground: #0f1410;
+  --home-sage: #3d5a43;
 }
 
 @theme inline {
@@ -71,6 +98,22 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-home-ground: var(--home-ground);
+  --color-home-ink: var(--home-ink);
+  --color-home-muted: var(--home-muted);
+  --color-home-field: var(--home-field);
+  --color-home-surface: var(--home-surface);
+  --color-home-accent: var(--home-accent);
+  --color-home-forest: var(--home-forest);
+  --color-home-on-forest: var(--home-on-forest);
+  --color-home-on-forest-muted: var(--home-on-forest-muted);
+  --color-home-action: var(--home-action);
+  --color-home-action-foreground: var(--home-action-foreground);
+  --color-home-sage: var(--home-sage);
+}
+
+@utility font-display {
+  font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
 }
 
 body {
@@ -179,6 +222,17 @@ body {
 [data-glow] > [data-glow]::before {
   inset: -10px;
   border-width: 10px;
+}
+/* Theme-aware glow cards: a deeper green so the glow reads on light cards. */
+[data-glow-themed] {
+  --lightness: 32;
+  --saturation: 70;
+  --bg-spot-opacity: 0.14;
+}
+.dark [data-glow-themed] {
+  --lightness: 50;
+  --saturation: 100;
+  --bg-spot-opacity: 0.1;
 }
 
 .responsive-grid {

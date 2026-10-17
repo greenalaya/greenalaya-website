@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/json-ld";
-import { getSeedBlogPost } from "@/lib/content/seed";
+import { getSeedBlogPost, seedBlogPosts } from "@/lib/content/seed";
 import { formatLongDate } from "@/lib/format";
 import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
@@ -20,6 +20,11 @@ type PageProps = {
 };
 
 const imagePattern = /^!\[([^\]]*)\]\(((?:https?:\/\/|\/)[^)]+)\)$/;
+
+/** Pre-build the known posts; any post only in Supabase still renders on first request. */
+export function generateStaticParams() {
+  return seedBlogPosts.map((post) => ({ slug: post.slug }));
+}
 
 async function loadBlogPost(slug: string) {
   let post = getSeedBlogPost(slug);

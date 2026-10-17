@@ -231,7 +231,7 @@ export const socialProfiles = [
   { label: "LinkedIn", href: siteConfig.social.linkedin },
 ] as const;
 
-const thematicAreas = [
+export const thematicAreas = [
   {
     title: "Environmental Technology & Data Systems",
     description: "GIS, AI, and data-driven solutions",
@@ -355,3 +355,78 @@ export function resolvePublicationPdfUrl(url: string | null | undefined): string
   }
   return url;
 }
+
+/**
+ * Homepage redesign — test version served at /home-preview.
+ * Once approved it replaces the current homepage and these become the default nav and copy.
+ */
+export const homePreviewPath = "/home-preview";
+
+export const homeContent = {
+  hero: {
+    title: "Research. Innovation. Conservation.",
+    description: ["Building a Resilient Nepal Through", "Tech-Powered Conservation"],
+    image: {
+      src: "/images/news/butterfly-watching-godavari/participants-observing.jpg",
+      width: 1440,
+      height: 960,
+      alt: "Two participants watching butterflies through binoculars in dense forest at the Godawari Butterfly Watch",
+    },
+  },
+  about: {
+    title: "About Greenalaya Nepal",
+    body: "Greenalaya Nepal connects scientific research, environmental innovation, and community action to understand, protect, and restore nature.",
+    detail:
+      "We are based in Pokhara and work with researchers, volunteers, and partner organizations across Nepal.",
+    image: {
+      src: siteConfig.images.communityHero,
+      width: 1024,
+      height: 628,
+      alt: "Participants of a Greenalaya Nepal butterfly watch gathered for a group photo, with forested hills behind them",
+    },
+  },
+  work: {
+    title: "Our Work in Action",
+    /** Projects themselves come from the project list (newest first); these add homepage-only detail. */
+    statuses: {
+      "moths-of-bagmati-province": "Collecting photographs",
+      "chinari-ai-wildlife-classification": "In development",
+      "kathmandu-valley-butterfly-documentation": "Completed · free book",
+    } as Record<string, string>,
+    images: {
+      "/images/projects/moths-of-bagmati-province.jpg": {
+        alt: "A large orange silk moth resting on a whitewashed wall",
+      },
+      "/images/projects/godawari-butterfly-watch.webp": {
+        alt: "A brown butterfly resting with its wings open on a rock",
+      },
+      "/images/projects/chinari-logo.png": {
+        alt: "Chinari logo: a snow leopard drawn in front of mountain peaks",
+        darkSrc: "/images/projects/chinari-logo-dark.png",
+        isLogo: true,
+      },
+    } as Record<string, { alt: string; darkSrc?: string; isLogo?: boolean }>,
+    more: {
+      href: "/projects",
+      label: "See all projects",
+      description:
+        "Field documentation, citizen science, and conservation technology across Nepal.",
+    },
+  },
+  publications: {
+    title: "Publications",
+    more: {
+      href: "/publications",
+      label: "See all publications",
+      description: "Free reports and books from our research and field programs.",
+    },
+  },
+  news: {
+    title: "News & Updates",
+    more: {
+      href: "/news",
+      label: "See all news",
+      description: "Field walks, events, and announcements from our work across Nepal.",
+    },
+  },
+} as const;

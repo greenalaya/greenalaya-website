@@ -48,3 +48,9 @@ yarn-error.log*
 # design-tool output (taste-skill inspector screenshots, impeccable hook cache)
 /.taste-skill/
 /.impeccable/hook.cache.json
+
+# Impeccable engine binaries: platform-specific, downloaded automatically on first run
+/.claude/skills/impeccable/scripts/bin/
+/.agents/skills/impeccable/scripts/bin/
+# Personal Claude Code settings (local permissions and paths)
+/.claude/settings.local.json

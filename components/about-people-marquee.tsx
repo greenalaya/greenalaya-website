@@ -91,11 +91,7 @@ function PersonCard({
         <div className="relative h-[23rem] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#161c17]">
           <Image
             alt={member.name}
-            className={cn(
-              "transition-all duration-300 lg:grayscale lg:group-hover/card:grayscale-0",
-              "object-cover",
-              member.slug === "firoj-raut" && "object-top",
-            )}
+            className={cn("object-cover", member.slug === "firoj-raut" && "object-top")}
             fill
             sizes="256px"
             src={photo}
@@ -189,7 +185,12 @@ export function AboutPeopleMarquee({
             </Marquee>
           </>
         ) : (
-          <div className="mx-auto flex w-full max-w-xl flex-wrap justify-center gap-[1.5rem]">
+          <div
+            className={cn(
+              "mx-auto flex w-full flex-wrap justify-center gap-[1.5rem]",
+              variant === "portrait" ? "max-w-5xl" : "max-w-xl",
+            )}
+          >
             {cards}
           </div>
         )}

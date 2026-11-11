@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef } from "react";
+import { homeSectionHeadingClass } from "@/components/home/home-styles";
+import { ScrollToNext, ScrollToPrevious, screenSectionClass } from "@/components/scroll-to-next";
 import { HomeSectionHeader } from "@/components/home-section-header";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
 import { ThematicAreasGrid } from "@/components/thematic-areas-grid";
@@ -10,26 +12,34 @@ import { cn } from "@/lib/utils";
 type ThematicAreasSectionProps = {
   /**
    * Follow the light/dark theme with the homepage redesign palette instead of the always-dark
-   * original look. Used by /home-preview; the glow cards and layout are unchanged.
+   * original look. Used by /about: cards without numbers whose descriptions appear on
+   * hover or focus, filling the screen on laptops with up/down section arrows.
    */
   themed?: boolean;
+  /** Where the themed down arrow goes, so it never points at a section that isn't rendered. */
+  nextHref?: { href: `#${string}`; label: string };
 };
 
-export function ThematicAreasSection({ themed = false }: ThematicAreasSectionProps) {
+export function ThematicAreasSection({
+  themed = false,
+  nextHref = { href: "#advisors", label: "Scroll to our advisors" },
+}: ThematicAreasSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
 
   return (
     <section
       ref={sectionRef}
       id="thematic"
+      aria-labelledby={themed ? "thematic-title" : undefined}
       className={cn(
         "relative scroll-mt-24",
         themed
-          ? "bg-home-ground py-24 text-home-ink md:py-32"
+          ? `bg-home-field py-16 text-home-ink md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`
           : "-mt-[8px] bg-gradient-to-b from-[#0a0f0a] via-[#0f1610] to-[#0a0f0a] px-4 pt-10 pb-16 sm:px-5 sm:pt-12 sm:pb-20 lg:px-5 lg:pt-[62px] lg:pb-[102px]",
       )}
     >
       {themed ? null : <SectionFadeBridges targetRef={sectionRef} showTop showBottom />}
+      {themed ? <ScrollToPrevious href="#pillars" label="Back to our strategic pillars" /> : null}
       <div
         className={cn("pointer-events-none absolute inset-0 overflow-hidden", themed && "hidden")}
         aria-hidden
@@ -58,11 +68,11 @@ export function ThematicAreasSection({ themed = false }: ThematicAreasSectionPro
         )}
       >
         {themed ? (
-          <div className="mx-auto mb-10 max-w-3xl text-center md:mb-14">
-            <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.08] font-medium tracking-[-0.02em] text-balance text-home-ink">
+          <div className="mx-auto mb-10 max-w-3xl text-center md:mb-12 lg:mb-6">
+            <h2 id="thematic-title" className={`${homeSectionHeadingClass} text-home-ink`}>
               {aboutPageContent.thematicHeading}
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-home-ink sm:text-xl">
+            <p className="mt-5 text-lg leading-relaxed text-pretty text-black sm:text-xl lg:mt-3 dark:text-white">
               {aboutPageContent.thematicDescription}
             </p>
           </div>
@@ -77,6 +87,7 @@ export function ThematicAreasSection({ themed = false }: ThematicAreasSectionPro
         )}
         <ThematicAreasGrid themed={themed} />
       </div>
+      {themed ? <ScrollToNext href={nextHref.href} label={nextHref.label} /> : null}
     </section>
   );
 }

@@ -1,8 +1,19 @@
 "use client";
 
 import { aboutPageContent, siteConfig, strategicPillars } from "@/lib/site";
-import { FlaskConical, Leaf, Monitor, User, Users, type LucideIcon } from "lucide-react";
+import {
+  FlaskConical,
+  Leaf,
+  Monitor,
+  Pause,
+  Play,
+  User,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import { useReducedMotion } from "framer-motion";
+import { homeSectionHeadingClass } from "@/components/home/home-styles";
+import { ScrollToNext, ScrollToPrevious, screenSectionClass } from "@/components/scroll-to-next";
 import { SectionFadeBridges } from "@/components/section-fade-bridges";
 import { cn } from "@/lib/utils";
 import {
@@ -97,15 +108,22 @@ function Card({
   className = "",
   id,
   themed = false,
+  hidden = false,
+  labelledBy,
 }: {
   children: ReactNode;
   className?: string;
   id?: string;
   themed?: boolean;
+  hidden?: boolean;
+  labelledBy?: string;
 }) {
   return (
     <div
       id={id}
+      hidden={hidden}
+      role="region"
+      aria-labelledby={labelledBy}
       className={
         themed
           ? cn(
@@ -124,7 +142,8 @@ function Card({
 type StrategicPillarsOrbitProps = {
   /**
    * Follow the light/dark theme with the homepage redesign palette instead of the always-dark
-   * original look. Used by /home-preview; the rotation and interactions are unchanged.
+   * original look. Used by /about: heading left and orbit right on laptops, filling the
+   * screen with up/down section arrows.
    */
   themed?: boolean;
 };
@@ -136,6 +155,13 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
   const [circleInset, setCircleInset] = useState({ outer: 0, middle: 0, inner: 0 });
   const [autoRotate, setAutoRotate] = useState(true);
   const [isVisible, setIsVisible] = useState(true);
+  // Rotation stops while a visitor points at or tabs through the orbit, and when they pause it.
+  const [isInteracting, setIsInteracting] = useState(false);
+  const [isPausedByUser, setIsPausedByUser] = useState(false);
+  // Touch has no hover, so on the themed page a tap on the orbit holds it still until the visitor
+  // taps elsewhere or scrolls the section away, letting them aim at a pillar that isn't moving.
+  const [isTouchPaused, setIsTouchPaused] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
@@ -144,9 +170,13 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
     const section = sectionRef.current;
     if (!section || typeof IntersectionObserver === "undefined") return;
 
-    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
-      threshold: 0.1,
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+        if (!entry.isIntersecting) setIsTouchPaused(false);
+      },
+      { threshold: 0.1 },
+    );
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
@@ -163,6 +193,7 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
 
       const isCompact = window.matchMedia("(max-width: 1023px)").matches;
       const isLaptop = window.matchMedia("(min-width: 1024px)").matches;
+      setIsDesktop(isLaptop);
       // Icon + label footprint from each node center (matches mobile/desktop classes below).
       const nodeHalfWidth = isCompact ? 52 : 44;
       const nodeHalfHeight = isCompact ? 50 : 44;
@@ -200,6 +231,17 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
   };
 
   const hasExpanded = Object.values(expandedItems).some(Boolean);
+  const expandedItem = TIMELINE_DATA.find((item) => expandedItems[item.id]);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+
+  // Below laptop width the description opens under the orbit; bring it into view when it does.
+  useEffect(() => {
+    if (!expandedItem || window.matchMedia("(min-width: 1024px)").matches) return;
+    mobilePanelRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "nearest",
+    });
+  }, [expandedItem, prefersReducedMotion]);
 
   const collapseExpanded = useCallback(() => {
     setExpandedItems({});
@@ -212,7 +254,7 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
-      if (target.closest("[data-pillar-node]")) return;
+      if (target.closest("[data-pillar-node], [data-pillar-panel]")) return;
       collapseExpanded();
     };
 
@@ -229,25 +271,34 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
   }, [hasExpanded, collapseExpanded]);
 
   const toggleItem = (id: number) => {
-    setExpandedItems((prev) => {
-      const newState = { ...prev };
-      Object.keys(newState).forEach((key) => {
-        if (parseInt(key, 10) !== id) newState[parseInt(key, 10)] = false;
-      });
-      newState[id] = !prev[id];
-
-      if (!prev[id]) {
-        setAutoRotate(false);
-        centerViewOnNode(id);
-      } else {
-        setAutoRotate(true);
-      }
-      return newState;
-    });
+    const isOpening = !expandedItems[id];
+    setExpandedItems(isOpening ? { [id]: true } : {});
+    setAutoRotate(!isOpening);
+    if (isOpening) centerViewOnNode(id);
   };
 
   useEffect(() => {
-    if (!autoRotate || !isVisible || prefersReducedMotion) return;
+    if (!isTouchPaused) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (event.target instanceof Node && orbitRef.current?.contains(event.target)) return;
+      setIsTouchPaused(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isTouchPaused]);
+
+  useEffect(() => {
+    if (
+      !autoRotate ||
+      !isVisible ||
+      prefersReducedMotion ||
+      isInteracting ||
+      isPausedByUser ||
+      isTouchPaused
+    )
+      return;
 
     const rotationTimer = setInterval(() => {
       if (document.hidden) return;
@@ -255,7 +306,7 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
     }, 50);
 
     return () => clearInterval(rotationTimer);
-  }, [autoRotate, isVisible, prefersReducedMotion]);
+  }, [autoRotate, isVisible, prefersReducedMotion, isInteracting, isPausedByUser, isTouchPaused]);
 
   const calculateNodePosition = (index: number, total: number) => {
     const angle = ((index / total) * 360 + rotationAngle) % 360;
@@ -271,14 +322,16 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
     <section
       ref={sectionRef}
       id="pillars"
+      aria-labelledby="pillars-title"
       className={cn(
-        "relative scroll-mt-24 overflow-x-clip lg:min-h-[720px]",
+        "relative scroll-mt-24 overflow-x-clip",
         themed
-          ? "bg-home-field text-home-ink"
-          : "-mt-[8px] bg-gradient-to-b from-[#0a0f0a] via-[#0f1610] to-[#0a0f0a] text-white",
+          ? `bg-home-ground text-home-ink ${screenSectionClass}`
+          : "-mt-[8px] lg:min-h-[720px] bg-gradient-to-b from-[#0a0f0a] via-[#0f1610] to-[#0a0f0a] text-white",
       )}
     >
       {themed ? null : <SectionFadeBridges targetRef={sectionRef} showTop showBottom />}
+      {themed ? <ScrollToPrevious href="#mission" label="Back to our mission" /> : null}
       <div
         className={cn("pointer-events-none absolute inset-0 overflow-hidden", themed && "hidden")}
       >
@@ -301,16 +354,20 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
 
       <div
         className={cn(
-          "relative z-10 mx-auto grid items-center justify-items-center gap-12 py-16 sm:gap-14 lg:grid-cols-2 lg:justify-items-stretch lg:gap-16 lg:py-20",
-          // Themed: share the redesigned homepage's container width and gutters.
-          themed ? "max-w-[1200px] px-5 sm:px-8" : "max-w-7xl px-4",
+          "relative z-10 mx-auto grid items-center justify-items-center gap-12 sm:gap-14",
+          // Themed: the homepage redesign's container; on laptops the heading, description and
+          // pause button sit on the left and the orbit on the right, like Mission and Vision.
+          themed
+            ? "max-w-[1200px] px-5 py-16 sm:px-8 md:py-20 lg:grid-cols-2 lg:gap-12 lg:pt-12 lg:pb-14"
+            : "max-w-7xl px-4 py-16 lg:grid-cols-2 lg:justify-items-stretch lg:gap-16 lg:py-20",
         )}
       >
-        <header className="w-full text-center lg:text-left">
+        <header className={cn("w-full text-center", !themed && "lg:text-left")}>
           <h2
+            id="pillars-title"
             className={
               themed
-                ? "font-display text-[clamp(2rem,4vw,3.25rem)] leading-[1.08] font-medium tracking-[-0.02em] text-balance text-home-ink"
+                ? `${homeSectionHeadingClass} text-home-ink`
                 : "text-3xl font-bold tracking-tight text-[#2196f3] uppercase [-webkit-text-stroke:2px_#000] [paint-order:stroke_fill] sm:text-4xl md:text-5xl"
             }
           >
@@ -318,19 +375,56 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
           </h2>
           <p
             className={cn(
-              "mx-auto mt-5 max-w-xl font-sans text-base leading-relaxed sm:mt-6 sm:text-lg md:text-xl lg:mx-0",
-              themed ? "text-home-ink" : "text-white",
+              "mx-auto mt-5 max-w-xl font-sans text-base leading-relaxed sm:mt-6 sm:text-lg md:text-xl",
+              themed ? "text-pretty text-black dark:text-white" : "text-white lg:mx-0",
             )}
           >
             {aboutPageContent.pillarsDescription}
           </p>
+          {/* Always rendered and hidden with CSS when motion is reduced: the server can't know the
+              visitor's setting, so a JS branch here made the server and browser HTML differ. */}
+          <button
+            type="button"
+            aria-pressed={isPausedByUser}
+            onClick={() => setIsPausedByUser((paused) => !paused)}
+            className={cn(
+              "mt-5 inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:hidden",
+              themed
+                ? "border-home-accent/40 text-home-accent hover:bg-home-field focus-visible:outline-home-action"
+                : "border-white/30 text-white hover:bg-white/10 focus-visible:outline-[#81c784]",
+            )}
+          >
+            {isPausedByUser ? (
+              <Play aria-hidden className="size-4" />
+            ) : (
+              <Pause aria-hidden className="size-4" />
+            )}
+            {isPausedByUser ? "Play rotation" : "Pause rotation"}
+          </button>
         </header>
 
-        <div className="relative mx-auto w-full max-w-[min(calc(100vw-2rem),26rem)] sm:max-w-[min(calc(100vw-2rem),28rem)] lg:max-w-none lg:h-[min(680px,calc(100vh-200px))] lg:min-h-[680px]">
+        <div
+          className={cn(
+            "relative mx-auto w-full max-w-[min(calc(100vw-2rem),26rem)] sm:max-w-[min(calc(100vw-2rem),28rem)] lg:max-w-none",
+            themed
+              ? // Shrinks on short laptop screens so the whole section fits under the header.
+                "lg:h-[min(500px,calc(100svh-13rem))] lg:max-w-[min(500px,calc(100svh-13rem))]"
+              : "lg:h-[min(680px,calc(100vh-200px))] lg:min-h-[680px]",
+          )}
+        >
           <div
             className="relative mx-auto aspect-square w-full overflow-visible lg:h-full lg:max-h-full"
             ref={orbitRef}
             style={{ perspective: "1000px" } as CSSProperties}
+            onPointerEnter={() => setIsInteracting(true)}
+            onPointerLeave={() => setIsInteracting(false)}
+            onPointerDown={(event) => {
+              if (themed && event.pointerType === "touch") setIsTouchPaused(true);
+            }}
+            onFocus={() => setIsInteracting(true)}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setIsInteracting(false);
+            }}
           >
             <div
               className={cn(
@@ -386,8 +480,23 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
                 <div
                   key={item.id}
                   data-pillar-node
+                  onBlur={(event) => {
+                    // Tabbing to another link or button closes the panel so it can't cover the next
+                    // pillar. Focus landing on a non-interactive wrapper (a tap on plain text inside
+                    // the panel moves it to the page's skip-link target) leaves it open.
+                    const next = event.relatedTarget;
+                    if (
+                      isExpanded &&
+                      next instanceof Element &&
+                      next.matches("a[href], button, input, select, textarea") &&
+                      !event.currentTarget.contains(next)
+                    )
+                      collapseExpanded();
+                  }}
                   className={`absolute left-1/2 top-1/2 ${
-                    autoRotate ? "" : "transition-transform duration-700 ease-out"
+                    autoRotate
+                      ? ""
+                      : "motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out"
                   }`}
                   style={{
                     transform: pillarNodeTransform(position.x, position.y),
@@ -397,7 +506,7 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
                   <button
                     type="button"
                     aria-expanded={Boolean(isExpanded)}
-                    aria-controls={`pillar-panel-${item.id}`}
+                    aria-controls={isDesktop ? `pillar-panel-${item.id}` : "pillar-panel-mobile"}
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleItem(item.id);
@@ -437,7 +546,11 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
                     </div>
 
                     <div
-                      className={`max-w-[6rem] text-center text-[11px] font-semibold leading-tight tracking-wide uppercase transition-all duration-300 sm:text-xs sm:tracking-wider lg:max-w-none ${
+                      className={`max-w-[6rem] text-center font-semibold leading-tight transition-all duration-300 lg:max-w-none ${
+                        themed
+                          ? "text-sm"
+                          : "text-[11px] tracking-wide uppercase sm:text-xs sm:tracking-wider"
+                      } ${
                         isExpanded
                           ? themed
                             ? "scale-110 text-home-accent sm:scale-125"
@@ -451,45 +564,82 @@ export function StrategicPillarsOrbit({ themed = false }: StrategicPillarsOrbitP
                     </div>
                   </button>
 
-                  {isExpanded && (
-                    <Card
-                      themed={themed}
-                      id={`pillar-panel-${item.id}`}
+                  <Card
+                    themed={themed}
+                    id={`pillar-panel-${item.id}`}
+                    hidden={!isExpanded}
+                    labelledBy={`pillar-title-${item.id}`}
+                    className={cn(
+                      // Laptops only: on smaller screens it would cover the other pillars, so the
+                      // description opens in a card under the orbit instead (below).
+                      "absolute top-full left-1/2 mt-4 w-[min(18rem,calc(100vw-2rem))] max-h-[min(16rem,50vh)] -translate-x-1/2 overflow-y-auto p-5 text-center max-lg:hidden",
+                      !themed && "shadow-2xl shadow-[#0a0f0a]/60",
+                    )}
+                  >
+                    <div
+                      className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2"
+                      style={{
+                        background: `linear-gradient(to bottom, ${accent.from}, transparent)`,
+                      }}
+                    />
+                    <h3
+                      id={`pillar-title-${item.id}`}
                       className={cn(
-                        "absolute top-full left-1/2 mt-4 w-[min(18rem,calc(100vw-2rem))] max-h-[min(16rem,50vh)] -translate-x-1/2 overflow-y-auto p-5 text-center",
-                        !themed && "shadow-2xl shadow-[#0a0f0a]/60",
+                        "text-xl font-semibold",
+                        themed ? "text-home-ink" : "text-white",
                       )}
                     >
-                      <div
-                        className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2"
-                        style={{
-                          background: `linear-gradient(to bottom, ${accent.from}, transparent)`,
-                        }}
-                      />
-                      <h3
-                        className={cn(
-                          "text-xl font-semibold",
-                          themed ? "text-home-ink" : "text-white",
-                        )}
-                      >
-                        {item.title}
-                      </h3>
-                      <p
-                        className={cn(
-                          "mt-3 text-base leading-relaxed",
-                          themed ? "text-home-ink" : "text-white/80",
-                        )}
-                      >
-                        {item.content}
-                      </p>
-                    </Card>
-                  )}
+                      {item.title}
+                    </h3>
+                    <p
+                      className={cn(
+                        "mt-3 text-base leading-relaxed",
+                        themed ? "text-black dark:text-white" : "text-white/80",
+                      )}
+                    >
+                      {item.content}
+                    </p>
+                  </Card>
                 </div>
               );
             })}
           </div>
         </div>
+
+        <div
+          ref={mobilePanelRef}
+          data-pillar-panel
+          hidden={!expandedItem}
+          aria-live="polite"
+          className="w-full lg:hidden"
+        >
+          <Card
+            id="pillar-panel-mobile"
+            themed={themed}
+            labelledBy="pillar-title-mobile"
+            className={cn(
+              "mx-auto w-full max-w-[min(calc(100vw-2.5rem),28rem)] scroll-mb-6 p-5 text-center",
+              !themed && "shadow-2xl shadow-[#0a0f0a]/60",
+            )}
+          >
+            <h3
+              id="pillar-title-mobile"
+              className={cn("text-xl font-semibold", themed ? "text-home-ink" : "text-white")}
+            >
+              {expandedItem?.title}
+            </h3>
+            <p
+              className={cn(
+                "mt-3 text-base leading-relaxed",
+                themed ? "text-black dark:text-white" : "text-white/80",
+              )}
+            >
+              {expandedItem?.content}
+            </p>
+          </Card>
+        </div>
       </div>
+      {themed ? <ScrollToNext href="#thematic" label="Scroll to our thematic areas" /> : null}
     </section>
   );
 }

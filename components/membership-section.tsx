@@ -2,14 +2,13 @@ import { CheckCircle2 } from "lucide-react";
 import { MembershipForm } from "@/components/membership-form";
 import { Card } from "@/components/ui/card";
 import { membershipPageContent, membershipTiers } from "@/lib/site";
+import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 
 export function MembershipSection() {
   return (
     <main className="mx-auto max-w-4xl px-6 pt-24 pb-16 md:pt-28">
       <div className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          {membershipPageContent.title}
-        </h1>
+        <h1 className={`${pageTitleClass} text-foreground`}>{membershipPageContent.title}</h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
           {membershipPageContent.intro}
         </p>
@@ -28,7 +27,7 @@ export function MembershipSection() {
       </div>
 
       <section className="mt-14">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-[1.75rem]">
+        <h2 className={`${sectionTitleClass} text-foreground`}>
           {membershipPageContent.whyJoinHeading}
         </h2>
         <ul className="mt-6 space-y-4">
@@ -42,7 +41,7 @@ export function MembershipSection() {
       </section>
 
       <section className="mt-14">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-[1.75rem]">
+        <h2 className={`${sectionTitleClass} text-foreground`}>
           {membershipPageContent.optionsHeading}
         </h2>
         <div className="mt-6 grid gap-6 sm:grid-cols-3">
@@ -58,7 +57,7 @@ export function MembershipSection() {
       </section>
 
       <section className="mt-14">
-        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-[1.75rem]">
+        <h2 className={`${sectionTitleClass} text-foreground`}>
           {membershipPageContent.applicationHeading}
         </h2>
         <p className="mt-3 text-muted-foreground">Please provide the following information:</p>

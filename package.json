@@ -13,12 +13,12 @@
     "test:e2e:ui": "playwright test --ui",
     "postinstall": "playwright install chromium",
     "db:apply-phase4": "node --env-file=.env.local scripts/apply-phase4.mjs",
-    "favicons:generate": "node scripts/generate-favicons.mjs"
+    "favicons:generate": "node scripts/generate-favicons.mjs",
+    "map:generate": "node scripts/build-nepal-map.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.5",
     "@radix-ui/react-toggle": "^1.1.11",
-    "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.107.0",
     "@teispace/next-themes": "^2.0.4",
     "class-variance-authority": "^0.7.1",

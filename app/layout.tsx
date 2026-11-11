@@ -55,7 +55,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className="h-full scroll-smooth antialiased"
+      className="h-full antialiased motion-safe:scroll-smooth"
       data-scroll-behavior="smooth"
     >
       <head>
@@ -68,8 +68,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:rounded-full focus:bg-white focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#1a221d] focus:shadow-lg"
+          >
+            Skip to main content
+          </a>
           <SiteHeader />
-          <div className="flex-1">{children}</div>
+          <div id="main-content" tabIndex={-1} className="flex-1 scroll-mt-24 outline-none">
+            {children}
+          </div>
           <SiteFooter />
         </ThemeProvider>
       </body>

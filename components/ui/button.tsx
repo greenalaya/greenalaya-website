@@ -13,7 +13,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive: "bg-destructive text-primary-foreground hover:bg-destructive/90",
-        cool: "border border-b-2 border-zinc-950/40 bg-linear-to-t from-primary to-primary/85 text-primary-foreground shadow-md shadow-primary/20 ring-1 ring-inset ring-white/25 transition-[filter] duration-200 hover:brightness-110 active:brightness-90 dark:inset-shadow-2xs dark:inset-shadow-white/10 dark:border-x-0 dark:border-t-0 dark:border-primary/50 dark:text-primary-foreground dark:ring-white/5",
+        cool: "border border-b-2 border-zinc-950/40 bg-linear-to-t from-primary to-primary/95 text-primary-foreground dark:to-primary/85 shadow-md shadow-primary/20 ring-1 ring-inset ring-white/25 transition-[filter] duration-200 hover:brightness-110 active:brightness-90 dark:inset-shadow-2xs dark:inset-shadow-white/10 dark:border-x-0 dark:border-t-0 dark:border-primary/50 dark:text-primary-foreground dark:ring-white/5",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         outlineLight:
           "border border-white/80 bg-transparent text-white hover:bg-white/10 hover:text-white",

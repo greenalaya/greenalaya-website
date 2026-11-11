@@ -10,6 +10,7 @@ import { formatLongDate } from "@/lib/format";
 import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
+import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 
 export const revalidate = 300;
 export const dynamic = "force-static";
@@ -193,7 +194,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">
                     Big Butterfly Month 2026
                   </p>
-                  <h1 className="mt-5 text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
+                  <h1 className={`${pageTitleClass} mt-5 text-white`}>
                     Big Butterfly Count 2026: Godawari Walk Records 16 Species
                   </h1>
                   <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
@@ -287,7 +288,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 </figure>
 
                 <div className="space-y-7 text-[1.075rem] leading-8 text-muted-foreground">
-                  <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  <h2 className={`${sectionTitleClass} text-foreground`}>
                     A wet start, a strong count
                   </h2>
                   <p>
@@ -366,7 +367,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2 id="gallery-heading" className="mt-3 text-3xl font-bold sm:text-4xl">
+                    <h2 id="gallery-heading" className={`${sectionTitleClass} mt-3`}>
                       A rainy day in the field
                     </h2>
                   </div>
@@ -443,7 +444,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">
                     Community conservation
                   </p>
-                  <h1 className="mt-5 text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
+                  <h1 className={`${pageTitleClass} mt-5 text-white`}>
                     Greenalaya Nepal’s Godawari Butterfly Watch Records 46+ Species
                   </h1>
                   <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
@@ -540,7 +541,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 </figure>
 
                 <div className="space-y-7 text-[1.075rem] leading-8 text-muted-foreground">
-                  <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  <h2 className={`${sectionTitleClass} text-foreground`}>
                     A remarkable day in the field
                   </h2>
                   <p>
@@ -660,7 +661,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#8bd88f]">
                       Field journal
                     </p>
-                    <h2 id="gallery-heading" className="mt-3 text-3xl font-bold sm:text-4xl">
+                    <h2 id="gallery-heading" className={`${sectionTitleClass} mt-3`}>
                       A day of shared discovery
                     </h2>
                   </div>
@@ -738,9 +739,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">
                     Citizen science &amp; biodiversity documentation
                   </p>
-                  <h1 className="mt-5 text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
-                    {post.title}
-                  </h1>
+                  <h1 className={`${pageTitleClass} mt-5 text-white`}>{post.title}</h1>
                   {post.excerpt ? (
                     <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
                       {post.excerpt}

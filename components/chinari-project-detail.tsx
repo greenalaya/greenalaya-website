@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { chinariProject } from "@/lib/content/chinari-project";
+import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 
 const whyItMattersIcons = [Camera, ShieldAlert, Users, Network] as const;
 const howItWorksIcons = [Camera, Radar, Tags, CheckCircle2, Database] as const;
@@ -31,7 +32,7 @@ export function ChinariProjectDetail() {
           </Link>
           <div className="mt-8 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
             <div className="max-w-2xl">
-              <h1 className="text-4xl leading-[1.05] font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+              <h1 className={`${pageTitleClass} text-white`}>
                 {chinariProject.shortTitle}
                 <span className="mt-2 block text-2xl leading-tight font-normal text-white/90 sm:text-3xl lg:text-4xl">
                   {subtitle}
@@ -57,7 +58,7 @@ export function ChinariProjectDetail() {
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className={`${sectionTitleClass} text-foreground`}>
               Structured biodiversity intelligence, built on human validation
             </h2>
           </div>
@@ -82,7 +83,7 @@ export function ChinariProjectDetail() {
         <div className="mx-auto max-w-7xl">
           <h2
             id="why-it-matters-heading"
-            className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
+            className={`${sectionTitleClass} max-w-3xl text-foreground`}
           >
             Why This Matters
           </h2>
@@ -106,9 +107,7 @@ export function ChinariProjectDetail() {
 
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
-          <h2 className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
-            How It Works
-          </h2>
+          <h2 className={`${sectionTitleClass} max-w-3xl text-foreground`}>How It Works</h2>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
             From field capture to a trusted biodiversity record, in five stages.
           </p>

@@ -2,8 +2,8 @@ import { seedSupportedBy } from "@/lib/content/seed";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { Collaborator } from "@/lib/types/collaborator";
 
-function normalizeSupportedBy(members: Collaborator[]): Collaborator[] {
-  return seedSupportedBy.map((seed) => {
+export function normalizeSupportedBy(members: Collaborator[]): Collaborator[] {
+  const curated = seedSupportedBy.map((seed) => {
     const existing = members.find((member) => member.slug === seed.slug);
     if (!existing) {
       return seed;
@@ -20,6 +20,11 @@ function normalizeSupportedBy(members: Collaborator[]): Collaborator[] {
       photo_url: shouldUseSeedPhoto ? seed.photo_url : existing.photo_url,
     };
   });
+
+  const additional = members.filter(
+    (member) => !seedSupportedBy.some((seed) => seed.slug === member.slug),
+  );
+  return [...curated, ...additional];
 }
 
 export async function getSupportedBy(): Promise<{

@@ -4,6 +4,7 @@ import { ContactForm } from "@/components/contact-form";
 import { SocialLinks } from "@/components/social-links";
 import { Card } from "@/components/ui/card";
 import { siteContact } from "@/lib/site";
+import { pageTitleClass } from "@/lib/typography";
 
 type ContactSectionProps = {
   description: string;
@@ -16,7 +17,7 @@ export function ContactSection({ description, formEnabled, defaultSubject }: Con
     <div className="grid gap-12 md:grid-cols-2">
       <div className="space-y-8">
         <div>
-          <h2 className="text-4xl font-bold text-foreground">Get in Touch</h2>
+          <h1 className={`${pageTitleClass} text-foreground`}>Get in Touch</h1>
           <p className="mt-4 text-lg text-foreground">{description}</p>
         </div>
 

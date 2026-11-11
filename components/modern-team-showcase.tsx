@@ -6,6 +6,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 import type { TeamShowcaseMember } from "@/lib/content/team-showcase";
 import { cn } from "@/lib/utils";
+import { pageTitleClass } from "@/lib/typography";
 
 function IconLinkedin(props: SVGProps<SVGSVGElement>) {
   return (
@@ -246,7 +247,7 @@ export function ModernTeamShowcase({
       <div className="relative z-10 mb-16 flex flex-col items-center text-center">
         <motion.h1
           animate={{ y: 0 }}
-          className="text-5xl font-bold tracking-tighter text-foreground md:text-6xl"
+          className={`${pageTitleClass} text-foreground`}
           initial={{ y: -20 }}
           transition={{ delay: 0.2, duration: 0.8, ease: "easeInOut" }}
         >

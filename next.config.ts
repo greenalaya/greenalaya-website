@@ -90,6 +90,12 @@ const nextConfig: NextConfig = {
         destination: "/about#advisors",
         permanent: true,
       },
+      // The redesigned About page was tested here before it replaced /about.
+      {
+        source: "/about-preview",
+        destination: "/about",
+        permanent: true,
+      },
     ];
   },
 };

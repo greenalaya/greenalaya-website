@@ -11,6 +11,7 @@ import { articleJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 
 export const revalidate = 300;
 export const dynamic = "force-static";
@@ -151,10 +152,7 @@ function renderArticleContent(content: string): ReactNode[] {
     const heading = trimmed.match(/^##\s+(.+)$/);
     if (heading) {
       blocks.push(
-        <h2
-          key={index}
-          className="pt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
-        >
+        <h2 key={index} className={`${sectionTitleClass} pt-6 text-foreground`}>
           {heading[1]}
         </h2>,
       );
@@ -319,9 +317,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
               <div className="max-w-4xl pb-5">
                 <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#8bd88f]">Blog</p>
-                <h1 className="mt-5 text-[clamp(2.35rem,5.4vw,4.9rem)] font-bold leading-[0.96] tracking-[-0.045em] text-white">
-                  {post.title}
-                </h1>
+                <h1 className={`${pageTitleClass} mt-5 text-white`}>{post.title}</h1>
                 {post.excerpt ? (
                   <p className="mt-7 max-w-2xl text-lg leading-8 text-white/78 sm:text-xl">
                     {post.excerpt}

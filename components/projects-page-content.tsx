@@ -45,7 +45,7 @@ export function ProjectsPageContent({ projects }: ProjectsPageContentProps) {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#1b5e20] to-[#8bc34a]" />
               )}
             </div>
-            <h3 className="mt-4 text-lg leading-snug font-normal text-foreground transition group-hover:text-primary sm:text-xl">
+            <h3 className="mt-4 text-lg leading-snug font-semibold text-foreground transition group-hover:text-primary sm:text-xl">
               {project.title}
             </h3>
             {project.created_at ? (

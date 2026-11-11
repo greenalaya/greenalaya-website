@@ -41,7 +41,7 @@ export function NewsPageContent({ posts }: NewsPageContentProps) {
                 <div className="absolute inset-0 bg-gradient-to-br from-[#1b5e20] to-[#8bc34a]" />
               )}
             </div>
-            <h3 className="mt-4 text-lg font-normal leading-snug text-foreground transition group-hover:text-primary sm:text-xl">
+            <h3 className="mt-4 text-lg font-semibold leading-snug text-foreground transition group-hover:text-primary sm:text-xl">
               {post.title}
             </h3>
             {post.published_at ? (

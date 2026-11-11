@@ -34,6 +34,7 @@ export function AboutPageContent({
           id="advisors"
           direction="left"
           error={advisorsError}
+          loop={false}
           maxItems={5}
           members={advisors}
           photoSource="team"

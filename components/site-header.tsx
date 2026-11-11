@@ -6,7 +6,13 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SiteLogo } from "@/components/site-logo";
-import { homePreviewPath, primaryNavItems, siteConfig } from "@/lib/site";
+import {
+  homePreviewAltPath,
+  homePreviewPath,
+  homePreviewQuizPath,
+  primaryNavItems,
+  siteConfig,
+} from "@/lib/site";
 import { cn, rafThrottle } from "@/lib/utils";
 
 const MOBILE_MENU_ID = "mobile-primary-nav";
@@ -16,19 +22,27 @@ function isNavItemActive(pathname: string, href: string) {
   return href === pathname || pathname.startsWith(`${href}/`);
 }
 
+// Menu links are bold, pure black in light theme and pure white in dark theme; the current
+// page and hover get a pale green pill.
 const navLinkClass = (active: boolean) =>
   cn(
-    "rounded-full px-4 py-2 text-sm no-underline transition-colors",
+    "rounded-full px-4 py-2 text-sm font-bold text-black no-underline transition-colors dark:text-white",
     active
-      ? "bg-[#4caf50]/20 font-medium text-white"
-      : "text-white/80 hover:bg-[#4caf50]/15 hover:text-white",
+      ? "bg-[#4caf50]/15 dark:bg-[#4caf50]/20"
+      : "hover:bg-[#4caf50]/10 dark:hover:bg-[#4caf50]/15",
   );
 
 const mobileNavLinkClass = (active: boolean) =>
   cn(
-    "flex min-h-11 items-center rounded-lg px-4 py-3 text-base font-medium no-underline transition-colors",
-    active ? "bg-[#4caf50]/20 text-white" : "text-white/85 hover:bg-[#4caf50]/15 hover:text-white",
+    "flex min-h-11 items-center rounded-lg px-4 py-3 text-base font-bold text-black no-underline transition-colors dark:text-white",
+    active
+      ? "bg-[#4caf50]/15 dark:bg-[#4caf50]/20"
+      : "hover:bg-[#4caf50]/10 dark:hover:bg-[#4caf50]/15",
   );
+
+/** Round icon buttons in the header and mobile menu (theme toggle, menu open/close). */
+const iconButtonClass =
+  "border border-black/10 bg-black/[0.04] text-[#1a221d] hover:bg-black/[0.08] dark:border-white/15 dark:bg-white/10 dark:text-white dark:hover:bg-white/15";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -100,20 +114,34 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [menuOpen, closeMenu]);
 
-  const ctaHref =
-    pathname === "/" || pathname === homePreviewPath ? "#get-involved" : "/#get-involved";
+  // Pages with their own "Get Involved" band jump to it; every other page goes to the homepage's.
+  const ctaHref = [
+    "/",
+    homePreviewPath,
+    homePreviewAltPath,
+    homePreviewQuizPath,
+    "/about",
+  ].includes(pathname)
+    ? "#get-involved"
+    : "/#get-involved";
 
   return (
     <>
       <header
+        data-site-header
         className={cn(
-          "fixed top-0 right-0 left-0 z-[100] flex items-center justify-between border-b border-[#2e7d32]/20 bg-[#0a0f0a]/90 px-4 py-4 backdrop-blur-xl transition-all duration-300 sm:px-5 md:px-10",
-          scrolled && "bg-[#0a0f0a]/95 py-3.5",
+          "fixed top-0 right-0 left-0 z-[100] flex items-center justify-between border-b border-[#2e7d32]/15 bg-white/90 px-4 py-4 backdrop-blur-xl transition-all duration-300 sm:px-5 md:px-10 dark:border-[#2e7d32]/20 dark:bg-[#0a0f0a]/90",
+          scrolled && "bg-white/95 py-3.5 shadow-sm dark:bg-[#0a0f0a]/95 dark:shadow-none",
         )}
       >
         <Link href="/" className="flex min-w-0 items-center gap-2 no-underline">
-          <SiteLogo surface="default" preload className="h-10 w-auto shrink-0 object-contain" />
-          <span className="min-w-0 translate-y-1 truncate text-lg font-semibold text-[#2e7d32] sm:text-xl">
+          <SiteLogo
+            surface="default"
+            decorative
+            preload
+            className="h-10 w-auto shrink-0 object-contain"
+          />
+          <span className="min-w-0 translate-y-1 truncate text-lg font-semibold text-[#2e7d32] sm:text-xl dark:text-[#66bb6a]">
             {siteConfig.name}
           </span>
         </Link>
@@ -135,19 +163,28 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <ModeToggle className="border border-white/15 bg-white/10 text-white hover:bg-white/15 data-[state=on]:bg-white/15 data-[state=on]:hover:bg-white/20" />
+          <ModeToggle
+            className={cn(
+              iconButtonClass,
+              "focus-visible:ring-[#2e7d32] focus-visible:ring-offset-2 focus-visible:ring-offset-white data-[state=on]:bg-black/[0.08] dark:focus-visible:ring-[#8bd88f] dark:focus-visible:ring-offset-[#0a0f0a] dark:data-[state=on]:bg-white/15 dark:data-[state=on]:hover:bg-white/20",
+            )}
+          />
           <Link
             href={ctaHref}
-            className="hidden rounded-full bg-gradient-to-br from-[#4caf50] to-[#2e7d32] px-4 py-2 text-xs font-medium text-white no-underline transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(76,175,80,0.4)] sm:inline-flex sm:min-h-11 sm:items-center sm:px-6 sm:py-2.5 sm:text-sm"
+            className="hidden rounded-full bg-gradient-to-br from-[#2e7d32] to-[#1b5e20] px-4 py-2 text-xs font-medium text-white no-underline transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(76,175,80,0.4)] sm:inline-flex sm:min-h-11 sm:items-center sm:px-6 sm:py-2.5 sm:text-sm"
           >
             Get Involved
           </Link>
           <button
             ref={menuButtonRef}
             type="button"
-            className="inline-flex size-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/15 md:hidden"
+            className={cn(
+              "inline-flex size-11 items-center justify-center rounded-full transition md:hidden",
+              iconButtonClass,
+            )}
             aria-expanded={menuOpen}
-            aria-controls={MOBILE_MENU_ID}
+            // The menu panel only exists while open, so only point at it then.
+            aria-controls={menuOpen ? MOBILE_MENU_ID : undefined}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((open) => !open)}
           >
@@ -171,18 +208,22 @@ export function SiteHeader() {
           <div
             ref={panelRef}
             id={MOBILE_MENU_ID}
+            data-site-header
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="absolute top-0 right-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-[#2e7d32]/25 bg-[#0a0f0a] shadow-2xl"
+            className="absolute top-0 right-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-[#2e7d32]/15 bg-white shadow-2xl dark:border-[#2e7d32]/25 dark:bg-[#0a0f0a]"
           >
-            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+            <div className="flex items-center justify-between border-b border-black/10 px-5 py-4 dark:border-white/10">
               <p id={titleId} className="text-lg font-semibold text-[#2e7d32]">
                 Menu
               </p>
               <button
                 type="button"
-                className="inline-flex size-11 items-center justify-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
+                className={cn(
+                  "inline-flex size-11 items-center justify-center rounded-full transition",
+                  iconButtonClass,
+                )}
                 aria-label="Close menu"
                 onClick={closeMenu}
               >
@@ -208,10 +249,10 @@ export function SiteHeader() {
                 );
               })}
             </nav>
-            <div className="border-t border-white/10 p-4">
+            <div className="border-t border-black/10 p-4 dark:border-white/10">
               <Link
                 href={ctaHref}
-                className="flex min-h-11 items-center justify-center rounded-full bg-gradient-to-br from-[#4caf50] to-[#2e7d32] px-6 py-3 text-sm font-medium text-white no-underline transition-all hover:shadow-[0_8px_24px_rgba(76,175,80,0.4)]"
+                className="flex min-h-11 items-center justify-center rounded-full bg-gradient-to-br from-[#2e7d32] to-[#1b5e20] px-6 py-3 text-sm font-medium text-white no-underline transition-all hover:shadow-[0_8px_24px_rgba(76,175,80,0.4)]"
                 onClick={closeMenu}
               >
                 Get Involved

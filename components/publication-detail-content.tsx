@@ -8,6 +8,7 @@ import { PublicationMetadataSection } from "@/components/publication-metadata";
 import type { PublicationDetail } from "@/lib/content/resources";
 import { formatMonthYearParts } from "@/lib/format";
 import { siteConfig } from "@/lib/site";
+import { pageTitleClass } from "@/lib/typography";
 
 type PublicationDetailContentProps = {
   publication: PublicationDetail;
@@ -45,9 +46,7 @@ export function PublicationDetailContent({
           </nav>
 
           <header className="mt-8">
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl">
-              {publication.title}
-            </h1>
+            <h1 className={`${pageTitleClass} text-foreground`}>{publication.title}</h1>
             {postedOn ? (
               <p className="mt-4 text-base italic text-muted-foreground">{postedOn}</p>
             ) : null}

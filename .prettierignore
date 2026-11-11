@@ -12,3 +12,6 @@ public/publications
 .taste-skill
 .vscode
 skills-lock.json
+
+# Generated map outlines (see the header comment in the file)
+lib/content/nepal-map.ts

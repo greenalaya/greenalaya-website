@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { siteContact } from "@/lib/site";
+import { pageTitleClass } from "@/lib/typography";
 
 export default function Error({
   error,
@@ -18,7 +19,7 @@ export default function Error({
 
   return (
     <main className="mx-auto max-w-3xl px-6 pt-24 pb-12 md:pt-28">
-      <h1 className="text-3xl font-bold text-secondary-foreground">Something went wrong</h1>
+      <h1 className={`${pageTitleClass} text-secondary-foreground`}>Something went wrong</h1>
       <p className="mt-2 text-muted-foreground">
         Sorry, this page ran into a problem. Please try again. If you were submitting a form and it
         keeps failing, email us at{" "}

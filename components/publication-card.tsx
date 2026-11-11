@@ -23,7 +23,7 @@ export function PublicationCardItem({ publication }: PublicationCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         </div>
-        <h3 className="mt-4 text-lg leading-snug font-normal text-foreground transition group-hover:text-primary sm:text-xl">
+        <h3 className="mt-4 text-lg leading-snug font-semibold text-foreground transition group-hover:text-primary sm:text-xl">
           {publication.title}
         </h3>
         {publishedDate ? (

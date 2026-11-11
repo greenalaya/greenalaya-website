@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+/* Short screens (up to 820px tall, e.g. 1280x720 and 1366x768 laptops). */
+@custom-variant short (@media (max-height: 820px));
 
 :root {
   --background: #ffffff;
@@ -27,7 +29,8 @@
   /* Homepage redesign palette (used by /home-preview). */
   --home-ground: #f7f7f2;
   --home-ink: #000000;
-  --home-muted: #000000;
+  /* Secondary text (captions, metadata): 6.4:1 on the ivory ground. */
+  --home-muted: #525d55;
   --home-field: #dde6d7;
   --home-surface: #ffffff;
   --home-accent: #1f5f23;
@@ -37,6 +40,20 @@
   --home-action: #183d32;
   --home-action-foreground: #f7f7f2;
   --home-sage: #a9baa1;
+  --home-line: rgb(26 34 29 / 0.1);
+
+  /* Project status labels: completed = green, ongoing = amber, in development = blue. */
+  --status-completed-bg: #d9ecd6;
+  --status-completed-fg: #1f5f23;
+  --status-ongoing-bg: #fbecc8;
+  --status-ongoing-fg: #7a4a00;
+  --status-development-bg: #dbe8f8;
+  --status-development-fg: #1d4f86;
+
+  /* "Where we work" map: one sage ramp, validated with the dataviz palette checker
+     (land clears the page at >= 2:1; shaded projects step clearly darker). */
+  --map-land: #a4b59a;
+  --map-shaded: #6a8762;
 }
 
 .dark {
@@ -62,7 +79,7 @@
 
   --home-ground: #0f1410;
   --home-ink: #ffffff;
-  --home-muted: #ffffff;
+  --home-muted: #a7b2a9;
   --home-field: #18211a;
   --home-surface: #161c17;
   --home-accent: #8bd88f;
@@ -72,6 +89,18 @@
   --home-action: #8bd88f;
   --home-action-foreground: #0f1410;
   --home-sage: #3d5a43;
+  --home-line: rgb(233 237 230 / 0.1);
+
+  --status-completed-bg: #1f3a24;
+  --status-completed-fg: #a9e0ab;
+  --status-ongoing-bg: #3d3014;
+  --status-ongoing-fg: #f2c66d;
+  --status-development-bg: #1b2c45;
+  --status-development-fg: #a7c8f2;
+
+  /* Selected for dark mode (not inverted), validated against the dark page. */
+  --map-land: #3e4f41;
+  --map-shaded: #6b8d6f;
 }
 
 @theme inline {
@@ -110,15 +139,51 @@
   --color-home-action: var(--home-action);
   --color-home-action-foreground: var(--home-action-foreground);
   --color-home-sage: var(--home-sage);
-}
-
-@utility font-display {
-  font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --color-home-line: var(--home-line);
+  --color-status-completed-bg: var(--status-completed-bg);
+  --color-status-completed-fg: var(--status-completed-fg);
+  --color-status-ongoing-bg: var(--status-ongoing-bg);
+  --color-status-ongoing-fg: var(--status-ongoing-fg);
+  --color-status-development-bg: var(--status-development-bg);
+  --color-status-development-fg: var(--status-development-fg);
+  --color-map-land: var(--map-land);
+  --color-map-shaded: var(--map-shaded);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/*
+ * One visible focus ring everywhere, instead of each browser's default. Layered as base so a
+ * component's own focus-visible utilities still win. In dark theme the header is near-black, so it uses a
+ * lighter green there.
+ */
+@layer base {
+  /* Avoid one-word last lines in running text and lopsided heading breaks; ignored where unsupported. */
+  p,
+  li,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline-style: solid;
+    outline-width: 2px;
+    outline-color: var(--ring);
+    outline-offset: 3px;
+  }
+
+  .dark [data-site-header] :focus-visible {
+    outline-color: #8bd88f;
+  }
 }
 
 @keyframes hero-mesh-pulse {
@@ -131,6 +196,16 @@ body {
   }
 }
 
+@keyframes hero-chevron-bounce-up {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
 @keyframes hero-chevron-bounce {
   0%,
   100% {
@@ -138,6 +213,44 @@ body {
   }
   50% {
     transform: translateY(6px);
+  }
+}
+
+/* The hero species quiz: each new photo is uncovered from the bottom edge as it settles. */
+@keyframes field-reveal {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: scale(1.08);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: scale(1);
+  }
+}
+
+@utility animate-field-reveal {
+  animation: field-reveal 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* The hero tree (/home-preview-2): its crown sways a degree either way, like in a breeze. */
+@keyframes tree-sway {
+  from {
+    transform: rotate(-0.8deg);
+  }
+  to {
+    transform: rotate(0.8deg);
+  }
+}
+
+@utility animate-tree-sway {
+  animation: tree-sway 7s ease-in-out infinite alternate;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 }
 
@@ -234,6 +347,12 @@ body {
   --saturation: 100;
   --bg-spot-opacity: 0.1;
 }
+/* Light theme: no pointer glow at all; the cards stay plain, with their thin green border. */
+:root:not(.dark) [data-glow-themed] {
+  --bg-spot-opacity: 0;
+  --border-spot-opacity: 0;
+  --border-light-opacity: 0;
+}
 
 .responsive-grid {
   display: grid;
@@ -282,4 +401,21 @@ body {
   height: 40%;
   background: radial-gradient(ellipse at center, rgba(46, 125, 50, 0.3) 0%, transparent 70%);
   animation-delay: 2s;
+}
+
+/*
+ * About preview only: a softer forest-tinted ink with a real muted tone (6.4:1 on ivory,
+ * 5.4:1 on pale green), and dark-mode surfaces that step lighter instead of sinking.
+ * Kept off the home preview until those values are approved there too.
+ */
+.about-tone {
+  --home-ink: #1a221d;
+  --home-muted: #525d55;
+}
+
+.dark .about-tone {
+  --home-ink: #e9ede6;
+  --home-muted: #a7b2a9;
+  --home-field: #1b251d;
+  --home-surface: #1d261f;
 }

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Camera, CheckCircle2, FileText, MapPin } from "lucide-react";
 import { butterflyProject } from "@/lib/content/butterfly-project";
+import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 
 const guideFeatures = [
   "Common and scientific species names",
@@ -37,7 +38,7 @@ export function ButterflyProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#a8dc9d]">
               Citizen science &amp; urban biodiversity
             </p>
-            <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h1 className={`${pageTitleClass} mt-5 text-white`}>
               Winged Wonders
               <span className="mt-2 block text-2xl font-normal leading-tight text-white/90 sm:text-3xl lg:text-4xl xl:text-[2.75rem] lg:whitespace-nowrap">
                 Documenting the Butterflies of Kathmandu Valley
@@ -73,7 +74,7 @@ export function ButterflyProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
               Why it began
             </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className={`${sectionTitleClass} mt-4 text-foreground`}>
               Turning observations into accessible knowledge
             </h2>
           </div>
@@ -103,10 +104,7 @@ export function ButterflyProjectDetail() {
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#a8dc9d]">
             Project impact
           </p>
-          <h2
-            id="impact-heading"
-            className="mt-4 max-w-4xl text-3xl font-bold tracking-tight sm:text-5xl text-balance"
-          >
+          <h2 id="impact-heading" className={`${sectionTitleClass} mt-4 max-w-4xl`}>
             Butterfly photographs of Kathmandu Valley
           </h2>
           <dl className="mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/15 lg:grid-cols-4">
@@ -158,7 +156,7 @@ export function ButterflyProjectDetail() {
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">Our approach</p>
-          <h2 className="mt-4 max-w-4xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl text-balance">
+          <h2 className={`${sectionTitleClass} mt-4 max-w-4xl text-foreground`}>
             From field observation to field guide
           </h2>
           <p className="mt-6 max-w-5xl text-lg leading-8 text-muted-foreground">
@@ -195,7 +193,7 @@ export function ButterflyProjectDetail() {
           </div>
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">The outcome</p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl text-balance">
+            <h2 className={`${sectionTitleClass} mt-4 text-foreground`}>
               A field guide made for discovery
             </h2>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
@@ -233,7 +231,7 @@ export function ButterflyProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
               Built together
             </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className={`${sectionTitleClass} mt-4 text-foreground`}>
               A community effort, carefully credited
             </h2>
           </div>

@@ -34,11 +34,14 @@ const socialIcons = {
 type SocialLinksProps = {
   className?: string;
   iconClassName?: string;
+  /** Extends each link's tap area to 44px with an invisible ::after, for small inline icons. */
+  largeTapArea?: boolean;
 };
 
 export function SocialLinks({
   className = "flex gap-6 md:gap-8",
   iconClassName = "size-6 text-[#2e7d32] transition hover:text-[#1b5e20]",
+  largeTapArea = false,
 }: SocialLinksProps) {
   return (
     <ul className={className}>
@@ -46,7 +49,16 @@ export function SocialLinks({
         const Icon = socialIcons[label];
         return (
           <li key={label}>
-            <a href={href} target="_blank" rel="noopener noreferrer" className={iconClassName}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={
+                largeTapArea
+                  ? `relative inline-flex after:absolute after:-inset-3.5 after:content-[''] ${iconClassName}`
+                  : iconClassName
+              }
+            >
               <span className="sr-only">{label}</span>
               <Icon className="size-[1em]" />
             </a>

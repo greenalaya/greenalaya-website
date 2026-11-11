@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Search } from "lucide-react";
+import { pageTitleClass } from "@/lib/typography";
 
 type SearchableListPageProps<T> = {
   items: T[];
@@ -93,9 +94,7 @@ export function SearchableListPage<T>({
       <main className="bg-background px-5 pb-20 sm:px-6 lg:px-8 lg:pb-24">
         <div className="mx-auto max-w-6xl">
           <section className="mt-14 sm:mt-16">
-            <h2 className="text-center text-2xl font-bold tracking-tight text-foreground sm:text-[1.75rem]">
-              {heading}
-            </h2>
+            <h1 className={`${pageTitleClass} text-center text-foreground`}>{heading}</h1>
 
             {filtered.length === 0 ? (
               <p className="mt-8 text-center text-muted-foreground">

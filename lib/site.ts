@@ -67,7 +67,7 @@ export const aboutPageContent = {
     "A Nepal where technology and research are the driving force behind nature conservation - equipping communities, scientists, and institutions with the tools to protect ecosystems and build a resilient future.",
   pillarsHeading: "Strategic Pillars",
   pillarsDescription:
-    "Five strategic pillars shape how we design research, technology, and community programs across Nepal.",
+    "Five strategic pillars shape how we design research, technology, and conservation across Nepal.",
   thematicHeading: "Thematic Areas",
   thematicDescription:
     "Seven key thematic areas drive our work across Nepal, from emerging research questions to policy and community stewardship.",
@@ -81,6 +81,7 @@ export const aboutWhatWeDo = {
     "We partner with researchers, communities, and institutions to put these tools and resources to work, protecting biodiversity and strengthening livelihoods across Nepal.",
   ],
   image: siteConfig.images.communityHero,
+  imageCaption: "Butterfly Watch Event, Godawari, 2026",
 } as const;
 
 export const strategicPillars = [
@@ -231,7 +232,7 @@ export const socialProfiles = [
   { label: "LinkedIn", href: siteConfig.social.linkedin },
 ] as const;
 
-export const thematicAreas = [
+const thematicAreas = [
   {
     title: "Environmental Technology & Data Systems",
     description: "GIS, AI, and data-driven solutions",
@@ -361,11 +362,19 @@ export function resolvePublicationPdfUrl(url: string | null | undefined): string
  * Once approved it replaces the current homepage and these become the default nav and copy.
  */
 export const homePreviewPath = "/home-preview";
+/** A second homepage test: the split hero with the moth lamp (a butterfly meadow by day). */
+export const homePreviewAltPath = "/home-preview-2";
+/** A third homepage test: the split hero with the "Can you name this species?" quiz. */
+export const homePreviewQuizPath = "/home-preview-3";
+/** Colour of a project status label: completed = green, ongoing = amber, development = blue. */
+export type ProjectStatusTone = "completed" | "ongoing" | "development";
 
 export const homeContent = {
   hero: {
-    title: "Research. Innovation. Conservation.",
-    description: ["Building a Resilient Nepal Through", "Tech-Powered Conservation"],
+    // Says what the organization does; every claim comes from the projects and publications.
+    title: "Field science and technology for Nepal's wildlife",
+    description:
+      "We run citizen-science butterfly and moth surveys with communities, publish the records free to read, and are building an AI tool that identifies Nepal's animals. Based in Pokhara.",
     image: {
       src: "/images/news/butterfly-watching-godavari/participants-observing.jpg",
       width: 1440,
@@ -373,29 +382,46 @@ export const homeContent = {
       alt: "Two participants watching butterflies through binoculars in dense forest at the Godawari Butterfly Watch",
     },
   },
-  about: {
-    title: "About Greenalaya Nepal",
-    body: "Greenalaya Nepal connects scientific research, environmental innovation, and community action to understand, protect, and restore nature.",
-    detail:
-      "We are based in Pokhara and work with researchers, volunteers, and partner organizations across Nepal.",
-    image: {
-      src: siteConfig.images.communityHero,
-      width: 1024,
-      height: 628,
-      alt: "Participants of a Greenalaya Nepal butterfly watch gathered for a group photo, with forested hills behind them",
-    },
+  /** The original homepage-preview hero wording, used by /home-preview-2. */
+  heroOriginal: {
+    title: "Research. Technology. Conservation.",
+    // Non-breaking hyphen (U+2011): keeps "Tech-Powered" together instead of splitting it on phones.
+    description: "Building a Resilient Nepal Through Tech‑Powered Conservation",
+    primaryLabel: "Explore Our Work",
+    secondaryLabel: "Get Involved",
+    /** The supporters shown under the hero's buttons, each linking to its own site. */
+    supporters: [
+      {
+        name: "Idea Wild",
+        logo: "/images/collaborators/supported-idea-wild.png",
+        href: "https://ideawild.org/",
+      },
+      {
+        name: "The Mohamed bin Zayed Species Conservation Fund",
+        logo: "/images/collaborators/supported-mbz.jpg",
+        href: "https://www.speciesconservation.org/",
+      },
+    ],
   },
   work: {
     title: "Our Work in Action",
-    /** Projects themselves come from the project list (newest first); these add homepage-only detail. */
+    /**
+     * Projects come from the project list (newest first); these add homepage-only detail.
+     * Status label and colour per project slug: completed = green, ongoing = amber, development = blue.
+     */
     statuses: {
-      "moths-of-bagmati-province": "Collecting photographs",
-      "chinari-ai-wildlife-classification": "In development",
-      "kathmandu-valley-butterfly-documentation": "Completed · free book",
-    } as Record<string, string>,
+      "moths-of-bagmati-province": { label: "Ongoing · collecting photographs", tone: "ongoing" },
+      "chinari-ai-wildlife-classification": { label: "In development", tone: "development" },
+      "kathmandu-valley-butterfly-documentation": {
+        label: "Completed · free book",
+        tone: "completed",
+      },
+    } as Record<string, { label: string; tone: ProjectStatusTone }>,
     images: {
       "/images/projects/moths-of-bagmati-province.jpg": {
         alt: "A large orange silk moth resting on a whitewashed wall",
+        // The moth sits in the lower half, under a wooden beam; keep it in frame when cropped.
+        position: "50% 85%",
       },
       "/images/projects/godawari-butterfly-watch.webp": {
         alt: "A brown butterfly resting with its wings open on a rock",
@@ -405,7 +431,7 @@ export const homeContent = {
         darkSrc: "/images/projects/chinari-logo-dark.png",
         isLogo: true,
       },
-    } as Record<string, { alt: string; darkSrc?: string; isLogo?: boolean }>,
+    } as Record<string, { alt: string; darkSrc?: string; isLogo?: boolean; position?: string }>,
     more: {
       href: "/projects",
       label: "See all projects",
@@ -418,15 +444,15 @@ export const homeContent = {
     more: {
       href: "/publications",
       label: "See all publications",
-      description: "Free reports and books from our research and field programs.",
     },
   },
+  events: {
+    title: "Recent events",
+    description: "Field programs and campaigns we have run with our partners.",
+  },
   news: {
-    title: "News & Updates",
-    more: {
-      href: "/news",
-      label: "See all news",
-      description: "Field walks, events, and announcements from our work across Nepal.",
-    },
+    title: "News & Media",
+    tabs: { ours: "Our News", media: "Media Coverage" },
+    more: { href: "/news", label: "See all news" },
   },
 } as const;

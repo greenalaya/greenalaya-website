@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { sectionTitleClass } from "@/lib/typography";
 
 function SectionTag({ children, className }: { children: ReactNode; className?: string }) {
   return (
@@ -34,9 +35,7 @@ export function HomeSectionHeader({
         className={
           outlinedTitle
             ? "text-4xl font-bold tracking-tight text-[#4caf50] uppercase [-webkit-text-stroke:1px_#000] [paint-order:stroke_fill] md:text-5xl"
-            : `text-3xl font-bold sm:text-4xl lg:text-5xl ${
-                isDark ? "text-white" : "text-foreground"
-              }`
+            : `${sectionTitleClass} ${isDark ? "text-white" : "text-foreground"}`
         }
       >
         {title}

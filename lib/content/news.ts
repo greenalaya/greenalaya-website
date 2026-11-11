@@ -9,7 +9,7 @@ const newsColumns = "id, title, slug, excerpt, content, featured_image_url, publ
  * Retired posts. They are left out of the news list and sitemap, and their
  * URLs redirect elsewhere (see next.config.ts).
  */
-export const hiddenNewsSlugs = new Set([
+const hiddenNewsSlugs = new Set([
   "butterfly-images-kathmandu-valley-released",
   "greenalaya-nepal-launch",
 ]);

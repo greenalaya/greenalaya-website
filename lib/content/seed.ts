@@ -170,6 +170,16 @@ export const seedSupportedBy: Collaborator[] = [
     logo_caption: "Idea Wild",
   },
   {
+    id: "seed-mbz",
+    name: "The Mohamed bin Zayed Species Conservation Fund",
+    slug: "mohamed-bin-zayed-species-conservation-fund",
+    position: "Conservation funder",
+    bio: null,
+    photo_url: "/images/collaborators/supported-mbz.jpg",
+    website_url: "https://www.speciesconservation.org/",
+    logo_caption: "MBZ",
+  },
+  {
     id: "seed-ncsc",
     name: "Nature Conservation and Study Centre",
     slug: "nature-conservation-study-centre",
@@ -191,6 +201,7 @@ export const seedCollaborators: Collaborator[] = [
     position: null,
     bio: null,
     photo_url: "/images/collaborators/tinylife-finders.png",
+    website_url: "https://www.facebook.com/TinyLifeFinders",
   },
   {
     id: "seed-butterfly-watchers-nepal",

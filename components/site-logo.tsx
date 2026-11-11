@@ -8,6 +8,8 @@ type SiteLogoProps = {
   preload?: boolean;
   /** Surface behind the logo — picks a matching backdrop when needed. */
   surface?: "header" | "footer" | "default";
+  /** Set when the organisation's name is written next to the logo, so it isn't read out twice. */
+  decorative?: boolean;
 };
 
 const surfaceBackdrop: Record<NonNullable<SiteLogoProps["surface"]>, string> = {
@@ -22,6 +24,7 @@ export function SiteLogo({
   height = 55,
   preload = false,
   surface = "default",
+  decorative = false,
 }: SiteLogoProps) {
   return (
     <span
@@ -29,7 +32,7 @@ export function SiteLogo({
     >
       <Image
         src="/logo.png"
-        alt={siteConfig.name}
+        alt={decorative ? "" : siteConfig.name}
         width={width}
         height={height}
         className={className}

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Camera, CheckCircle2, FlaskConical, Leaf, MapPin, Users } from "lucide-react";
 import { mothsBagmatiProject } from "@/lib/content/moths-bagmati-project";
+import { pageTitleClass, sectionTitleClass } from "@/lib/typography";
 
 const alignmentIcons = [FlaskConical, Users, Leaf] as const;
 
@@ -30,7 +31,7 @@ export function MothsBagmatiProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#a8dc9d]">
               Citizen science &amp; biodiversity documentation
             </p>
-            <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h1 className={`${pageTitleClass} mt-5 text-white`}>
               Moonlight Dancer
               <span className="mt-2 block text-2xl font-normal leading-tight text-white/90 sm:text-3xl lg:text-4xl">
                 Documenting the Moths of Bagmati Province
@@ -56,7 +57,7 @@ export function MothsBagmatiProjectDetail() {
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className={`${sectionTitleClass} text-foreground`}>
               Scaling up from a valley to a province
             </h2>
           </div>
@@ -73,10 +74,7 @@ export function MothsBagmatiProjectDetail() {
         className="bg-secondary px-5 py-20 sm:px-8 sm:py-28 lg:px-12"
       >
         <div className="mx-auto max-w-7xl">
-          <h2
-            id="why-moths-heading"
-            className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
-          >
+          <h2 id="why-moths-heading" className={`${sectionTitleClass} max-w-3xl text-foreground`}>
             Why Moths?
           </h2>
           <div className="mt-10 space-y-6 text-base leading-8 text-muted-foreground sm:text-lg">
@@ -91,7 +89,7 @@ export function MothsBagmatiProjectDetail() {
 
       <section className="px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
-          <h2 className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <h2 className={`${sectionTitleClass} max-w-3xl text-foreground`}>
             How This Aligns With Greenalaya Nepal&apos;s Work
           </h2>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
@@ -131,7 +129,7 @@ export function MothsBagmatiProjectDetail() {
         <div className="mx-auto max-w-7xl">
           <h2
             id="contributes-to-heading"
-            className="max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl"
+            className={`${sectionTitleClass} max-w-3xl text-foreground`}
           >
             What This Contributes To
           </h2>
@@ -155,7 +153,7 @@ export function MothsBagmatiProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-primary">
               Why your contribution matters
             </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h2 className={`${sectionTitleClass} mt-4 text-foreground`}>
               Every submission is a verified data point
             </h2>
           </div>
@@ -176,9 +174,7 @@ export function MothsBagmatiProjectDetail() {
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#a8dc9d]">
             Contribute your moth photographs
           </p>
-          <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-bold tracking-tight sm:text-5xl">
-            Submit your sightings
-          </h2>
+          <h2 className={`${sectionTitleClass} mx-auto mt-4 max-w-3xl`}>Submit your sightings</h2>
           <p className="mx-auto mt-6 max-w-2xl leading-7 text-white/80">
             Include the following details with every photograph so it can be recorded as a verified
             data point:

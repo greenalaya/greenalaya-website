@@ -292,6 +292,7 @@ test("footer links route to dedicated pages", async ({ page }, testInfo) => {
     { name: "About Greenalaya Nepal", path: "/about" },
     { name: "Advisors & Partners", path: "/about#advisors" },
     { name: "Team", path: "/team" },
+    { name: "AI Labs", path: "/labs" },
     { name: "Projects", path: "/projects" },
     { name: "Publications", path: "/publications" },
     { name: "Blog", path: "/blog" },
@@ -595,33 +596,44 @@ test("homepage shows its funders after the hero", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
 });
 
-test("labs page lists what the organisation is building, each with its status", async ({
-  page,
-}) => {
+test("labs page explains the approach, Chinari and the research pillars", async ({ page }) => {
   await page.goto("/labs");
   // Hidden from search engines until the team approves it.
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Greenalaya Nepal Labs" }),
-  ).toBeVisible();
-  const building = page.locator("#building");
-  await expect(building.getByRole("heading", { name: "What We're Building" })).toBeVisible();
-  await expect(building.getByRole("listitem")).toHaveCount(4);
-  // Only work that is under way carries a "live" label; the rest say research or planned.
-  for (const [name, status] of [
-    ["Chinari", "In development"],
-    ["Junkiri", "Ongoing"],
-    ["AI for Hazard Monitoring", "Research"],
-    ["Early Warning, Pollution and Climate-Tech", "Planned"],
-  ]) {
-    const tile = building.getByRole("listitem").filter({ hasText: name });
-    await expect(tile.getByText(status, { exact: true })).toBeVisible();
-  }
-  await expect(building.getByRole("link", { name: /^Chinari/ })).toHaveAttribute(
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Building Nepal's foundational data and AI for climate and biodiversity",
+  );
+  await expect(page.getByText(/not a commercial testing lab/)).toBeVisible();
+  // The first screen links to partnering and to Chinari's own page.
+  await expect(page.getByRole("link", { name: "About Chinari" })).toHaveAttribute(
     "href",
     "/projects/chinari-ai-wildlife-classification",
   );
+  for (const name of [
+    "Good AI starts with good local data",
+    "Chinari: AI that identifies Nepal's animals",
+    "Our research pillars",
+  ]) {
+    await expect(page.getByRole("heading", { level: 2, name, exact: true })).toBeVisible();
+  }
+  await expect(page.getByRole("heading", { name: "Where we are going next" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "More about Chinari" })).toHaveCount(0);
+  // Only work that is under way carries a "live" label; the rest say concept. Junkiri first.
+  await expect(page.locator("#chinari").getByText("In development", { exact: true })).toBeVisible();
   await expect(page.locator("#chinari").getByRole("listitem")).toHaveCount(5);
+  const pillars = page.locator("#pillars").getByRole("listitem");
+  await expect(pillars).toHaveCount(3);
+  await expect(pillars.first()).toContainText("Junkiri");
+  for (const [name, status] of [
+    ["Junkiri", "Pilot, ongoing"],
+    ["GLOF", "Concept"],
+    ["pollution", "Concept"],
+  ]) {
+    await expect(
+      pillars.filter({ hasText: name }).getByText(status, { exact: true }),
+    ).toBeVisible();
+  }
+  // The same closing band as the other pages.
   await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
 });
 

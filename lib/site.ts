@@ -217,6 +217,7 @@ export const footerAboutLinks = [
 ] as const;
 
 export const footerWorkLinks = [
+  { text: "AI Labs", href: "/labs" },
   { text: "Projects", href: "/projects" },
   { text: "Publications", href: "/publications" },
 ] as const;

@@ -361,8 +361,8 @@ export function resolvePublicationPdfUrl(url: string | null | undefined): string
  * Homepage test pages: the previous homepage at /home-preview, kept for comparison.
  */
 export const homePreviewPath = "/home-preview";
-/** A third homepage test: the split hero with the "Can you name this species?" quiz. */
-export const homePreviewQuizPath = "/home-preview-3";
+/** Nature Detective: the species-naming game (was /home-preview-3). */
+export const natureDetectivePath = "/nature-detective";
 /** Greenalaya Nepal Labs: the technology side (see lib/content/labs.ts). */
 export const labsPath = "/labs";
 /** Colour of a project status label: completed = green, ongoing = amber, development = blue. */

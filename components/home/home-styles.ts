@@ -49,6 +49,6 @@ export const homeOnImageLinkClass =
 export const homeMeadowSkyClass =
   "bg-[linear-gradient(180deg,#eaf3fb_0%,#eef6e6_55%,#d6e9c8_100%)]";
 
-/** The card that holds the right-hand hero component on the homepage (/) and /home-preview-3. */
+/** The card that holds the right-hand hero component on the homepage (/). */
 export const homeHeroPanelClass =
   "rounded-2xl border border-home-line bg-home-surface p-3 shadow-[0_30px_60px_-34px_rgb(24_61_50/0.45)] sm:p-4";

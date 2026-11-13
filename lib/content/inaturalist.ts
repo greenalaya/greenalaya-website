@@ -18,6 +18,8 @@ const openLicences = new Set(["cc0", "cc-by", "cc-by-nc"]);
 
 export type QuizSpecies = {
   id: number;
+  /** The quiz group it belongs to (see quizGroups), when the quiz mixes groups. */
+  group?: QuizGroupId;
   name: string;
   scientificName: string;
   count: number;
@@ -49,8 +51,55 @@ function photographer(attribution: string | undefined) {
   );
 }
 
-/** The most-recorded species in Nepal, each with its openly licensed iNaturalist photo. */
-export async function getNepalTopSpecies(limit = 12): Promise<QuizSpecies[] | null> {
+/**
+ * The groups the species quiz covers. Each is an iNaturalist taxon in Nepal, research-grade
+ * records only. Fireflies have no `query`: Nepal has too few firefly records with usable photos
+ * (none confirmed yet) for a fair quiz, so the quiz shows them as coming soon.
+ */
+export const quizGroups = [
+  { id: "butterflies", label: "Butterflies", one: "butterfly", query: "taxon_id=47224" },
+  { id: "moths", label: "Moths", one: "moth", query: "taxon_id=47157&without_taxon_id=47224" },
+  { id: "fireflies", label: "Fireflies", one: "firefly", query: null },
+  { id: "bees", label: "Bees", one: "bee", query: "taxon_id=630955" },
+  { id: "dragonflies", label: "Dragonflies", one: "dragonfly", query: "taxon_id=47792" },
+  { id: "birds", label: "Birds", one: "bird", query: "taxon_id=3" },
+] as const;
+
+export type QuizGroupId = (typeof quizGroups)[number]["id"];
+
+export type QuizGroup = {
+  id: QuizGroupId;
+  label: string;
+  /** One of them, for the quiz's question ("Can you name this butterfly?"). */
+  one: string;
+  /** Null when there aren't enough species with usable photos (the group is "coming soon"). */
+  species: QuizSpecies[] | null;
+};
+
+/** Every quiz group with its most-recorded species in Nepal, fetched side by side. */
+export async function getNepalQuizGroups(limit = 20): Promise<QuizGroup[]> {
+  return Promise.all(
+    quizGroups.map(async (group) => ({
+      id: group.id,
+      label: group.label,
+      one: group.one,
+      species: group.query
+        ? await getNepalSpecies(
+            `place_id=${NEPAL_PLACE_ID}&${group.query}&quality_grade=research`,
+            limit,
+            group.id,
+          )
+        : null,
+    })),
+  );
+}
+
+/** The most-recorded species for a query, each with its openly licensed iNaturalist photo. */
+async function getNepalSpecies(
+  query: string,
+  limit: number,
+  group?: QuizGroupId,
+): Promise<QuizSpecies[] | null> {
   const data = await getJson<{
     results?: {
       count: number;
@@ -65,7 +114,7 @@ export async function getNepalTopSpecies(limit = 12): Promise<QuizSpecies[] | nu
         } | null;
       };
     }[];
-  }>(`/observations/species_counts?${researchQuery}&per_page=40`);
+  }>(`/observations/species_counts?${query}&per_page=40`);
 
   const species: QuizSpecies[] = [];
   for (const { count, taxon } of data?.results ?? []) {
@@ -73,6 +122,7 @@ export async function getNepalTopSpecies(limit = 12): Promise<QuizSpecies[] | nu
     if (!photo?.medium_url || !openLicences.has(photo.license_code ?? "")) continue;
     species.push({
       id: taxon.id,
+      ...(group ? { group } : {}),
       name: taxon.preferred_common_name ?? taxon.name,
       scientificName: taxon.name,
       count,

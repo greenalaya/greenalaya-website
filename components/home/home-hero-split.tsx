@@ -18,7 +18,7 @@ const secondaryButtonClass =
 /**
  * Split hero for the homepage tests. Left: the original preview wording
  * (homeContent.heroOriginal) and its actions. Right: `aside`, the interactive component each
- * test page tries out (the moth lamp on the homepage (/), the species quiz on /home-preview-3).
+ * test page tries out (the moth lamp on the homepage (/), the species quiz, now Nature Detective).
  *
  * With `fill`, on a laptop the hero is one full screen and `aside` takes the whole right half
  * of it, edge to edge: from the top of the window (under the see-through site header) to the

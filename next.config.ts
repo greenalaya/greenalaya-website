@@ -54,6 +54,8 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // The species game moved from its test address.
+      { source: "/home-preview-3", destination: "/nature-detective", permanent: true },
       {
         source: "/news/butterfly-watching-program-godavari-46-species",
         destination: "/news/godawari-butterfly-watch",

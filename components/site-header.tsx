@@ -6,13 +6,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SiteLogo } from "@/components/site-logo";
-import {
-  homePreviewPath,
-  homePreviewQuizPath,
-  labsPath,
-  primaryNavItems,
-  siteConfig,
-} from "@/lib/site";
+import { homePreviewPath, labsPath, primaryNavItems, siteConfig } from "@/lib/site";
 import { cn, rafThrottle } from "@/lib/utils";
 
 const MOBILE_MENU_ID = "mobile-primary-nav";
@@ -115,7 +109,7 @@ export function SiteHeader() {
   }, [menuOpen, closeMenu]);
 
   // Pages with their own "Get Involved" band jump to it; every other page goes to the homepage's.
-  const ctaHref = ["/", homePreviewPath, homePreviewQuizPath, labsPath, "/about"].includes(pathname)
+  const ctaHref = ["/", homePreviewPath, labsPath, "/about"].includes(pathname)
     ? "#get-involved"
     : "/#get-involved";
 

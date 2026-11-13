@@ -1,5 +1,4 @@
 import { expect, test, type Page } from "@playwright/test";
-import { impactIsDraft } from "@/lib/content/impact";
 
 const publicRoutes = [
   "/",
@@ -12,7 +11,7 @@ const publicRoutes = [
   "/contact",
   "/membership",
   "/home-preview",
-  "/home-preview-3",
+  "/nature-detective",
   "/labs",
 ];
 
@@ -320,7 +319,7 @@ test("closing band and footer exactly fill the last laptop screen", async ({ pag
     { width: 1920, height: 1080 },
   ]) {
     await page.setViewportSize(viewport);
-    for (const path of ["/", "/home-preview", "/home-preview-3", "/about"]) {
+    for (const path of ["/", "/home-preview", "/about"]) {
       await page.goto(path);
       // The band sizes itself from the footer height the footer publishes once hydrated.
       await page.waitForFunction(() =>
@@ -481,7 +480,7 @@ for (const path of [
   "/news/godawari-butterfly-watch",
   "/blog/ai-environment-nepal",
   "/home-preview",
-  "/home-preview-3",
+  "/nature-detective",
   "/labs",
 ]) {
   test(`${path} renders without console errors or horizontal overflow`, async ({ page }) => {
@@ -500,41 +499,6 @@ for (const path of [
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
-
-test("homepage preview renders every redesigned section", async ({ page }) => {
-  await page.goto("/home-preview-3");
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Research. Technology. Conservation." }),
-  ).toBeVisible();
-  for (const name of [
-    "Where We Work",
-    "Our Work in Action",
-    "Publications",
-    "Recent events",
-    "News & Media",
-  ]) {
-    await expect(page.getByRole("heading", { level: 2, name, exact: true })).toBeVisible();
-  }
-  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
-
-  const heroActions = page.locator("#home-hero-actions");
-  await expect(heroActions.getByRole("link", { name: "Explore Our Work" })).toHaveAttribute(
-    "href",
-    "#where-we-work",
-  );
-  await expect(heroActions.getByRole("link", { name: "Get Involved" })).toHaveAttribute(
-    "href",
-    "#get-involved",
-  );
-
-  for (const [section, href] of [
-    ["#our-work", "/projects"],
-    ["#publications", "/publications"],
-    ["#news", "/news"],
-  ] as const) {
-    await expect(page.locator(`${section} a[href="${href}"]`)).toBeVisible();
-  }
-});
 
 test("homepage shows its funders after the hero", async ({ page }) => {
   await page.goto("/");
@@ -696,63 +660,41 @@ test("homepage glides one screen per scroll on a laptop", async ({ page }, testI
   await expect.poll(pageY).toBe(funders);
 });
 
-test("third homepage preview has the species quiz in the hero", async ({ page }) => {
+test("Nature Detective: pick a group and a level, then name five species", async ({ page }) => {
   await page.goto("/home-preview-3");
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    /Research\.\s*Technology\.\s*Conservation\./,
-  );
-  // The quiz needs iNaturalist; without it the moth lamp stands in.
-  const quiz = page.locator('section[aria-labelledby="name-quiz-title"]');
-  if ((await quiz.count()) > 0) {
-    const options = quiz.locator("ul button");
+  // The old test address forwards to the game.
+  await expect(page).toHaveURL(/\/nature-detective$/);
+  await expect(page).toHaveTitle(/Nature Detective/);
+  await expect(page.getByRole("heading", { level: 1, name: "Nature Detective" })).toBeVisible();
+  // The photos come from iNaturalist; without it the page says so.
+  if (await page.getByText(/could not load its photos/).count()) return;
+
+  await page.getByRole("button", { name: /^Birds/ }).click();
+  // Level 1 is open, the others locked until it is passed.
+  await expect(page.getByRole("button", { name: /Level 1: Beginner/ })).toBeEnabled();
+  await expect(page.getByRole("button", { name: /Level 2: Explorer/ })).toBeDisabled();
+  await page.getByRole("button", { name: /Level 1: Beginner/ }).click();
+
+  // Five photos, three names each, then the score.
+  for (let photo = 1; photo <= 5; photo++) {
+    await expect(page.getByText(`Photo ${photo} of 5`)).toBeVisible();
+    const options = page.locator("main ul button");
     await expect(options).toHaveCount(3);
     await options.first().click();
-    await expect(quiz.getByRole("button", { name: "Next photo" })).toBeVisible();
-    await expect(quiz.getByText(/^[01] \/ 1 right$/)).toBeVisible();
-  } else {
-    await expect(page.locator('section[aria-labelledby="light-scene-title"]')).toBeVisible();
+    await page.getByRole("button", { name: photo < 5 ? "Next photo" : "See your score" }).click();
   }
-  await expect(page.locator("#supported-by").getByRole("link")).toHaveCount(2);
-  await expect(page.locator("#where-we-work")).toBeVisible();
+  await expect(page.getByText(/^[0-5] \/ 5$/)).toBeVisible();
+  await page.getByRole("button", { name: /All levels|Go to level 2/ }).click();
+  await page.getByRole("button", { name: "Choose another group" }).click();
+
+  // Fireflies are coming soon.
+  await page.getByRole("button", { name: /^Fireflies/ }).click();
+  await expect(page.getByText("Fireflies: coming soon")).toBeVisible();
 });
 
 test("homepage preview is hidden from search engines", async ({ page }) => {
-  await page.goto("/home-preview-3");
+  await page.goto("/nature-detective");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
-});
-
-test("homepage preview switches between our news and media coverage", async ({ page }) => {
-  await page.goto("/home-preview-3");
-  const news = page.locator("#news");
-  const ours = news.getByRole("tab", { name: "Our News" });
-  const media = news.getByRole("tab", { name: "Media Coverage" });
-
-  await expect(ours).toHaveAttribute("aria-selected", "true");
-  await media.click();
-  await expect(media).toHaveAttribute("aria-selected", "true");
-  const coverage = news.getByRole("tabpanel").getByRole("link").first();
-  // The newest article comes first, whichever newspaper it is in; it opens on that paper's site.
-  await expect(coverage).toHaveAttribute("href", /^https:\/\//);
-  await expect(coverage).toHaveAttribute("target", "_blank");
-
-  await media.press("ArrowLeft");
-  await expect(ours).toHaveAttribute("aria-selected", "true");
-  await expect(ours).toBeFocused();
-});
-
-test("homepage preview leads with partnership, not membership", async ({ page }) => {
-  await page.goto("/home-preview-3");
-  const involved = page.locator("#get-involved");
-  await expect(involved.getByRole("link", { name: "Partner With Us" })).toHaveAttribute(
-    "href",
-    "/contact?intent=partner",
-  );
-  await expect(involved.getByRole("link", { name: "Send a query" })).toHaveAttribute(
-    "href",
-    "/contact",
-  );
-  await expect(involved.locator('a[href="/membership"]')).toHaveCount(0);
 });
 
 test("about page keeps still advisors and links TinyLife Finders", async ({ page }) => {
@@ -793,36 +735,14 @@ test("/about-preview redirects to /about", async ({ page }) => {
   await expect(page).toHaveURL(/\/about$/);
 });
 
-test("homepage preview keeps unconfirmed impact figures off the page", async ({ page }) => {
-  await page.goto("/home-preview-3");
-  const impact = page.locator("#impact");
-  if (impactIsDraft) {
-    // Draft figures stay hidden until the team confirms them; no "Draft" label ships either.
-    await expect(impact).toHaveCount(0);
-    await expect(page.getByText(/^Draft:/)).toHaveCount(0);
-  } else {
-    await expect(impact.getByRole("listitem")).toHaveCount(6);
-    await expect(impact.getByText(/^Sources:/)).toHaveCount(0);
-    await expect(impact.getByText("174", { exact: true })).toBeVisible();
-  }
-});
-
 test("where we work map opens a card for each place", async ({ page }) => {
-  await page.goto("/home-preview-3");
+  await page.goto("/");
   const map = page.locator("#where-we-work");
 
   // The boundaries' credit is the map's hover note (and read by screen readers), not a line
   // under the map.
   await expect(map.locator("svg title")).toHaveText(/Official map of Nepal \(2020\)/);
   await expect(map.locator("p", { hasText: /Official map of Nepal/ })).toHaveCount(0);
-  // Pages that are not built of screens don't snap.
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe(
-    "none",
-  );
-  // The map follows the supporters (or the impact figures, once they are confirmed).
-  await expect(
-    page.locator(impactIsDraft ? "#supported-by + #where-we-work" : "#impact + #where-we-work"),
-  ).toBeVisible();
 
   // Three field sites as dots, and our own address as a house.
   const card = map.getByRole("dialog");

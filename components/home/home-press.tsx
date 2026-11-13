@@ -1,5 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
-import { homeContainerClass, homeSectionHeadingClass } from "@/components/home/home-styles";
+import {
+  homeContainerClass,
+  homeScreenClass,
+  homeSectionHeadingClass,
+} from "@/components/home/home-styles";
 import { cn } from "@/lib/utils";
 
 export type PressItem = {
@@ -23,7 +27,7 @@ const MAX_ARTICLES = 6;
  * article on the newspaper's own site. The articles come from lib/content/media-coverage.ts;
  * with none, the section is left out.
  *
- * On a laptop the section fills one screen (under the fixed 4.8rem header), like the sections
+ * On a laptop the section fills one screen (under the fixed header), like the sections
  * before it: the tiles share the height left under the heading, in two columns for up to four
  * articles (bar three, which sit side by side) and three columns beyond that.
  */
@@ -36,19 +40,18 @@ export function HomePress({ items }: { items: PressItem[] }) {
   const large = shown.length <= 2;
 
   return (
-    <section
-      id="press"
-      aria-labelledby="home-press-title"
-      // The floor keeps the tiles readable in a very short window; the section then runs longer.
-      className="scroll-mt-[4.8rem] bg-home-field py-20 md:py-28 lg:flex lg:h-[calc(100svh-4.8rem)] lg:min-h-[34rem] lg:flex-col lg:py-8"
-    >
+    <section id="press" aria-labelledby="home-press-title" className={homeScreenClass}>
       <div className={cn(homeContainerClass, "lg:flex lg:min-h-0 lg:flex-1 lg:flex-col")}>
-        <h2 id="home-press-title" className={`${homeSectionHeadingClass} text-home-ink`}>
+        <h2
+          id="home-press-title"
+          // Phones and tablets: centred, like the sections above.
+          className={`${homeSectionHeadingClass} text-home-ink max-lg:text-center`}
+        >
           In the National Press
         </h2>
         <ul
           className={cn(
-            "mt-8 grid gap-4 md:mt-10 md:grid-cols-2 lg:mt-8 lg:min-h-0 lg:flex-1 lg:auto-rows-fr lg:gap-6 lg:short:mt-6",
+            "mt-8 grid gap-3 md:mt-10 md:grid-cols-2 md:gap-4 lg:mt-8 lg:min-h-0 lg:flex-1 lg:auto-rows-fr lg:gap-6 lg:short:mt-6",
             threeColumns && "lg:grid-cols-3",
           )}
         >
@@ -58,7 +61,7 @@ export function HomePress({ items }: { items: PressItem[] }) {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/link flex h-full flex-col justify-between gap-8 bg-home-ground p-6 no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-home-action sm:p-7 lg:overflow-hidden"
+                className="group/link flex h-full flex-col justify-between gap-2 bg-home-field p-5 sm:gap-8 sm:p-6 no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-home-action sm:p-7 lg:overflow-hidden"
               >
                 <span className="flex items-start justify-between gap-6">
                   <span className="text-sm font-semibold text-home-accent">{item.outlet}</span>

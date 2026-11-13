@@ -12,8 +12,8 @@ const publicRoutes = [
   "/contact",
   "/membership",
   "/home-preview",
-  "/home-preview-2",
   "/home-preview-3",
+  "/labs",
 ];
 
 for (const path of publicRoutes) {
@@ -78,7 +78,7 @@ test("contact form renders required fields", async ({ page }) => {
 });
 
 test("stay ahead section renders on home page", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/home-preview");
   await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
   await expect(page.getByRole("link", { name: "Get Membership" })).toHaveAttribute(
     "href",
@@ -95,7 +95,7 @@ test("stay ahead section renders on home page", async ({ page }) => {
 });
 
 test("home page hero and core sections render", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/home-preview");
   const heroCta = page.locator("#shader-hero-cta");
 
   await expect(
@@ -116,7 +116,7 @@ test("home page hero and core sections render", async ({ page }) => {
 });
 
 test("home page anchor links scroll to target sections", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/home-preview");
   const heroCta = page.locator("#shader-hero-cta");
 
   await expect(heroCta.getByRole("link", { name: "Get Involved" })).toHaveAttribute(
@@ -132,7 +132,7 @@ test("home page anchor links scroll to target sections", async ({ page }) => {
 });
 
 test("home page CTA links to the membership page", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/home-preview");
   const membershipLink = page
     .locator("#get-involved")
     .getByRole("link", { name: "Get Membership" });
@@ -276,7 +276,8 @@ test("publications page uses theme background in dark mode", async ({ page }) =>
     .evaluate((element) => getComputedStyle(element).backgroundColor);
 
   expect(mainBackground).not.toBe("rgb(255, 255, 255)");
-  expect(mainBackground).toBe("rgb(15, 20, 16)");
+  // The dark theme is pure black.
+  expect(mainBackground).toBe("rgb(0, 0, 0)");
 });
 
 test("footer links route to dedicated pages", async ({ page }, testInfo) => {
@@ -308,6 +309,9 @@ test("closing band and footer exactly fill the last laptop screen", async ({ pag
     testInfo.project.name === "mobile-chrome",
     "The one-screen ending is a laptop layout; phones scroll through it.",
   );
+  // Twenty page loads (five pages at four sizes): more than the usual time limit allows when
+  // the dev server is slow to answer.
+  test.slow();
 
   for (const viewport of [
     { width: 1280, height: 720 },
@@ -316,7 +320,7 @@ test("closing band and footer exactly fill the last laptop screen", async ({ pag
     { width: 1920, height: 1080 },
   ]) {
     await page.setViewportSize(viewport);
-    for (const path of ["/", "/home-preview", "/home-preview-2", "/home-preview-3", "/about"]) {
+    for (const path of ["/", "/home-preview", "/home-preview-3", "/about"]) {
       await page.goto(path);
       // The band sizes itself from the footer height the footer publishes once hydrated.
       await page.waitForFunction(() =>
@@ -453,7 +457,7 @@ test("retired news posts redirect", async ({ page }) => {
 });
 
 test("strategic pillars are keyboard operable", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/home-preview");
   const pause = page.locator("#pillars").getByRole("button", { name: "Pause rotation" });
   await pause.click();
   await expect(
@@ -477,8 +481,8 @@ for (const path of [
   "/news/godawari-butterfly-watch",
   "/blog/ai-environment-nepal",
   "/home-preview",
-  "/home-preview-2",
   "/home-preview-3",
+  "/labs",
 ]) {
   test(`${path} renders without console errors or horizontal overflow`, async ({ page }) => {
     const errors: string[] = [];
@@ -498,12 +502,9 @@ for (const path of [
 }
 
 test("homepage preview renders every redesigned section", async ({ page }) => {
-  await page.goto("/home-preview");
+  await page.goto("/home-preview-3");
   await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Field science and technology for Nepal's wildlife",
-    }),
+    page.getByRole("heading", { level: 1, name: "Research. Technology. Conservation." }),
   ).toBeVisible();
   for (const name of [
     "Where We Work",
@@ -517,13 +518,13 @@ test("homepage preview renders every redesigned section", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
 
   const heroActions = page.locator("#home-hero-actions");
-  await expect(heroActions.getByRole("link", { name: "Explore our work" })).toHaveAttribute(
+  await expect(heroActions.getByRole("link", { name: "Explore Our Work" })).toHaveAttribute(
     "href",
     "#where-we-work",
   );
-  await expect(heroActions.getByRole("link", { name: "About us" })).toHaveAttribute(
+  await expect(heroActions.getByRole("link", { name: "Get Involved" })).toHaveAttribute(
     "href",
-    "/about",
+    "#get-involved",
   );
 
   for (const [section, href] of [
@@ -535,9 +536,10 @@ test("homepage preview renders every redesigned section", async ({ page }) => {
   }
 });
 
-test("second homepage preview shows its supporters after the hero", async ({ page }) => {
-  await page.goto("/home-preview-2");
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+test("homepage shows its funders after the hero", async ({ page }) => {
+  await page.goto("/");
+  // The homepage is the one page of the redesign that search engines index.
+  await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
   await expect(page.getByText(/^Meet the \d+ people/)).toHaveCount(0);
   // The two supporters have their own section on the screen straight after the hero (shared
   // with the impact figures), not inside the hero.
@@ -571,15 +573,17 @@ test("second homepage preview shows its supporters after the hero", async ({ pag
   await expect(scene.getByRole("button", { name: "Show the flower" })).toBeVisible();
   // No running count of the insects is shown.
   await expect(scene.getByText(/butterflies at the flower|moths at the light/)).toHaveCount(0);
-  // Phones and tablets get a pause button (top-left) that stops the flower or lamp following
-  // a finger; laptops, where a pointer steers it, don't need one.
+  // Phones and tablets: the scene starts paused, with "Double tap to play" over it, and a
+  // play/pause button (top-left); laptops, where a pointer steers it, don't need either.
   const touchControl = scene.getByRole("button", { name: /follow(ing)? your finger/ });
   if ((page.viewportSize()?.width ?? 0) < 1024) {
+    await expect(scene.getByText("Double tap to play")).toBeVisible();
+    await expect(touchControl).toHaveAccessibleName("Let the flower or lamp follow your finger");
+    await touchControl.click();
     await expect(touchControl).toHaveAccessibleName(
       "Stop the flower or lamp following your finger",
     );
-    await touchControl.click();
-    await expect(touchControl).toHaveAccessibleName("Let the flower or lamp follow your finger");
+    await expect(scene.getByText("Double tap to play")).toHaveCount(0);
   } else {
     await expect(touchControl).toBeHidden();
   }
@@ -587,13 +591,18 @@ test("second homepage preview shows its supporters after the hero", async ({ pag
   // "Where We Work" and the first redesign's work, publications and news sections.
   const impact = page.locator("#supported-by + #impact");
   await expect(impact.getByRole("heading", { name: "Our impact so far" })).toBeVisible();
-  await expect(impact.getByRole("listitem")).toHaveCount(5);
-  // The sources line is left off this page to keep the screen uncrowded.
+  await expect(impact.getByRole("listitem")).toHaveCount(6);
+  // No sources line under the figures.
   await expect(impact.getByText(/^Sources:/)).toHaveCount(0);
   // ...and "Where We Work" follows that shared screen.
   await expect(
     page.locator("div:has(> #supported-by):has(> #impact) + #where-we-work"),
   ).toBeVisible();
+  // No browser snapping: phones scroll freely, and on a laptop the screen scroller glides
+  // from screen to screen instead (see the next test).
+  await expect
+    .poll(() => page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType))
+    .toBe("none");
   // After the map: the three flagship groups, two of them opening their project.
   const flagship = page.locator("#where-we-work + #flagship-species");
   await expect(flagship.getByRole("heading", { name: "Our Flagship Species" })).toBeVisible();
@@ -622,6 +631,71 @@ test("second homepage preview shows its supporters after the hero", async ({ pag
   await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
 });
 
+test("labs page lists what the organisation is building, each with its status", async ({
+  page,
+}) => {
+  await page.goto("/labs");
+  // Hidden from search engines until the team approves it.
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Greenalaya Nepal Labs" }),
+  ).toBeVisible();
+  const building = page.locator("#building");
+  await expect(building.getByRole("heading", { name: "What We're Building" })).toBeVisible();
+  await expect(building.getByRole("listitem")).toHaveCount(4);
+  // Only work that is under way carries a "live" label; the rest say research or planned.
+  for (const [name, status] of [
+    ["Chinari", "In development"],
+    ["Junkiri", "Ongoing"],
+    ["AI for Hazard Monitoring", "Research"],
+    ["Early Warning, Pollution and Climate-Tech", "Planned"],
+  ]) {
+    const tile = building.getByRole("listitem").filter({ hasText: name });
+    await expect(tile.getByText(status, { exact: true })).toBeVisible();
+  }
+  await expect(building.getByRole("link", { name: /^Chinari/ })).toHaveAttribute(
+    "href",
+    "/projects/chinari-ai-wildlife-classification",
+  );
+  await expect(page.locator("#chinari").getByRole("listitem")).toHaveCount(5);
+  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
+});
+
+test("homepage glides one screen per scroll on a laptop", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === "mobile-chrome", "Phones scroll freely, with no snapping.");
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await page.goto("/");
+  // The scroller is running once it has taken over from the browser's snapping.
+  await expect
+    .poll(() => page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType))
+    .toBe("none");
+
+  // Where each screen starts, just under the fixed header (4.5rem = 72px).
+  const screenTop = (selector: string) =>
+    page.evaluate(
+      (selector) =>
+        Math.round(
+          document.querySelector(selector)!.getBoundingClientRect().top + window.scrollY - 72,
+        ),
+      selector,
+    );
+  const pageY = () => page.evaluate(() => Math.round(window.scrollY));
+
+  // One notch of the wheel glides from the hero to the funders' screen, and no further.
+  await page.mouse.move(150, 400);
+  await page.mouse.wheel(0, 100);
+  const funders = await screenTop("div:has(> #supported-by)");
+  await expect.poll(pageY).toBe(funders);
+  await page.waitForTimeout(400);
+  expect(await pageY()).toBe(funders);
+
+  // The keyboard moves a screen at a time too, and the wheel back up returns.
+  await page.keyboard.press("ArrowDown");
+  await expect.poll(pageY).toBe(await screenTop("#where-we-work"));
+  await page.mouse.wheel(0, -100);
+  await expect.poll(pageY).toBe(funders);
+});
+
 test("third homepage preview has the species quiz in the hero", async ({ page }) => {
   await page.goto("/home-preview-3");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
@@ -644,12 +718,12 @@ test("third homepage preview has the species quiz in the hero", async ({ page })
 });
 
 test("homepage preview is hidden from search engines", async ({ page }) => {
-  await page.goto("/home-preview");
+  await page.goto("/home-preview-3");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
 });
 
 test("homepage preview switches between our news and media coverage", async ({ page }) => {
-  await page.goto("/home-preview");
+  await page.goto("/home-preview-3");
   const news = page.locator("#news");
   const ours = news.getByRole("tab", { name: "Our News" });
   const media = news.getByRole("tab", { name: "Media Coverage" });
@@ -668,7 +742,7 @@ test("homepage preview switches between our news and media coverage", async ({ p
 });
 
 test("homepage preview leads with partnership, not membership", async ({ page }) => {
-  await page.goto("/home-preview");
+  await page.goto("/home-preview-3");
   const involved = page.locator("#get-involved");
   await expect(involved.getByRole("link", { name: "Partner With Us" })).toHaveAttribute(
     "href",
@@ -720,62 +794,62 @@ test("/about-preview redirects to /about", async ({ page }) => {
 });
 
 test("homepage preview keeps unconfirmed impact figures off the page", async ({ page }) => {
-  await page.goto("/home-preview");
+  await page.goto("/home-preview-3");
   const impact = page.locator("#impact");
   if (impactIsDraft) {
     // Draft figures stay hidden until the team confirms them; no "Draft" label ships either.
     await expect(impact).toHaveCount(0);
     await expect(page.getByText(/^Draft:/)).toHaveCount(0);
   } else {
-    await expect(impact.getByRole("listitem")).toHaveCount(5);
-    await expect(impact.getByText(/^Sources:/)).toBeVisible();
+    await expect(impact.getByRole("listitem")).toHaveCount(6);
+    await expect(impact.getByText(/^Sources:/)).toHaveCount(0);
     await expect(impact.getByText("174", { exact: true })).toBeVisible();
   }
 });
 
-test("where we work map filters and selects places", async ({ page }) => {
-  await page.goto("/home-preview");
+test("where we work map opens a card for each place", async ({ page }) => {
+  await page.goto("/home-preview-3");
   const map = page.locator("#where-we-work");
 
-  await expect(map.getByText(/Official map of Nepal \(2020\)/)).toBeVisible();
-  // The map follows the hero (or the impact figures, once they are confirmed).
-  await expect(page.locator("main > section:nth-child(2)")).toHaveAttribute(
-    "id",
-    impactIsDraft ? "where-we-work" : "impact",
+  // The boundaries' credit is the map's hover note (and read by screen readers), not a line
+  // under the map.
+  await expect(map.locator("svg title")).toHaveText(/Official map of Nepal \(2020\)/);
+  await expect(map.locator("p", { hasText: /Official map of Nepal/ })).toHaveCount(0);
+  // Pages that are not built of screens don't snap.
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe(
+    "none",
   );
-
-  await map.getByRole("button", { name: "Hetauda Forestry Complex, Makwanpur" }).click();
+  // The map follows the supporters (or the impact figures, once they are confirmed).
   await expect(
-    map.getByRole("heading", { level: 3, name: "Hetauda Forestry Complex" }),
+    page.locator(impactIsDraft ? "#supported-by + #where-we-work" : "#impact + #where-we-work"),
   ).toBeVisible();
 
-  await map.getByRole("button", { name: "Pollinators", exact: true }).click();
-  await expect(map.getByRole("button", { name: /^Moths project: Bagmati Province$/ })).toHaveCount(
-    0,
-  );
-  await map.getByRole("button", { name: "All work", exact: true }).click();
-  await expect(
-    map.getByRole("button", { name: /^Moths project: Bagmati Province$/ }),
-  ).toBeVisible();
-
-  await map.getByText(/^All places/).click();
+  // Three field sites as dots, and our own address as a house.
+  const card = map.getByRole("dialog");
+  await expect(card).toHaveCount(0);
   await map
-    .getByRole("button", { name: /Kathmandu district/ })
-    .last()
+    .getByRole("button", { name: "Pollinator Week 2026: Forestry Complex, Hetauda" })
     .click();
-  await expect(map.getByRole("heading", { level: 3, name: "Kathmandu district" })).toBeVisible();
-});
+  await expect(card).toContainText("18+ Participants");
+  await expect(card).toContainText("10+ Pollinators found");
 
-test("where we work map keeps a selection that matches the filter", async ({ page }) => {
-  await page.goto("/home-preview");
-  const map = page.locator("#where-we-work");
+  await map.getByRole("button", { name: "Butterfly Watch Event: Godawari Forest Area" }).click();
+  await expect(card).toContainText("46+ Butterflies found");
 
-  await map.getByRole("button", { name: /^Kathmandu district: 22 documented locations$/ }).click();
-  await expect(map.getByRole("heading", { level: 3, name: "Kathmandu district" })).toBeVisible();
+  await map.getByRole("button", { name: "Greenalaya Nepal: Hemja, Pokhara" }).click();
+  await expect(card).toContainText("Gandaki Province");
 
-  // Kathmandu's butterfly documentation is not pollinator work, so a pollinator site is selected.
-  await map.getByRole("button", { name: "Pollinators", exact: true }).click();
-  await expect(
-    map.getByRole("heading", { level: 3, name: "Ranibari Community Forest" }),
-  ).toBeVisible();
+  await card.getByRole("button", { name: "Close" }).click();
+  await expect(card).toHaveCount(0);
+
+  // Clicking the same mark again closes its card, and so does a click anywhere else.
+  const home = map.getByRole("button", { name: "Greenalaya Nepal: Hemja, Pokhara" });
+  await home.click();
+  await expect(card).toBeVisible();
+  await home.click();
+  await expect(card).toHaveCount(0);
+  await home.click();
+  await expect(card).toBeVisible();
+  await map.getByRole("heading", { name: "Where We Work" }).click();
+  await expect(card).toHaveCount(0);
 });

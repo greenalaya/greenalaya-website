@@ -8,7 +8,7 @@ import { homePreviewQuizPath, siteConfig } from "@/lib/site";
 import { pageMetadata } from "@/lib/seo";
 
 /**
- * Third homepage test: the same page as /home-preview-2, with the "Can you name this
+ * Third homepage test: the same page as the homepage (/), with the "Can you name this
  * species?" quiz on the right of the hero instead of the moth lamp. The quiz uses live
  * iNaturalist data; if that can't be reached, the moth lamp stands in. Not indexed.
  */

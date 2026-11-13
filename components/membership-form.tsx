@@ -63,6 +63,9 @@ export function MembershipForm() {
   const [permanentAddress, setPermanentAddress] = useState("");
   const [currentAddress, setCurrentAddress] = useState("");
   const [sameAsPermanent, setSameAsPermanent] = useState(false);
+  // The payment QR (public/images/membership-payment-qr.png) is added separately; until it is
+  // there, the box says how to get the payment details instead of showing a broken image.
+  const [qrMissing, setQrMissing] = useState(false);
   const [clientError, setClientError] = useState<string | null>(null);
   const [preparing, setPreparing] = useState(false);
   const busy = pending || preparing;
@@ -355,25 +358,39 @@ export function MembershipForm() {
       <div className="space-y-4 border-t border-border pt-6">
         <h3 className="text-lg font-semibold text-foreground">Payment</h3>
         <p className="text-sm text-muted-foreground">
-          Pay the applicable membership fee using the QR code below, then upload your payment
-          receipt in the Required Documents section.
+          Pay the applicable membership fee
+          {qrMissing ? "" : " using the QR code below"}, then upload your payment receipt in the
+          Required Documents section.
         </p>
         <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-border bg-secondary/50 p-6 text-center sm:items-start sm:text-left">
-          <Image
-            src="/images/membership-payment-qr.png"
-            alt="Scan to pay your Greenalaya Nepal membership fee"
-            width={200}
-            height={200}
-            unoptimized
-            className="size-[200px] rounded-md border border-border bg-card object-contain"
-          />
-          <p className="text-xs text-muted-foreground">
-            If the QR code has not loaded yet, email{" "}
-            <a href={`mailto:${siteContact.email}`} className="underline hover:opacity-70">
-              {siteContact.email}
-            </a>{" "}
-            for payment details.
-          </p>
+          {qrMissing ? (
+            <p className="text-sm text-foreground">
+              Email{" "}
+              <a href={`mailto:${siteContact.email}`} className="underline hover:opacity-70">
+                {siteContact.email}
+              </a>{" "}
+              for the payment details.
+            </p>
+          ) : (
+            <>
+              <Image
+                src="/images/membership-payment-qr.png"
+                alt="Scan to pay your Greenalaya Nepal membership fee"
+                width={200}
+                height={200}
+                unoptimized
+                onError={() => setQrMissing(true)}
+                className="size-[200px] rounded-md border border-border bg-card object-contain"
+              />
+              <p className="text-xs text-muted-foreground">
+                If the QR code has not loaded yet, email{" "}
+                <a href={`mailto:${siteContact.email}`} className="underline hover:opacity-70">
+                  {siteContact.email}
+                </a>{" "}
+                for payment details.
+              </p>
+            </>
+          )}
         </div>
       </div>
 

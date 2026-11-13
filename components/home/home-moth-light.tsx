@@ -271,10 +271,10 @@ export function HomeMothLight({ fill = false }: { fill?: boolean }) {
   // laptop the light canvas also spans the hero's left half, so the glow can cross into it.
   const glowRef = useRef<HTMLCanvasElement>(null);
   const isOnRef = useRef(true);
-  const isPausedRef = useRef(false);
+  const isPausedRef = useRef(true);
   const redrawRef = useRef<(() => void) | null>(null);
   const [isOn, setIsOn] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
 
   useEffect(() => {
     isOnRef.current = isOn;
@@ -455,22 +455,48 @@ export function HomeMothLight({ fill = false }: { fill?: boolean }) {
     });
     theme.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
+    // Laptops: the lamp or flower always follows the pointer. Phones and tablets: only while
+    // playing (after a double tap); paused, a finger on the scene (say, scrolling past it)
+    // leaves the lamp or flower where it is, and the insects carry on flying round it.
+    const laptop = window.matchMedia("(min-width: 64rem)");
+    const following = () => laptop.matches || !isPausedRef.current;
     const onMove = (event: PointerEvent) => {
-      // While touch control is paused, a finger on the scene (say, scrolling past it) leaves
-      // the lamp or flower where it is; the insects carry on flying round it.
-      if (isPausedRef.current) return;
+      if (!following()) return;
       const rect = canvas.getBoundingClientRect();
       target.targetX = event.clientX - rect.left;
       target.targetY = event.clientY - rect.top;
     };
     const onLeave = () => {
-      if (isPausedRef.current) return;
+      if (!following()) return;
       target.targetX = rest().x;
       target.targetY = rest().y;
+    };
+    // Phones and tablets: a double tap starts play (or stops it). Starting, the scene glides to
+    // fill the screen from wherever it was, and the lamp or flower comes to the finger.
+    let lastTap = { time: -1000, x: 0, y: 0 };
+    const onTap = (event: PointerEvent) => {
+      if (laptop.matches) return;
+      const double =
+        event.timeStamp - lastTap.time < 350 &&
+        Math.hypot(event.clientX - lastTap.x, event.clientY - lastTap.y) < 40;
+      lastTap = { time: event.timeStamp, x: event.clientX, y: event.clientY };
+      if (!double) return;
+      lastTap.time = -1000;
+      const starting = isPausedRef.current;
+      isPausedRef.current = !starting;
+      setIsPaused(!starting);
+      if (!starting) return;
+      const scene = canvas.closest("section");
+      if (scene) {
+        const top = scene.getBoundingClientRect().top + window.scrollY - 72;
+        window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
+      }
+      onMove(event);
     };
     canvas.addEventListener("pointermove", onMove);
     canvas.addEventListener("pointerdown", onMove);
     canvas.addEventListener("pointerleave", onLeave);
+    canvas.addEventListener("pointerup", onTap);
 
     const resizer = new ResizeObserver(() => {
       resize();
@@ -479,6 +505,12 @@ export function HomeMothLight({ fill = false }: { fill?: boolean }) {
     resizer.observe(canvas);
     const onScreen = new IntersectionObserver(([entry]) => {
       isVisible = entry.isIntersecting;
+      // Out of view (say, the header's links took the visitor elsewhere): play stops, so the
+      // page scrolls normally again.
+      if (!entry.isIntersecting && !isPausedRef.current && !laptop.matches) {
+        isPausedRef.current = true;
+        setIsPaused(true);
+      }
     });
     onScreen.observe(canvas);
 
@@ -491,6 +523,7 @@ export function HomeMothLight({ fill = false }: { fill?: boolean }) {
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerdown", onMove);
       canvas.removeEventListener("pointerleave", onLeave);
+      canvas.removeEventListener("pointerup", onTap);
     };
   }, []);
 
@@ -499,7 +532,7 @@ export function HomeMothLight({ fill = false }: { fill?: boolean }) {
   const day = "dark:hidden";
   const night = "hidden dark:inline";
 
-  const sceneBackground = cn(homeMeadowSkyClass, "dark:bg-none dark:bg-[#0b100c]");
+  const sceneBackground = cn(homeMeadowSkyClass, "dark:bg-none dark:bg-black");
 
   // The scene shows no title; this one names it for screen readers only.
   const heading = (
@@ -577,6 +610,8 @@ export function HomeMothLight({ fill = false }: { fill?: boolean }) {
         aria-labelledby="light-scene-title"
         className={cn(
           "relative h-112 overflow-hidden rounded-2xl sm:h-128 lg:h-full lg:overflow-visible lg:rounded-none",
+          // Phones and tablets: one full screen under the header, edge to edge.
+          "max-lg:h-[calc(100svh-4.5rem)] max-lg:scroll-mt-[4.5rem] max-lg:rounded-none",
           sceneBackground,
         )}
       >
@@ -591,9 +626,24 @@ export function HomeMothLight({ fill = false }: { fill?: boolean }) {
         <canvas
           ref={canvasRef}
           aria-hidden
-          className="absolute inset-0 z-20 block size-full cursor-none touch-pan-y"
+          className={cn(
+            "absolute inset-0 z-20 block size-full cursor-none",
+            isPaused ? "touch-pan-y" : "max-lg:touch-none",
+          )}
         />
         {description}
+        {/* Phones and tablets, until a double tap starts play. */}
+        {isPaused ? (
+          <p
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-[28%] z-20 flex justify-center opacity-80 motion-reduce:hidden lg:hidden"
+          >
+            {/* In the open sky above the flower or lamp, where the insects gather. */}
+            <span className="rounded-full bg-white/75 px-5 py-2.5 text-lg font-semibold text-home-ink shadow-sm dark:bg-white/15">
+              Double tap to play
+            </span>
+          </p>
+        ) : null}
         {/* The words don't catch the pointer, so the lamp or flower follows it under them
             too. On a laptop they start below the site header, which the scene runs under. */}
         <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-3 p-4 sm:p-5 lg:justify-end lg:px-8 lg:pt-28">

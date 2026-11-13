@@ -6,6 +6,24 @@ export const homeContainerClass = "mx-auto w-full max-w-[1200px] px-5 sm:px-8";
 
 export const homeSectionHeadingClass = sectionTitleClass;
 
+/**
+ * The redesigned homepage's one spacing rhythm, so every section reads alike as the page
+ * scrolls: the space above and below a section, and the gap from its heading (or the line
+ * under the heading) to what it shows. A description line sits `mt-3` under its heading.
+ */
+export const homeSectionSpaceClass = "py-16 md:py-20";
+export const homeSectionBodyClass = "mt-8 md:mt-10";
+
+/**
+ * A section that is one screen on a laptop (under the fixed header, 4.5rem tall once the page has scrolled; its 1px border line overlaps the section) and a snap point:
+ * on pages that snap (see `[data-snap-screens]` in globals.css) scrolling settles with the
+ * section filling the screen. The floor keeps the content readable in a very short window;
+ * the section then runs longer. Phones and tablets keep the normal flow: 48px at each end on
+ * phones (96px from one section's content to the next heading), 56px on tablets (112px).
+ */
+export const homeScreenClass =
+  "snap-start scroll-mt-[4.5rem] py-12 md:py-14 lg:flex lg:h-[calc(100svh-4.5rem)] lg:min-h-[34rem] lg:flex-col lg:py-8";
+
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-home-action";
 
@@ -26,11 +44,11 @@ export const homeOnImageLinkClass =
 
 /**
  * The butterfly meadow's daytime sky (pale blue into meadow green). Shared by the scene and by
- * the hero's left half on /home-preview-2, so the two halves join without a seam.
+ * the hero's left half on the homepage (/), so the two halves join without a seam.
  */
 export const homeMeadowSkyClass =
   "bg-[linear-gradient(180deg,#eaf3fb_0%,#eef6e6_55%,#d6e9c8_100%)]";
 
-/** The card that holds the right-hand hero component on /home-preview-2 and -3. */
+/** The card that holds the right-hand hero component on the homepage (/) and /home-preview-3. */
 export const homeHeroPanelClass =
   "rounded-2xl border border-home-line bg-home-surface p-3 shadow-[0_30px_60px_-34px_rgb(24_61_50/0.45)] sm:p-4";

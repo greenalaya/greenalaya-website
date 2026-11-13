@@ -358,14 +358,13 @@ export function resolvePublicationPdfUrl(url: string | null | undefined): string
 }
 
 /**
- * Homepage redesign — test version served at /home-preview.
- * Once approved it replaces the current homepage and these become the default nav and copy.
+ * Homepage test pages: the previous homepage at /home-preview, kept for comparison.
  */
 export const homePreviewPath = "/home-preview";
-/** A second homepage test: the split hero with the moth lamp (a butterfly meadow by day). */
-export const homePreviewAltPath = "/home-preview-2";
 /** A third homepage test: the split hero with the "Can you name this species?" quiz. */
 export const homePreviewQuizPath = "/home-preview-3";
+/** Greenalaya Nepal Labs: the technology side (see lib/content/labs.ts). */
+export const labsPath = "/labs";
 /** Colour of a project status label: completed = green, ongoing = amber, development = blue. */
 export type ProjectStatusTone = "completed" | "ongoing" | "development";
 
@@ -382,7 +381,7 @@ export const homeContent = {
       alt: "Two participants watching butterflies through binoculars in dense forest at the Godawari Butterfly Watch",
     },
   },
-  /** The original homepage-preview hero wording, used by /home-preview-2. */
+  /** The original homepage-preview hero wording, used by the homepage (/). */
   heroOriginal: {
     title: "Research. Technology. Conservation.",
     // Non-breaking hyphen (U+2011): keeps "Tech-Powered" together instead of splitting it on phones.

@@ -6,7 +6,9 @@ import { cn } from "@/lib/utils";
 import {
   homeArrowIconClass,
   homeContainerClass,
+  homeScreenClass,
   homeSectionHeadingClass,
+  homeSectionSpaceClass,
 } from "@/components/home/home-styles";
 
 export type ShowcaseItem = {
@@ -31,10 +33,10 @@ type HomeShowcaseProps = {
   items: ShowcaseItem[];
   /** The "see all" panel. */
   more: { href: string; label: string };
-  /** Section background; the "see all" panel takes the other tone so it always stands out. */
+  /** Section background. */
   tone?: "ground" | "field";
   /**
-   * On a laptop the whole section fits one screen (under the fixed 4.8rem header): the images
+   * On a laptop the whole section fits one screen (under the fixed header): the images
    * take whatever height is left after the text, instead of a fixed shape.
    */
   inScreen?: boolean;
@@ -115,24 +117,24 @@ export function HomeShowcase({
       id={id}
       aria-labelledby={titleId}
       className={cn(
-        "py-24 md:py-32",
-        tone === "field" && "bg-home-field",
-        // The floor keeps the text readable in a very short window; the section then runs longer.
-        inScreen
-          ? "scroll-mt-[4.8rem] lg:flex lg:h-[calc(100svh-4.8rem)] lg:min-h-[34rem] lg:flex-col lg:py-8"
-          : "scroll-mt-24",
+        inScreen ? homeScreenClass : ["scroll-mt-24", homeSectionSpaceClass],
+        tone === "field" && "bg-home-field dark:bg-home-ground",
       )}
     >
       <div
         className={cn(homeContainerClass, inScreen && "lg:flex lg:min-h-0 lg:flex-1 lg:flex-col")}
       >
-        <h2 id={titleId} className={`${homeSectionHeadingClass} text-home-ink`}>
+        <h2
+          id={titleId}
+          // Phones and tablets: centred.
+          className={`${homeSectionHeadingClass} text-home-ink max-lg:text-center`}
+        >
           {title}
         </h2>
 
         <div
           className={cn(
-            "mt-12 grid gap-10 md:mt-16 lg:grid-cols-12 lg:gap-10",
+            "mt-8 grid gap-8 md:mt-10 md:gap-10 lg:grid-cols-12 lg:gap-10",
             inScreen && "lg:mt-8 lg:min-h-0 lg:flex-1 lg:grid-rows-[minmax(0,1fr)] lg:short:mt-6",
           )}
         >
@@ -140,11 +142,18 @@ export function HomeShowcase({
             <article className={cn("lg:col-span-7", inScreen && "lg:min-h-0")}>
               <Link
                 href={lead.href}
-                className={cn(linkClass, "block", inScreen && "lg:flex lg:h-full lg:flex-col")}
+                className={cn(
+                  linkClass,
+                  "block",
+                  // Phones: a row like the others, a small picture beside the title.
+                  "max-md:flex max-md:items-start max-md:gap-5",
+                  inScreen && "lg:flex lg:h-full lg:flex-col",
+                )}
               >
                 <div
                   className={cn(
                     "relative aspect-[4/3] overflow-hidden bg-home-field md:aspect-[16/9]",
+                    "max-md:w-32 max-md:shrink-0 sm:max-md:w-40",
                     inScreen ? "lg:aspect-auto lg:min-h-0 lg:flex-1" : "lg:aspect-[4/3]",
                   )}
                 >
@@ -157,6 +166,7 @@ export function HomeShowcase({
                   className={cn(
                     "text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.15] font-bold tracking-tight text-balance text-home-ink",
                     "mt-6",
+                    "max-md:mt-0 max-md:min-w-0 max-md:text-xl max-md:leading-snug max-md:tracking-normal",
                     inScreen && "lg:mt-4 lg:text-[clamp(1.75rem,2.4vw,2.125rem)]",
                   )}
                 >
@@ -165,7 +175,7 @@ export function HomeShowcase({
                 {lead.description ? (
                   <p
                     className={cn(
-                      "mt-4 line-clamp-4 max-w-[60ch] text-lg leading-relaxed text-home-ink",
+                      "mt-4 line-clamp-4 max-w-[60ch] text-lg leading-relaxed text-home-ink max-md:hidden",
                       inScreen && "lg:mt-3 lg:line-clamp-2 lg:max-w-none lg:text-base",
                     )}
                   >
@@ -222,10 +232,13 @@ export function HomeShowcase({
               className={cn(
                 linkClass,
                 "flex flex-col p-7 sm:p-8 md:col-span-2 lg:col-span-1",
-                // The label sits in the middle of the panel, on the left.
-                "justify-center",
-                tone === "field" ? "bg-home-ground" : "bg-home-field",
+                // The label sits in the centre of its space, on the section's own background
+                // (no box of its own).
+                "items-center justify-center text-center",
                 inScreen && "lg:min-h-0 lg:px-7 lg:py-5",
+                // Phones and tablets: no padding around the link (still 44px tall to tap), so the
+                // space after it matches the space between the other sections.
+                "max-lg:min-h-11 max-lg:p-0",
               )}
             >
               <span className="inline-flex items-center gap-3 text-xl font-bold text-home-ink">

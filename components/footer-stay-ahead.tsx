@@ -166,7 +166,7 @@ function FooterImageCarousel({ themed, compact = false }: { themed: boolean; com
 type FooterStayAheadProps = {
   /**
    * Follow the light/dark theme (pale green with black text in light mode) instead of the
-   * always-dark band, and lead with partnership instead of membership. Used by /home-preview
+   * always-dark band, and lead with partnership instead of membership. Used by the homepage (/)
    * and /about.
    */
   themed?: boolean;
@@ -185,10 +185,8 @@ export function FooterStayAhead({ themed = false, fillScreenWithFooter }: Footer
       ref={sectionRef}
       id="get-involved"
       className={cn(
-        "relative scroll-mt-24 lg:scroll-mt-[4.5rem]",
-        themed
-          ? "bg-home-field text-home-ink dark:bg-[#0E110F]"
-          : "-mt-[8px] bg-[#0E110F] text-white",
+        "relative snap-start scroll-mt-24 lg:scroll-mt-[4.5rem]",
+        themed ? "bg-home-field text-home-ink dark:bg-black" : "-mt-[8px] bg-[#0E110F] text-white",
         // On laptops the band stretches so it and the footer exactly fill the last screen under
         // the header, on every page that ends with it; no strip of the previous section shows.
         "lg:flex lg:min-h-[calc(100svh-4.5rem-var(--site-footer-h,16.75rem))] lg:flex-col lg:justify-center",
@@ -211,6 +209,8 @@ export function FooterStayAhead({ themed = false, fillScreenWithFooter }: Footer
           themed && "lg:py-7",
           // Every themed band (About, Home-preview) shares the redesign's 1200px column.
           themed && "w-full max-w-[1200px] px-5 sm:px-8 lg:py-9",
+          // Phones: the same 48px the homepage sections end with.
+          themed && "max-md:py-12",
         )}
       >
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
@@ -232,6 +232,9 @@ export function FooterStayAhead({ themed = false, fillScreenWithFooter }: Footer
               className={cn(
                 "mt-4 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:mt-5 lg:mt-8 lg:justify-start",
                 themed && "lg:mt-5",
+                // Phones (themed band): side by side while they fit; when crowded, two on top
+                // and the third centred below.
+                themed && "max-sm:flex-row max-sm:flex-wrap max-sm:justify-center max-sm:gap-2",
               )}
             >
               {(themed ? themedInvolvementTabs : involvementTabs).map((tab) => (
@@ -243,6 +246,9 @@ export function FooterStayAhead({ themed = false, fillScreenWithFooter }: Footer
                   className={cn(
                     "w-full shrink-0 no-underline sm:w-auto",
                     themed && "lg:px-4 lg:py-3 lg:text-sm xl:px-6 xl:py-3.5 xl:text-base",
+                    // Phones: each at its own width, its label on one line.
+                    themed &&
+                      "max-sm:min-h-11 max-sm:w-auto max-sm:flex-none max-sm:px-4 max-sm:py-2.5 max-sm:whitespace-nowrap",
                     themed && tab.variant === "outlineLight" && outlineThemedClass,
                   )}
                 >

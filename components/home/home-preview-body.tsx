@@ -2,6 +2,7 @@ import { FooterStayAhead } from "@/components/footer-stay-ahead";
 import { HomeEventsNews } from "@/components/home/home-events-news";
 import { HomeFlagshipSpecies } from "@/components/home/home-flagship-species";
 import { HomeImpact } from "@/components/home/home-impact";
+import { HomeScreenScroller } from "@/components/home/home-screen-scroller";
 import { HomePress } from "@/components/home/home-press";
 import { HomePublications, type PublicationListItem } from "@/components/home/home-publications";
 import { HomeShowcase, type ShowcaseItem } from "@/components/home/home-showcase";
@@ -15,6 +16,8 @@ import { getPublications } from "@/lib/content/resources";
 import { formatLongDate, formatMonthYearParts } from "@/lib/format";
 import type { ReactNode } from "react";
 import { homeContent, publicationPageCounts } from "@/lib/site";
+import { homeScreenClass } from "@/components/home/home-styles";
+import { cn } from "@/lib/utils";
 
 const byNewest =
   <T,>(date: (item: T) => string | null) =>
@@ -29,7 +32,7 @@ export async function HomePreviewBody({
   hero,
   supporters,
   showDraftImpact = false,
-  workMapInScreen = false,
+  oneScreenEach = false,
   originalShowcases = false,
   flagshipSpecies = false,
 }: {
@@ -43,14 +46,18 @@ export async function HomePreviewBody({
   originalShowcases?: boolean;
   hero: ReactNode;
   /**
-   * A "Supported by" section to share one screen with the impact figures: on a laptop the two
-   * fill the screen after the hero together, like the hero fills the first.
+   * A "Supported by" section, straight after the hero. With `oneScreenEach` it shares one
+   * screen with the impact figures.
    */
   supporters?: ReactNode;
   /** Show the impact figures even while they are a draft (see HomeImpact). */
   showDraftImpact?: boolean;
-  /** On a laptop, "Where We Work" fills one screen, like the screens before it. */
-  workMapInScreen?: boolean;
+  /**
+   * On a laptop every section is one screen, and scrolling snaps from one to the next (the
+   * hero, the funders with the impact figures, "Where We Work" and so on, down to the closing
+   * band with the footer).
+   */
+  oneScreenEach?: boolean;
 }) {
   const [projects, publications, news] = await Promise.all([
     getProjectList(),
@@ -114,22 +121,33 @@ export async function HomePreviewBody({
   }));
 
   return (
-    <main className="bg-home-ground text-home-ink selection:bg-home-sage/60 selection:text-home-ink">
+    <main
+      data-snap-screens={oneScreenEach ? "" : undefined}
+      className="bg-home-ground text-home-ink selection:bg-home-sage/60 selection:text-home-ink"
+    >
+      {oneScreenEach ? <HomeScreenScroller /> : null}
       {hero}
-      {supporters ? (
-        // One screen for both (under the fixed 4.8rem header), their content centred in it.
-        <div className="border-t border-home-line py-16 md:py-20 lg:flex lg:min-h-[calc(100svh-4.8rem)] lg:flex-col lg:justify-center lg:py-10">
+      {oneScreenEach && supporters ? (
+        // One screen for both, their content centred in it. At least one screen rather than
+        // exactly one: in a window too short for both, the screen grows instead of its content
+        // spilling over the hero above.
+        <div
+          className={cn(
+            "border-t border-home-line lg:justify-center",
+            homeScreenClass,
+            "py-0 md:py-0 lg:h-auto lg:min-h-[calc(100svh-4.5rem)]",
+          )}
+        >
           {supporters}
-          <HomeImpact
-            publicationsCount={publications.length}
-            showDraft={showDraftImpact}
-            inScreen
-          />
+          <HomeImpact showDraft={showDraftImpact} inScreen />
         </div>
       ) : (
-        <HomeImpact publicationsCount={publications.length} showDraft={showDraftImpact} />
+        <>
+          {supporters}
+          <HomeImpact showDraft={showDraftImpact} />
+        </>
       )}
-      <HomeWorkMap inScreen={workMapInScreen} />
+      <HomeWorkMap inScreen={oneScreenEach} />
       {flagshipSpecies ? <HomeFlagshipSpecies /> : null}
       {originalShowcases ? (
         <>

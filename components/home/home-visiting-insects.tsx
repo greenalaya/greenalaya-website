@@ -21,11 +21,12 @@ type Visitor = {
 };
 
 const ARRIVE_EVERY_MS = 3000;
-// The most at once. Fireflies: six on a laptop-wide window, four on phones and tablets.
-// Butterflies are larger and brighter, so never more than two.
+// The most at once. Fireflies: six on a laptop-wide window, three on phones and tablets.
+// Butterflies are larger and brighter: two on a laptop, one on phones and tablets, where they
+// would otherwise cover what people read.
 const MAX_VISITORS: Record<Scene, { wide: number; narrow: number }> = {
-  night: { wide: 6, narrow: 4 },
-  day: { wide: 2, narrow: 2 },
+  night: { wide: 6, narrow: 3 },
+  day: { wide: 2, narrow: 1 },
 };
 const WIDE_FROM = 1024;
 const MARGIN = 40;
@@ -54,7 +55,7 @@ function drawFirefly(context: CanvasRenderingContext2D, firefly: Visitor) {
 }
 
 /**
- * Visitors over the sections below the hero (/home-preview-2): fireflies in the dark theme,
+ * Visitors over the sections below the hero (the homepage (/)): fireflies in the dark theme,
  * butterflies (the same as the hero's meadow) in the light theme. One flies in every 3
  * seconds; once there are six fireflies (four on phones and tablets) or two butterflies,
  * each newcomer sends the oldest flying off, so there are never more than that. They never

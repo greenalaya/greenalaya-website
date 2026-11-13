@@ -1,6 +1,6 @@
 /**
  * Copy for "Our Work in Action", "Publications" and "News & Updates" as they were in the first
- * homepage redesign. /home-preview-2 uses these sections in place of the newer ones.
+ * homepage redesign. the homepage (/) uses these sections in place of the newer ones.
  */
 
 export const homeContent = {

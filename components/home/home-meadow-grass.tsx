@@ -34,7 +34,7 @@ const blades = (() => {
 })();
 
 /**
- * Still grass along the foot of the hero's left half (/home-preview-2), matching the scene's
+ * Still grass along the foot of the hero's left half (the homepage (/)), matching the scene's
  * grass on the right in both themes. Drawn at its real size (not stretched): a wider half shows
  * more of it, up to 960px.
  */

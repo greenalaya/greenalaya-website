@@ -13,5 +13,6 @@ public/publications
 .vscode
 skills-lock.json
 
-# Generated map outlines (see the header comment in the file)
+# Generated map outlines (see the header comment in each file)
 lib/content/nepal-map.ts
+lib/content/nepal-districts.ts

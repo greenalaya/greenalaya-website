@@ -7,9 +7,9 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SiteLogo } from "@/components/site-logo";
 import {
-  homePreviewAltPath,
   homePreviewPath,
   homePreviewQuizPath,
+  labsPath,
   primaryNavItems,
   siteConfig,
 } from "@/lib/site";
@@ -115,13 +115,7 @@ export function SiteHeader() {
   }, [menuOpen, closeMenu]);
 
   // Pages with their own "Get Involved" band jump to it; every other page goes to the homepage's.
-  const ctaHref = [
-    "/",
-    homePreviewPath,
-    homePreviewAltPath,
-    homePreviewQuizPath,
-    "/about",
-  ].includes(pathname)
+  const ctaHref = ["/", homePreviewPath, homePreviewQuizPath, labsPath, "/about"].includes(pathname)
     ? "#get-involved"
     : "/#get-involved";
 
@@ -130,8 +124,8 @@ export function SiteHeader() {
       <header
         data-site-header
         className={cn(
-          "fixed top-0 right-0 left-0 z-[100] flex items-center justify-between border-b border-[#2e7d32]/15 bg-white/90 px-4 py-4 backdrop-blur-xl transition-all duration-300 sm:px-5 md:px-10 dark:border-[#2e7d32]/20 dark:bg-[#0a0f0a]/90",
-          scrolled && "bg-white/95 py-3.5 shadow-sm dark:bg-[#0a0f0a]/95 dark:shadow-none",
+          "fixed top-0 right-0 left-0 z-[100] flex items-center justify-between border-b border-[#2e7d32]/15 bg-white/90 px-4 py-4 backdrop-blur-xl transition-all duration-300 sm:px-5 md:px-10 dark:border-[#2e7d32]/20 dark:bg-black/90",
+          scrolled && "bg-white/95 py-3.5 shadow-sm dark:bg-black/95 dark:shadow-none",
         )}
       >
         <Link href="/" className="flex min-w-0 items-center gap-2 no-underline">
@@ -146,7 +140,9 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+        {/* From laptop width: on tablets the full row crowds the "Get Involved" button, so they
+            use the menu button, like phones. */}
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {primaryNavItems.map((item) => {
             const active = isNavItemActive(pathname, item.href);
             return (
@@ -166,12 +162,12 @@ export function SiteHeader() {
           <ModeToggle
             className={cn(
               iconButtonClass,
-              "focus-visible:ring-[#2e7d32] focus-visible:ring-offset-2 focus-visible:ring-offset-white data-[state=on]:bg-black/[0.08] dark:focus-visible:ring-[#8bd88f] dark:focus-visible:ring-offset-[#0a0f0a] dark:data-[state=on]:bg-white/15 dark:data-[state=on]:hover:bg-white/20",
+              "focus-visible:ring-[#2e7d32] focus-visible:ring-offset-2 focus-visible:ring-offset-white data-[state=on]:bg-black/[0.08] dark:focus-visible:ring-[#8bd88f] dark:focus-visible:ring-offset-black dark:data-[state=on]:bg-white/15 dark:data-[state=on]:hover:bg-white/20",
             )}
           />
           <Link
             href={ctaHref}
-            className="hidden rounded-full bg-gradient-to-br from-[#2e7d32] to-[#1b5e20] px-4 py-2 text-xs font-medium text-white no-underline transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(76,175,80,0.4)] sm:inline-flex sm:min-h-11 sm:items-center sm:px-6 sm:py-2.5 sm:text-sm"
+            className="hidden rounded-full bg-gradient-to-br from-[#2e7d32] to-[#1b5e20] px-4 py-2 text-xs font-medium whitespace-nowrap text-white no-underline transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(76,175,80,0.4)] sm:inline-flex sm:min-h-11 sm:items-center sm:px-6 sm:py-2.5 sm:text-sm"
           >
             Get Involved
           </Link>
@@ -179,7 +175,7 @@ export function SiteHeader() {
             ref={menuButtonRef}
             type="button"
             className={cn(
-              "inline-flex size-11 items-center justify-center rounded-full transition md:hidden",
+              "inline-flex size-11 items-center justify-center rounded-full transition lg:hidden",
               iconButtonClass,
             )}
             aria-expanded={menuOpen}
@@ -198,7 +194,7 @@ export function SiteHeader() {
       </header>
 
       {menuOpen ? (
-        <div className="fixed inset-0 z-[110] md:hidden" role="presentation">
+        <div className="fixed inset-0 z-[110] lg:hidden" role="presentation">
           <button
             type="button"
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -212,7 +208,7 @@ export function SiteHeader() {
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="absolute top-0 right-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-[#2e7d32]/15 bg-white shadow-2xl dark:border-[#2e7d32]/25 dark:bg-[#0a0f0a]"
+            className="absolute top-0 right-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-[#2e7d32]/15 bg-white shadow-2xl dark:border-[#2e7d32]/25 dark:bg-black"
           >
             <div className="flex items-center justify-between border-b border-black/10 px-5 py-4 dark:border-white/10">
               <p id={titleId} className="text-lg font-semibold text-[#2e7d32]">

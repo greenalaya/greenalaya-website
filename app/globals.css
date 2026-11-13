@@ -4,6 +4,15 @@
 /* Short screens (up to 820px tall, e.g. 1280x720 and 1366x768 laptops). */
 @custom-variant short (@media (max-height: 820px));
 
+/* Pages built from one-screen sections (/home-preview-2): on a laptop scrolling settles on
+   a whole section (HomeScreenScroller glides there; this is the fallback before its script
+   runs). Phones scroll freely, with no snapping: their sections run longer than the screen. */
+@media (min-width: 64rem) {
+  html:has([data-snap-screens]) {
+    scroll-snap-type: y mandatory;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #000000;
@@ -56,38 +65,41 @@
   --map-shaded: #6a8762;
 }
 
+/* Dark theme: every page and section background is pure black. Tiles and cards (the
+   "field" and "surface" tones) are a neutral near-black, with no green tint, so they keep
+   their shape on the black page; green stays for text, links and buttons only. */
 .dark {
-  --background: #0f1410;
+  --background: #000000;
   --foreground: #f0f4f0;
-  --card: #161c17;
+  --card: #121212;
   --card-foreground: #f0f4f0;
-  --popover: #161c17;
+  --popover: #121212;
   --popover-foreground: #f0f4f0;
   --primary: #4caf50;
-  --primary-foreground: #0f1410;
-  --secondary: #1e2a1f;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
   --secondary-foreground: #c8e6c9;
-  --muted: #1e2a1f;
+  --muted: #1a1a1a;
   --muted-foreground: #a3a3a3;
-  --accent: #1e3320;
+  --accent: #1a1a1a;
   --accent-foreground: #c8e6c9;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #2a352b;
-  --input: #2a352b;
+  --border: #2a2a2a;
+  --input: #2a2a2a;
   --ring: #4caf50;
 
-  --home-ground: #0f1410;
+  --home-ground: #000000;
   --home-ink: #ffffff;
   --home-muted: #a7b2a9;
-  --home-field: #18211a;
-  --home-surface: #161c17;
+  --home-field: #141414;
+  --home-surface: #141414;
   --home-accent: #8bd88f;
-  --home-forest: #1b2e22;
+  --home-forest: #141414;
   --home-on-forest: #ffffff;
   --home-on-forest-muted: #ffffff;
   --home-action: #8bd88f;
-  --home-action-foreground: #0f1410;
+  --home-action-foreground: #000000;
   --home-sage: #3d5a43;
   --home-line: rgb(233 237 230 / 0.1);
 
@@ -237,6 +249,17 @@ body {
 }
 
 /* The hero tree (/home-preview-2): its crown sways a degree either way, like in a breeze. */
+/* The hero's typing cursor (phones and tablets): on, off, on... */
+@keyframes hero-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 @keyframes tree-sway {
   from {
     transform: rotate(-0.8deg);
@@ -416,6 +439,6 @@ body {
 .dark .about-tone {
   --home-ink: #e9ede6;
   --home-muted: #a7b2a9;
-  --home-field: #1b251d;
-  --home-surface: #1d261f;
+  --home-field: #141414;
+  --home-surface: #141414;
 }

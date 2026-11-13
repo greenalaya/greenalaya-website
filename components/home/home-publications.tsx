@@ -31,7 +31,7 @@ export function HomePublications({ items }: { items: PublicationListItem[] }) {
     <section
       id="publications"
       aria-labelledby="home-publications-title"
-      className="scroll-mt-24 bg-home-field py-16 md:py-20"
+      className="scroll-mt-24 bg-home-field dark:bg-home-ground py-16 md:py-20"
     >
       <div className={homeContainerClass}>
         <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3">

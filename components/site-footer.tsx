@@ -143,9 +143,9 @@ export function SiteFooter() {
     <footer
       ref={footerRef}
       className={cn(
-        // In dark mode the closing band and the footer share a near-black ground; a hairline
+        // In dark mode the closing band and the footer share a black ground; a hairline
         // keeps them apart now that the footer's top padding is tight.
-        "w-full place-self-end bg-secondary dark:border-t dark:border-white/10 dark:bg-[#0E110F]",
+        "w-full place-self-end bg-secondary dark:border-t dark:border-white/10 dark:bg-black",
       )}
     >
       <div className={cn("mx-auto pt-8 pb-4 lg:pt-10 lg:pb-8", container)}>
@@ -200,7 +200,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-black/10 dark:border-white/10 dark:bg-[#050706]">
+      <div className="border-t border-black/10 dark:border-white/10 dark:bg-black">
         {/* Prerendered pages carry the build year; the browser renders the current one. */}
         <p
           className={cn(

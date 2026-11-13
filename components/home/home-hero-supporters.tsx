@@ -9,7 +9,7 @@ import { homeContent } from "@/lib/site";
  * each opening the supporter's own website. Light tiles (soft ivory in dark mode, so the
  * logos don't glare). A little smaller on small laptops, so the two stay side by side.
  *
- * `inScreen` (/home-preview-2): it shares one screen with the impact figures (see
+ * `inScreen` (the homepage (/)): it shares one screen with the impact figures (see
  * HomePreviewBody), so the screen sets the spacing and divider, and on short laptop screens
  * the logos shrink a little. To keep that screen uncrowded the heading stands alone, and it
  * says what the two organisations did: they gave the grants the projects ran on.
@@ -23,11 +23,19 @@ export function HomeHeroSupporters({ inScreen = false }: { inScreen?: boolean })
       aria-labelledby="hero-supporters-title"
       className={cn(
         "scroll-mt-24",
-        inScreen ? "pb-12 lg:pb-10" : "border-t border-home-line py-16 md:py-20",
+        inScreen
+          ? // Phones and tablets: room above, after the hero's scene.
+            "pt-12 pb-10 md:pt-14 md:pb-12 lg:pt-0 lg:pb-8 lg:short:pb-6"
+          : "border-t border-home-line py-16 md:py-20",
       )}
     >
       <div
-        className={`${homeContainerClass} flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-16`}
+        className={cn(
+          homeContainerClass,
+          "flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-16",
+          // Phones and tablets: the heading and logos centred.
+          inScreen && "max-lg:items-center max-lg:text-center",
+        )}
       >
         <div className="max-w-md">
           <h2 id="hero-supporters-title" className={`${homeSectionHeadingClass} text-home-ink`}>
@@ -40,7 +48,7 @@ export function HomeHeroSupporters({ inScreen = false }: { inScreen?: boolean })
             </p>
           )}
         </div>
-        <ul className="flex shrink-0 flex-wrap gap-4">
+        <ul className={cn("flex shrink-0 flex-wrap gap-4", inScreen && "max-lg:justify-center")}>
           {supporters.map((supporter) => (
             <li key={supporter.name}>
               <a
@@ -49,8 +57,11 @@ export function HomeHeroSupporters({ inScreen = false }: { inScreen?: boolean })
                 rel="noopener noreferrer"
                 aria-label={`${supporter.name} (opens in a new tab)`}
                 className={cn(
-                  "group/logo relative block size-40 rounded-xl bg-white p-4 transition-transform duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-home-action motion-safe:hover:-translate-y-0.5 sm:size-64 sm:p-5 lg:size-48 lg:p-4 xl:size-64 xl:p-5 dark:bg-[#e9ede6]",
-                  inScreen && "lg:short:size-44 lg:short:p-4",
+                  "group/logo relative block rounded-xl bg-white transition-transform duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-home-action motion-safe:hover:-translate-y-0.5 dark:bg-[#e9ede6]",
+                  // Sharing a screen with the impact figures, the tiles are 0.7 times the size.
+                  inScreen
+                    ? "size-20 p-2.5 sm:size-28 sm:p-3 lg:size-34 lg:p-3 xl:size-45 xl:p-3.5 lg:short:size-25 lg:short:p-2.5"
+                    : "size-40 p-4 sm:size-64 sm:p-5 lg:size-48 lg:p-4 xl:size-64 xl:p-5",
                 )}
               >
                 <span className="relative block size-full overflow-hidden rounded-lg">

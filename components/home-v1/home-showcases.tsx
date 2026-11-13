@@ -13,7 +13,7 @@ const byNewest =
  * "Our Work in Action", "Publications" and "News & Updates" as they were in the first
  * redesign: one large lead item with two smaller ones and a "see all" panel beside it, set in
  * the site's own type (lib/typography.ts) like every other section of the page.
- * Used by /home-preview-2 in place of the newer sections.
+ * Used by the homepage (/) in place of the newer sections.
  */
 export function HomeShowcases({
   projects,
@@ -72,6 +72,7 @@ export function HomeShowcases({
     <>
       <HomeShowcase
         id="our-work"
+        tone="field"
         title={work.title}
         items={projectItems}
         more={work.more}
@@ -82,11 +83,11 @@ export function HomeShowcases({
         title={homeContent.publications.title}
         items={publicationItems}
         more={homeContent.publications.more}
-        tone="field"
         inScreen
       />
       <HomeShowcase
         id="news"
+        tone="field"
         title={homeContent.news.title}
         items={newsItems}
         more={homeContent.news.more}

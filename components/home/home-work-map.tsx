@@ -1,527 +1,368 @@
 "use client";
 
-import { ArrowRight, ChevronDown } from "lucide-react";
-import Link from "next/link";
-import { useState, type CSSProperties } from "react";
-import { kathmanduValleyMap, mapAttribution, nepalMap } from "@/lib/content/nepal-map";
-import {
-  districtProjects,
-  provinceProjects,
-  workSites,
-  workThemes,
-  type WorkTheme,
-} from "@/lib/content/work-sites";
+import { House, Minus, Plus, X } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { nepalDistricts } from "@/lib/content/nepal-districts";
+import { mapAttribution, nepalMap } from "@/lib/content/nepal-map";
+import { fieldEventSites } from "@/lib/content/field-event-sites";
+import { workSites } from "@/lib/content/work-sites";
 import { cn } from "@/lib/utils";
 import {
-  homeArrowIconClass,
   homeContainerClass,
+  homeScreenClass,
+  homeSectionBodyClass,
   homeSectionHeadingClass,
+  homeSectionSpaceClass,
 } from "@/components/home/home-styles";
 
-type Filter = "all" | WorkTheme;
-type Selection =
-  | { type: "site"; id: string }
-  | { type: "district"; id: string }
-  | { type: "province"; id: string };
-
-type DetailItem = {
-  title: string;
-  date: string;
-  partners: string[];
-  href: string;
+/** A point on the map: what its card says, and where it is. */
+type Mark = {
+  id: string;
+  /** The card's lines; the first is its heading. */
+  lines: string[];
+  point: { x: number; y: number };
 };
 
-const valley = kathmanduValleyMap.bounds;
-const inValley = (lat: number, lon: number) =>
-  lat >= valley.minLat && lat <= valley.maxLat && lon >= valley.minLon && lon <= valley.maxLon;
+/** The field sites, with their place on the map. */
+const fieldSites: Mark[] = fieldEventSites.flatMap((item) => {
+  const place = workSites.find((site) => site.id === item.siteId);
+  if (!place) return [];
+  return [
+    {
+      id: item.siteId,
+      lines: [item.event, item.location, item.participants, item.found],
+      point: nepalMap.project(place.lon, place.lat),
+    },
+  ];
+});
 
-const percent = (value: number, total: number) => `${((value / total) * 100).toFixed(2)}%`;
+/** Greenalaya Nepal's address: Hemja, Pokhara (28.280500, 83.929270). */
+const home: Mark = {
+  id: "home",
+  lines: ["Greenalaya Nepal", "Hemja, Pokhara", "Gandaki Province"],
+  point: nepalMap.project(83.92927, 28.2805),
+};
 
-const focusRing =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-home-action";
+const marks = [...fieldSites, home];
 
-/** Stretches a small label's tap area past 24px (WCAG 2.5.8) without changing how it looks. */
-const tapAreaClass = "after:absolute after:-inset-x-1 after:-inset-y-1.5 after:content-['']";
+/** A mark's name for screen readers: its card's first two lines. */
+const nameOf = (mark: Mark) => mark.lines.slice(0, 2).join(": ");
 
-function Pin({
-  label,
-  kind,
-  selected,
-  left,
-  top,
-  onSelect,
+/**
+ * The field sites sit close together, so each mark's card hangs off it diagonally, in the
+ * direction that has the fewest other marks: that way an open card never hides another mark.
+ */
+function cornerFor(mark: Mark) {
+  const corners = [
+    { below: false, right: true },
+    { below: false, right: false },
+    { below: true, right: true },
+    { below: true, right: false },
+  ];
+  const others = marks.filter((other) => other.id !== mark.id);
+  const covered = (corner: (typeof corners)[number]) =>
+    others.filter(
+      (other) =>
+        other.point.x > mark.point.x === corner.right &&
+        other.point.y > mark.point.y === corner.below,
+    ).length;
+  return corners.reduce((best, corner) => (covered(corner) < covered(best) ? corner : best));
+}
+
+/** Phones and tablets: how far the map can be zoomed, step by step. */
+const ZOOMS = [1, 1.75, 2.5, 3.5];
+
+const zoomButtonClass =
+  "inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-home-ink/15 bg-home-ground/90 text-home-ink shadow-sm transition-colors duration-200 hover:bg-home-ground disabled:cursor-default disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-home-action";
+
+/** Runs `action` when Enter or Space is pressed on a map mark, as a button would. */
+const onPress = (action: () => void) => (event: KeyboardEvent) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  action();
+};
+
+/** The details of the clicked mark, in a card that hangs off its point by one corner. */
+function MarkCard({
+  mark,
+  onClose,
+  className,
 }: {
-  label: string;
-  kind: "site" | "base";
-  selected: boolean;
-  left: string;
-  top: string;
-  onSelect: () => void;
+  mark: Mark;
+  onClose: () => void;
+  className?: string;
 }) {
+  const { below, right } = cornerFor(mark);
+  const [heading, ...rest] = mark.lines;
+
   return (
-    <button
-      type="button"
-      aria-label={label}
-      aria-pressed={selected}
-      onClick={onSelect}
-      style={{ left, top }}
+    <div
+      role="dialog"
+      data-map-card
+      aria-label={nameOf(mark)}
+      style={{
+        left: `${(mark.point.x / nepalMap.width) * 100}%`,
+        top: `${(mark.point.y / nepalMap.height) * 100}%`,
+      }}
       className={cn(
-        "absolute z-10 flex size-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full",
-        focusRing,
+        "z-10 rounded-lg bg-home-ink py-3 pr-11 pl-4 text-home-ground shadow-lg",
+        // On a phone the map is too small to hold the card, so it sits under the map instead.
+        "max-sm:relative max-sm:inset-auto! max-sm:mt-3 sm:absolute sm:w-max sm:max-w-68",
+        className,
+        below ? "sm:translate-y-3" : "sm:-translate-y-[calc(100%+0.75rem)]",
+        right ? "sm:translate-x-3" : "sm:-translate-x-[calc(100%+0.75rem)]",
+        // The corner nearest the point is left square, so the card points at it.
+        below
+          ? right
+            ? "sm:rounded-tl-none"
+            : "sm:rounded-tr-none"
+          : right
+            ? "sm:rounded-bl-none"
+            : "sm:rounded-br-none",
       )}
     >
-      <span
-        aria-hidden
-        className={cn(
-          "block border-2 border-home-ground transition-transform duration-200",
-          kind === "base"
-            ? "size-3.5 rotate-45 bg-home-ink"
-            : "size-3.5 rounded-full bg-home-accent",
-          selected && "scale-150",
-        )}
-      />
-    </button>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close"
+        className="absolute top-1 right-1 inline-flex size-9 cursor-pointer items-center justify-center rounded-md opacity-70 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-home-ground"
+      >
+        <X aria-hidden className="size-4" />
+      </button>
+      <p className="text-base leading-snug font-bold">{heading}</p>
+      {rest.map((line) => (
+        <p key={line} className="mt-1 text-sm leading-snug">
+          {line}
+        </p>
+      ))}
+    </div>
   );
 }
 
 /**
- * "Where we work" map: places, district- and province-wide projects, with a list view.
+ * "Where we work" map: Nepal district by district, with a dot for each field site and a
+ * house at our own address. Provinces light up as you point at them, and clicking a mark
+ * opens its details in a card on the map. On a laptop the map is kept narrow enough for the
+ * whole of it to fit on the screen at once. The boundaries' credit (their CC BY licence asks
+ * for one) is the map's hover note and is read by screen readers; it is not shown as a line
+ * under the map, so a visible credit belongs somewhere else on the site.
  *
- * `inScreen` (/home-preview-2): on a laptop the section fills one screen (under the fixed
- * header), like the screens around it. It is pared down: the heading and filters share one
- * band, with no description, no "All places" list (every place is a button on the map) and
- * only a short map credit (the boundaries' CC BY licence asks for one) at the end of the
- * legend. The map is sized to the screen's height, and the place details scroll within their
- * column if a place has more events than fit. Phones and tablets keep the normal flow.
+ * `inScreen` (the homepage (/)): on a laptop the section is one screen and a snap point, like
+ * the screens around it, and the map is sized to what the screen leaves under the heading.
  */
 export function HomeWorkMap({ inScreen = false }: { inScreen?: boolean }) {
-  const [filter, setFilter] = useState<Filter>("all");
-  const [selection, setSelection] = useState<Selection>({ type: "site", id: "godawari" });
-
-  const matches = (theme: WorkTheme) => filter === "all" || filter === theme;
-
-  /** Change the theme filter; if the selected place no longer matches, select the first one that does. */
-  const changeFilter = (next: Filter) => {
-    setFilter(next);
-    const fits = (theme: WorkTheme) => next === "all" || next === theme;
-    const stillVisible =
-      selection.type === "site"
-        ? workSites.some(
-            (site) =>
-              site.id === selection.id &&
-              (site.kind === "base" || site.activities.some((activity) => fits(activity.theme))),
-          )
-        : selection.type === "district"
-          ? districtProjects.some((item) => item.district === selection.id && fits(item.theme))
-          : provinceProjects.some((item) => item.province === selection.id && fits(item.theme));
-    if (stillVisible) return;
-    const firstSite = workSites.find(
-      (site) => site.kind === "site" && site.activities.some((activity) => fits(activity.theme)),
-    );
-    if (firstSite) setSelection({ type: "site", id: firstSite.id });
+  const [province, setProvince] = useState<string | null>(null);
+  // The mark whose details card is open on the map, if any.
+  const [openId, setOpenId] = useState<string | null>(null);
+  // Phones and tablets: the map's zoom (a step in ZOOMS); zoomed, a finger drags it sideways.
+  const [zoomStep, setZoomStep] = useState(0);
+  const scroller = useRef<HTMLDivElement>(null);
+  const zoomTo = (next: number) => {
+    const el = scroller.current;
+    const from = ZOOMS[zoomStep];
+    const to = ZOOMS[next];
+    setZoomStep(next);
+    if (!el) return;
+    // Keep the middle of what is on screen in the middle.
+    const centre = (el.scrollLeft + el.clientWidth / 2) / from;
+    requestAnimationFrame(() => {
+      el.scrollLeft = centre * to - el.clientWidth / 2;
+    });
   };
-  const sites = workSites.filter(
-    (site) => site.kind === "base" || site.activities.some((activity) => matches(activity.theme)),
-  );
-  const districts = districtProjects.filter((item) => matches(item.theme));
-  const provinces = provinceProjects.filter((item) => matches(item.theme));
+  const open = marks.find((mark) => mark.id === openId);
 
-  const shadedProvinces = new Set(provinces.map((item) => item.province));
-  const shadedDistricts = new Set(districts.map((item) => item.district));
+  // Clicking a mark opens its card; clicking the same mark again closes it.
+  const toggle = (id: string) => setOpenId((current) => (current === id ? null : id));
 
-  // Resolve the selected item into a heading, a place line and a list of activities.
-  let detail: { heading: string; place: string; items: DetailItem[]; note?: string } | null = null;
-  if (selection.type === "site") {
-    const site = sites.find((item) => item.id === selection.id);
-    if (site) {
-      detail = {
-        heading: site.name,
-        place: `${site.district} district, ${site.province} Province`,
-        items: site.activities.filter((activity) => matches(activity.theme)),
-        note: site.kind === "base" ? "Greenalaya Nepal is based in Pokhara." : undefined,
-      };
-    }
-  } else if (selection.type === "district") {
-    const item = districts.find((district) => district.district === selection.id);
-    if (item) {
-      detail = {
-        heading: `${item.district} district`,
-        place: `${item.locations} documented locations, Bagmati Province`,
-        items: [{ title: item.title, date: item.date, partners: item.partners, href: item.href }],
-      };
-    }
-  } else {
-    const item = provinces.find((province) => province.province === selection.id);
-    if (item) {
-      detail = {
-        heading: `${item.province} Province`,
-        place: "Province-wide citizen science",
-        items: [{ title: item.title, date: item.status, partners: [], href: item.href }],
-      };
-    }
-  }
-
-  const valleySites = sites.filter((site) => inValley(site.lat, site.lon));
-  const mainSites = sites.filter((site) => !inValley(site.lat, site.lon));
-  const isSelected = (type: Selection["type"], id: string) =>
-    selection.type === type && selection.id === id;
-
-  const valleyCorner = nepalMap.project(valley.minLon, valley.maxLat);
-  const valleyFar = nepalMap.project(valley.maxLon, valley.minLat);
+  // An open card also closes on Escape, and on a click anywhere that is not a mark or the card.
+  useEffect(() => {
+    if (!openId) return;
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") setOpenId(null);
+    };
+    const onClick = (event: MouseEvent) => {
+      const target = event.target as Element | null;
+      if (!target?.closest("[data-map-mark], [data-map-card]")) setOpenId(null);
+    };
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("click", onClick);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("click", onClick);
+    };
+  }, [openId]);
 
   return (
     <section
       id="where-we-work"
       aria-labelledby="where-title"
       className={cn(
-        "scroll-mt-24 py-20 md:py-28",
-        // In one screen, a jump to this section (the hero's button) lands it exactly under
-        // the 4.8rem header, so the whole screen shows.
-        inScreen &&
-          "lg:flex lg:min-h-[calc(100svh-4.8rem)] lg:scroll-mt-[4.8rem] lg:flex-col lg:justify-center lg:py-8",
+        // The screens page alternates green and plain from the hero: the map's screen is green.
+        // At least one screen rather than exactly one, so nothing spills into its neighbours.
+        inScreen
+          ? [
+              "bg-home-field dark:bg-home-ground",
+              homeScreenClass,
+              "lg:h-auto lg:min-h-[calc(100svh-4.5rem)] lg:justify-center",
+            ]
+          : ["scroll-mt-24 border-t border-home-line", homeSectionSpaceClass],
       )}
     >
-      <div className={cn(homeContainerClass, inScreen && "lg:w-full")}>
-        <div
-          className={cn(inScreen && "flex flex-wrap items-center justify-between gap-x-10 gap-y-6")}
+      <div className={homeContainerClass}>
+        <h2
+          id="where-title"
+          // Phones and tablets: centred.
+          className={`${homeSectionHeadingClass} text-home-ink max-lg:text-center`}
         >
-          <div>
-            <h2 id="where-title" className={`${homeSectionHeadingClass} text-home-ink`}>
-              Where We Work
-            </h2>
-            {inScreen ? null : (
-              <p className="mt-3 max-w-[60ch] text-lg leading-relaxed text-home-ink">
-                The places we have run field surveys and citizen-science programs. Select a place to
-                see what happened there.
-              </p>
-            )}
-          </div>
+          Where We Work
+        </h2>
 
-          <div
-            role="group"
-            aria-label="Filter places by theme"
-            className={cn("flex flex-wrap gap-2", inScreen ? "shrink-0" : "mt-6")}
-          >
-            {[{ id: "all" as Filter, label: "All work" }, ...workThemes].map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                aria-pressed={filter === option.id}
-                onClick={() => changeFilter(option.id)}
-                className={cn(
-                  "min-h-10 cursor-pointer rounded-md px-4 text-sm font-semibold transition-colors duration-200",
-                  focusRing,
-                  filter === option.id
-                    ? "bg-home-accent text-home-ground"
-                    : "bg-home-field text-home-ink hover:bg-home-field/70",
-                )}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-8 lg:grid-cols-12">
-          <div className="relative lg:col-span-8">
-            {/* Nepal */}
-            <div
-              className={cn("relative w-full", inScreen && "lg:max-w-(--map-max)")}
-              style={
-                {
-                  aspectRatio: `${nepalMap.width} / ${nepalMap.height}`,
-                  // Full screen: no taller than the screen allows once the header, the
-                  // heading band, the gaps and the legend are taken off (about 16rem in all).
-                  "--map-max": `calc((100svh - 16rem) * ${nepalMap.width / nepalMap.height})`,
-                } as CSSProperties
-              }
-            >
-              <svg
-                viewBox={`0 0 ${nepalMap.width} ${nepalMap.height}`}
-                className="absolute inset-0 size-full"
-                role="img"
-                aria-label="Map of Nepal's seven provinces with the places we have worked"
-              >
-                {nepalMap.provinces.map((province) => (
-                  <path
-                    key={province.name}
-                    d={province.d}
-                    className={cn(
-                      "stroke-home-ground transition-colors duration-200",
-                      shadedProvinces.has(province.name) ? "fill-map-shaded" : "fill-map-land",
-                    )}
-                    strokeWidth={2}
-                    strokeLinejoin="round"
-                  >
-                    <title>{`${province.name} Province`}</title>
-                  </path>
-                ))}
-                <rect
-                  x={valleyCorner.x}
-                  y={valleyCorner.y}
-                  width={Math.round((valleyFar.x - valleyCorner.x) * 100) / 100}
-                  height={Math.round((valleyFar.y - valleyCorner.y) * 100) / 100}
-                  className="fill-none stroke-home-ink"
-                  strokeWidth={1.5}
-                  strokeDasharray="4 3"
-                />
-              </svg>
-              {mainSites.map((site) => {
-                const point = nepalMap.project(site.lon, site.lat);
-                return (
-                  <Pin
-                    key={site.id}
-                    label={`${site.name}, ${site.district}`}
-                    kind={site.kind}
-                    selected={isSelected("site", site.id)}
-                    left={percent(point.x, nepalMap.width)}
-                    top={percent(point.y, nepalMap.height)}
-                    onSelect={() => setSelection({ type: "site", id: site.id })}
-                  />
-                );
-              })}
-              {provinces.map((item) => {
-                const anchor = nepalMap.project(85.1, 27.95);
-                return (
-                  <button
-                    key={item.province}
-                    type="button"
-                    aria-label={`Moths project: ${item.province} Province`}
-                    aria-pressed={isSelected("province", item.province)}
-                    onClick={() => setSelection({ type: "province", id: item.province })}
-                    style={{
-                      left: percent(anchor.x, nepalMap.width),
-                      top: percent(anchor.y, nepalMap.height),
-                    }}
-                    className={cn(
-                      "absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-sm bg-home-ground/90 px-1.5 py-0.5 text-sm font-semibold whitespace-nowrap text-home-ink",
-                      tapAreaClass,
-                      focusRing,
-                    )}
-                  >
-                    Moths project
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Kathmandu Valley inset */}
-            <div className="mt-4 ml-auto w-[56%] max-w-[15rem] rounded-lg border border-home-ink/15 bg-home-ground p-2 sm:absolute sm:top-0 sm:right-0 sm:mt-0 sm:w-[23%] sm:max-w-none">
-              <p className="px-1 pb-1 text-sm font-semibold text-home-ink">Kathmandu Valley</p>
-              <div
-                className="relative w-full"
-                style={{
-                  aspectRatio: `${kathmanduValleyMap.width} / ${kathmanduValleyMap.height}`,
-                }}
-              >
+        <div
+          className={cn(
+            homeSectionBodyClass,
+            // One screen on a laptop: the same gap under the heading as the screens around it.
+            inScreen && "lg:mt-8 lg:short:mt-6",
+            "relative",
+            // Centred under the heading on a laptop.
+            "lg:mx-auto",
+            inScreen ? "lg:max-w-(--map-max)" : "lg:max-w-5xl",
+          )}
+          style={
+            {
+              // One screen: no taller than the screen allows once the header, the padding, the
+              // heading and the gap under it are taken off (about 14rem in all).
+              "--map-max": `calc((100svh - 14rem) * ${nepalMap.width / nepalMap.height})`,
+            } as CSSProperties
+          }
+        >
+          {/* Phones and tablets: zoom buttons over the map; zoomed, it scrolls sideways. */}
+          <div className="relative">
+            <div ref={scroller} className="max-lg:overflow-x-auto max-lg:overscroll-x-contain">
+              <div className="relative lg:w-full!" style={{ width: `${ZOOMS[zoomStep] * 100}%` }}>
                 <svg
-                  viewBox={`0 0 ${kathmanduValleyMap.width} ${kathmanduValleyMap.height}`}
-                  className="absolute inset-0 size-full"
-                  role="img"
-                  aria-label="Kathmandu, Lalitpur and Bhaktapur districts"
+                  viewBox={`0 0 ${nepalMap.width} ${nepalMap.height}`}
+                  role="group"
+                  aria-label="Map of Nepal with the places we have worked"
+                  className="block h-auto w-full"
                 >
-                  {kathmanduValleyMap.districts.map((district) => (
+                  {/* Shown on hover and read by screen readers. */}
+                  <title>{mapAttribution}</title>
+                  {nepalDistricts.map((district) => (
                     <path
                       key={district.name}
                       d={district.d}
                       className={cn(
-                        "stroke-home-ground",
-                        shadedDistricts.has(district.name) ? "fill-map-shaded" : "fill-map-land",
+                        // The site's map colours: land that stands clear of the page in both themes,
+                        // and a stronger shade for the province being pointed at. The lines are ink:
+                        // black in the light theme, white in the dark.
+                        "stroke-home-ink transition-[fill] duration-300",
+                        district.province === province ? "fill-map-shaded" : "fill-map-land",
                       )}
-                      strokeWidth={3}
+                      strokeWidth={1}
                       strokeLinejoin="round"
-                    >
-                      <title>{`${district.name} district`}</title>
-                    </path>
-                  ))}
-                </svg>
-                {districts.map((item) => {
-                  const point = kathmanduValleyMap.project(item.lon, item.lat);
-                  return (
-                    <button
-                      key={item.district}
-                      type="button"
-                      aria-label={`${item.district} district: ${item.locations} documented locations`}
-                      aria-pressed={isSelected("district", item.district)}
-                      onClick={() => setSelection({ type: "district", id: item.district })}
-                      style={{
-                        left: percent(point.x, kathmanduValleyMap.width),
-                        top: percent(point.y, kathmanduValleyMap.height),
-                      }}
-                      className={cn(
-                        "absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-sm px-1 text-sm leading-tight font-semibold whitespace-nowrap text-home-ink",
-                        tapAreaClass,
-                        isSelected("district", item.district)
-                          ? "bg-home-ground"
-                          : "bg-home-ground/70",
-                        focusRing,
-                      )}
-                    >
-                      {item.district} · {item.locations}
-                    </button>
-                  );
-                })}
-                {valleySites.map((site) => {
-                  const point = kathmanduValleyMap.project(site.lon, site.lat);
-                  return (
-                    <Pin
-                      key={site.id}
-                      label={`${site.name}, ${site.district}`}
-                      kind={site.kind}
-                      selected={isSelected("site", site.id)}
-                      left={percent(point.x, kathmanduValleyMap.width)}
-                      top={percent(point.y, kathmanduValleyMap.height)}
-                      onSelect={() => setSelection({ type: "site", id: site.id })}
+                      onMouseEnter={() => setProvince(district.province)}
+                      onClick={() => setProvince(district.province)}
                     />
-                  );
-                })}
-              </div>
-            </div>
-
-            <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-home-ink">
-              <li className="flex items-center gap-2">
-                <span
-                  aria-hidden
-                  className="size-3 rounded-full border-2 border-home-ground bg-home-accent"
-                />
-                Program site
-              </li>
-              <li className="flex items-center gap-2">
-                <span
-                  aria-hidden
-                  className="size-3 rotate-45 border-2 border-home-ground bg-home-ink"
-                />
-                Our base
-              </li>
-              <li className="flex items-center gap-2">
-                <span aria-hidden className="h-3 w-5 rounded-sm bg-map-shaded" />
-                District- or province-wide project
-              </li>
-              {inScreen ? (
-                // The boundaries' licence (CC BY 4.0) asks for a visible credit; kept short.
-                <li className="text-sm text-home-muted lg:ml-auto">Map: HDX COD-AB (CC BY 4.0)</li>
-              ) : null}
-            </ul>
-          </div>
-
-          <div className={cn("lg:col-span-4", inScreen && "lg:relative")}>
-            {/* Full screen: the column is exactly as tall as the map's, and the details
-                scroll within it if they're longer. */}
-            <div className={cn(inScreen && "lg:absolute lg:inset-0 lg:flex lg:flex-col")}>
-              <div className={cn(inScreen && "lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-1")}>
-                <p aria-live="polite" className="sr-only">
-                  {detail ? `Showing ${detail.heading}` : ""}
-                </p>
-                <div className="rounded-lg bg-home-field p-5 sm:p-6">
-                  {detail ? (
-                    <>
-                      <h3 className="text-xl leading-tight font-bold text-home-ink">
-                        {detail.heading}
-                      </h3>
-                      <p className="mt-1 text-sm text-home-ink">{detail.place}</p>
-                      {detail.note ? (
-                        <p className="mt-3 text-sm leading-relaxed text-home-ink">{detail.note}</p>
-                      ) : null}
-                      <ul className="mt-4 space-y-4">
-                        {detail.items.map((item) => (
-                          <li key={`${item.title}-${item.date}`}>
-                            <p className="text-sm font-semibold text-home-accent">{item.date}</p>
-                            <p className="mt-0.5 font-semibold text-home-ink">{item.title}</p>
-                            {item.partners.length > 0 ? (
-                              <p className="mt-0.5 text-sm text-home-ink">
-                                With {item.partners.join(", ")}
-                              </p>
-                            ) : null}
-                            <Link
-                              href={item.href}
-                              className={cn(
-                                "group/link relative mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-home-accent no-underline",
-                                tapAreaClass,
-                                focusRing,
-                              )}
-                            >
-                              Read more
-                              <ArrowRight aria-hidden className={homeArrowIconClass} />
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  ) : (
-                    <p className="text-sm text-home-ink">
-                      {inScreen
-                        ? "Select a place on the map."
-                        : "Select a place on the map or in the list."}
-                    </p>
-                  )}
-                </div>
-
-                {/* The full list: another way to reach every place; collapsed to keep the page
-                    short. Left out of the pared-down full-screen version. */}
-                {inScreen ? null : (
-                  <details className="group/places mt-6">
-                    <summary
-                      className={cn(
-                        "flex min-h-11 cursor-pointer list-none items-center justify-between rounded-md text-sm font-semibold text-home-accent [&::-webkit-details-marker]:hidden",
-                        focusRing,
-                      )}
-                    >
-                      All places ({sites.length + districts.length + provinces.length})
-                      <ChevronDown
-                        aria-hidden
-                        className="size-4 transition-transform duration-200 group-open/places:rotate-180"
+                  ))}
+                  {/* Province borders, a little heavier than the district lines. */}
+                  {nepalMap.provinces.map((item) => (
+                    <path
+                      key={item.name}
+                      d={item.d}
+                      className="pointer-events-none fill-none stroke-home-ink"
+                      strokeWidth={2}
+                      strokeLinejoin="round"
+                    />
+                  ))}
+                  {/* The field sites, as dots. */}
+                  {fieldSites.map((site) => {
+                    const selected = openId === site.id;
+                    return (
+                      <circle
+                        key={site.id}
+                        cx={site.point.x}
+                        cy={site.point.y}
+                        // Ink on a ground-coloured ring: the strongest contrast against the land in
+                        // both themes, whether or not its province is shaded.
+                        r={selected ? 10 : 7}
+                        className={cn(
+                          "cursor-pointer fill-home-ink stroke-home-ground outline-none focus-visible:stroke-home-accent",
+                        )}
+                        strokeWidth={2.5}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={nameOf(site)}
+                        data-map-mark
+                        onClick={() => toggle(site.id)}
+                        onKeyDown={onPress(() => toggle(site.id))}
                       />
-                    </summary>
-                    <ul className="mt-1 space-y-1">
-                      {[
-                        ...sites.map((site) => ({
-                          key: `site-${site.id}`,
-                          label: site.name,
-                          meta: site.kind === "base" ? "Our base" : `${site.district}`,
-                          select: { type: "site", id: site.id } as Selection,
-                        })),
-                        ...districts.map((item) => ({
-                          key: `district-${item.district}`,
-                          label: `${item.district} district`,
-                          meta: `${item.locations} locations`,
-                          select: { type: "district", id: item.district } as Selection,
-                        })),
-                        ...provinces.map((item) => ({
-                          key: `province-${item.province}`,
-                          label: `${item.province} Province`,
-                          meta: "Moths project",
-                          select: { type: "province", id: item.province } as Selection,
-                        })),
-                      ].map((row) => (
-                        <li key={row.key}>
-                          <button
-                            type="button"
-                            aria-pressed={isSelected(row.select.type, row.select.id)}
-                            onClick={() => setSelection(row.select)}
-                            className={cn(
-                              "flex w-full cursor-pointer items-center justify-between gap-3 rounded-md px-3 py-2.5 text-left text-sm text-home-ink transition-colors duration-200 hover:bg-home-field",
-                              focusRing,
-                              isSelected(row.select.type, row.select.id) &&
-                                "bg-home-field font-semibold",
-                            )}
-                          >
-                            <span>{row.label}</span>
-                            <span className="text-sm text-home-muted">{row.meta}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
-                )}
+                    );
+                  })}
+                  {/* Our own address, as a house. */}
+                  <g
+                    role="button"
+                    tabIndex={0}
+                    aria-label={nameOf(home)}
+                    className="group cursor-pointer outline-none"
+                    data-map-mark
+                    onClick={() => toggle(home.id)}
+                    onKeyDown={onPress(() => toggle(home.id))}
+                  >
+                    <circle
+                      cx={home.point.x}
+                      cy={home.point.y}
+                      r={openId === home.id ? 16 : 14}
+                      className="fill-home-ink stroke-home-ground group-focus-visible:stroke-home-accent"
+                      strokeWidth={2.5}
+                    />
+                    <House
+                      aria-hidden
+                      x={home.point.x - 8}
+                      y={home.point.y - 8}
+                      width={16}
+                      height={16}
+                      strokeWidth={2.25}
+                      className="pointer-events-none text-home-ground"
+                    />
+                  </g>
+                </svg>
+                {/* On the map from tablets up (it moves and grows with the zoom). */}
+                {open ? (
+                  <MarkCard mark={open} onClose={() => setOpenId(null)} className="max-sm:hidden" />
+                ) : null}
               </div>
-
-              {inScreen ? null : (
-                <p className="mt-4 shrink-0 text-sm leading-relaxed text-home-muted">
-                  Locations are approximate and shown for orientation. {mapAttribution}
-                </p>
-              )}
+            </div>
+            <div
+              role="group"
+              aria-label="Zoom the map"
+              // Part of the map: using it leaves an open card open.
+              data-map-card
+              className="absolute right-2 bottom-2 flex gap-2 lg:hidden"
+            >
+              <button
+                type="button"
+                aria-label="Zoom out"
+                disabled={zoomStep === 0}
+                onClick={() => zoomTo(zoomStep - 1)}
+                className={zoomButtonClass}
+              >
+                <Minus aria-hidden className="size-5" />
+              </button>
+              <button
+                type="button"
+                aria-label="Zoom in"
+                disabled={zoomStep === ZOOMS.length - 1}
+                onClick={() => zoomTo(zoomStep + 1)}
+                className={zoomButtonClass}
+              >
+                <Plus aria-hidden className="size-5" />
+              </button>
             </div>
           </div>
+          {/* Phones: under the map, where it has room. */}
+          {open ? (
+            <MarkCard mark={open} onClose={() => setOpenId(null)} className="sm:hidden" />
+          ) : null}
         </div>
       </div>
     </section>

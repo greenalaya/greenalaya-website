@@ -1,5 +1,5 @@
 /**
- * The tree on the hero's centre line (/home-preview-2): a tall trunk rooted at the foot of the
+ * The tree on the hero's centre line (the homepage (/)): a tall trunk rooted at the foot of the
  * screen on the line between the words and the butterfly/moth scene, with its crown high up,
  * spreading into both halves above the words. Decorative only: hidden from screen readers and
  * lets the pointer pass through to the scene, whose light falls on it and whose insects fly in

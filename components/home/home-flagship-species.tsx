@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { homeContainerClass, homeSectionHeadingClass } from "@/components/home/home-styles";
+import {
+  homeContainerClass,
+  homeScreenClass,
+  homeSectionHeadingClass,
+} from "@/components/home/home-styles";
 import { cn } from "@/lib/utils";
 
 type FlagshipSpecies = {
@@ -73,7 +77,7 @@ function NightScene() {
 /**
  * "Our Flagship Species": the three groups the organisation's work centres on, one tall tile
  * each with only its name. A tile opens the project for that group where there is one.
- * On a laptop the section fills one screen (under the fixed 4.8rem header), like its
+ * On a laptop the section fills one screen (under the fixed header), like its
  * neighbours; on phones the tiles stack.
  */
 export function HomeFlagshipSpecies() {
@@ -81,14 +85,17 @@ export function HomeFlagshipSpecies() {
     <section
       id="flagship-species"
       aria-labelledby="flagship-species-title"
-      // The floor keeps the tiles a sensible height in a very short window.
-      className="scroll-mt-[4.8rem] bg-home-field py-20 md:py-28 lg:flex lg:h-[calc(100svh-4.8rem)] lg:min-h-[34rem] lg:flex-col lg:py-8"
+      className={homeScreenClass}
     >
       <div className={cn(homeContainerClass, "lg:flex lg:min-h-0 lg:flex-1 lg:flex-col")}>
-        <h2 id="flagship-species-title" className={`${homeSectionHeadingClass} text-home-ink`}>
+        <h2
+          id="flagship-species-title"
+          // Phones and tablets: centred.
+          className={`${homeSectionHeadingClass} text-home-ink max-lg:text-center`}
+        >
           Our Flagship Species
         </h2>
-        <ul className="mt-8 grid gap-4 md:mt-10 md:grid-cols-3 lg:mt-8 lg:min-h-0 lg:flex-1 lg:gap-6 lg:short:mt-6">
+        <ul className="mt-8 grid gap-4 md:mt-10 md:grid-cols-3 lg:mt-8 lg:min-h-0 lg:flex-1 lg:gap-6 lg:short:mt-6 max-md:grid-cols-3 max-md:gap-2">
           {flagshipSpecies.map((species) => {
             const tile = (
               <>
@@ -113,13 +120,13 @@ export function HomeFlagshipSpecies() {
                   aria-hidden
                   className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.7)_100%)]"
                 />
-                <span className="absolute inset-x-0 bottom-0 p-6 text-[clamp(1.75rem,2.4vw,2.125rem)] leading-[1.15] font-bold tracking-tight text-white sm:p-7">
+                <span className="absolute inset-x-0 bottom-0 p-6 text-[clamp(1.75rem,2.4vw,2.125rem)] max-md:p-2.5 max-md:text-base leading-[1.15] font-bold tracking-tight text-white sm:p-7">
                   {species.name}
                 </span>
               </>
             );
             const tileClass =
-              "group/link relative block h-64 overflow-hidden bg-home-ground no-underline md:h-80 lg:h-full";
+              "group/link relative block h-48 overflow-hidden bg-home-ground no-underline md:h-80 lg:h-full";
 
             return (
               <li key={species.name} className="lg:min-h-0">

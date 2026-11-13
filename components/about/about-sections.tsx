@@ -85,7 +85,7 @@ export function AboutMissionVision() {
     <section
       id="mission"
       aria-labelledby="mission-title"
-      className={`relative scroll-mt-24 bg-home-field py-20 text-home-ink md:py-28 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
+      className={`relative scroll-mt-24 bg-home-field dark:bg-home-ground py-20 text-home-ink md:py-28 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
     >
       <ScrollToPrevious href="#about-hero" label="Back to the top" />
       <div
@@ -254,7 +254,7 @@ export function AboutPartners({
     <section
       id="partners"
       aria-labelledby="partners-title"
-      className={`relative scroll-mt-24 bg-home-field py-16 md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
+      className={`relative scroll-mt-24 bg-home-field dark:bg-home-ground py-16 md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
     >
       <ScrollToPrevious href={previousHref.href} label={previousHref.label} />
       <div className={homeContainerClass}>

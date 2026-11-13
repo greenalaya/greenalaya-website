@@ -34,7 +34,7 @@ export function ThematicAreasSection({
       className={cn(
         "relative scroll-mt-24",
         themed
-          ? `bg-home-field py-16 text-home-ink md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`
+          ? `bg-home-field dark:bg-home-ground py-16 text-home-ink md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`
           : "-mt-[8px] bg-gradient-to-b from-[#0a0f0a] via-[#0f1610] to-[#0a0f0a] px-4 pt-10 pb-16 sm:px-5 sm:pt-12 sm:pb-20 lg:px-5 lg:pt-[62px] lg:pb-[102px]",
       )}
     >

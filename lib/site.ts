@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getNotices } from "@/lib/content/notices";
 
 const faviconVersion = "10";
 
@@ -201,14 +202,85 @@ export const membershipEducationOptions = [
   "None",
 ] as const;
 
-export const primaryNavItems = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/publications", label: "Publications" },
-  { href: "/news", label: "News" },
-  { href: "/blog", label: "Blog" },
+/** The kinds of publication, each with a page of its own under /publications. */
+/** Each kind's page in the Publications menu; `tag` is the label on its publications. */
+export const publicationCategories = [
+  {
+    id: "scientific",
+    label: "Scientific Publications",
+    tag: "Scientific Publication",
+    href: "/publications/scientific",
+  },
+  { id: "reports", label: "Reports", tag: "Report", href: "/publications/reports" },
+  { id: "books", label: "Books & E-books", tag: "Book", href: "/publications/books" },
+  {
+    id: "posters",
+    label: "Posters & Brochures",
+    tag: "Poster",
+    href: "/publications/posters",
+  },
 ] as const;
+
+export type PublicationCategory = (typeof publicationCategories)[number]["id"];
+
+/**
+ * Which kind each publication is, by its slug. A publication not listed here appears only under
+ * "All Publications". A kind joins the Publications menu once a publication is listed under it.
+ */
+export const publicationCategoryBySlug: Record<string, PublicationCategory> = {
+  "pollinator-week-2026-event-report": "reports",
+  "butterfly-images-kathmandu-valley": "books",
+};
+
+export type NavLink = { href: string; label: string };
+export type NavItem = NavLink & {
+  /** A drop-down under the item. The item itself still links to its own page. */
+  children?: NavLink[];
+};
+
+export const primaryNavItems: NavItem[] = [
+  { href: "/", label: "Home" },
+  {
+    href: "/about",
+    label: "About",
+    children: [
+      { href: "/about", label: "Organization" },
+      { href: "/about#advisors", label: "Advisors" },
+      { href: "/team", label: "Team" },
+      // Research Fellows goes here once its page has names.
+      { href: "/about#partners", label: "Our Partners" },
+    ],
+  },
+  {
+    href: "/projects",
+    label: "Projects",
+    children: [
+      { href: "/projects", label: "All Projects" },
+      { href: "/projects/ongoing", label: "Ongoing" },
+      { href: "/projects/completed", label: "Completed" },
+    ],
+  },
+  {
+    href: "/publications",
+    label: "Publications",
+    children: [
+      { href: "/publications", label: "All Publications" },
+      ...publicationCategories
+        .filter((category) => Object.values(publicationCategoryBySlug).includes(category.id))
+        .map(({ href, label }) => ({ href, label })),
+    ],
+  },
+  {
+    href: "/news",
+    label: "News",
+    children: [
+      { href: "/news", label: "News & Updates" },
+      { href: "/news/media-coverage", label: "Media Coverage" },
+      ...(getNotices().length > 0 ? [{ href: "/news/notices", label: "Notices" }] : []),
+    ],
+  },
+  { href: "/blog", label: "Blog" },
+];
 
 export const footerAboutLinks = [
   { text: "About Greenalaya Nepal", href: "/about" },
@@ -224,6 +296,7 @@ export const footerWorkLinks = [
 
 export const footerMediaLinks = [
   { text: "Blog", href: "/blog" },
+  { text: "Media Coverage", href: "/news/media-coverage" },
   { text: "News & Updates", href: "/news" },
 ] as const;
 
@@ -359,7 +432,7 @@ export function resolvePublicationPdfUrl(url: string | null | undefined): string
 }
 
 /**
- * Homepage test pages: the previous homepage at /home-preview, kept for comparison.
+ * Homepage preview: a frozen copy of the live homepage (16 Nov 2026), kept as a fallback.
  */
 export const homePreviewPath = "/home-preview";
 /** Nature Detective: the species-naming game (was /home-preview-3). */
@@ -368,6 +441,9 @@ export const natureDetectivePath = "/nature-detective";
 export const labsPath = "/labs";
 /** Colour of a project status label: completed = green, ongoing = amber, development = blue. */
 export type ProjectStatusTone = "completed" | "ongoing" | "development";
+
+/** Where a project is, for the Projects menu: still running (or being built), or finished. */
+export type ProjectStage = "ongoing" | "completed";
 
 export const homeContent = {
   hero: {
@@ -456,3 +532,31 @@ export const homeContent = {
     more: { href: "/news", label: "See all news" },
   },
 } as const;
+
+/**
+ * A project's stage, from its status label above (homeContent.work.statuses): "completed" when
+ * it is marked completed; otherwise, including projects in development, "ongoing".
+ */
+export function projectStage(slug: string): ProjectStage {
+  return homeContent.work.statuses[slug]?.tone === "completed" ? "completed" : "ongoing";
+}
+
+/** The short tag on every project's card and page. */
+export const projectStatusTagLabels: Record<ProjectStatusTone, string> = {
+  ongoing: "Ongoing",
+  completed: "Completed",
+  development: "In development",
+};
+
+/**
+ * A project's status tag, from homeContent.work.statuses; a project not listed there is
+ * ongoing. To change a project's tag (and which Projects page lists it), change its tone there.
+ */
+export function projectStatusTone(slug: string): ProjectStatusTone {
+  return homeContent.work.statuses[slug]?.tone ?? "ongoing";
+}
+
+export const projectStages = [
+  { id: "ongoing", label: "Ongoing Projects", href: "/projects/ongoing" },
+  { id: "completed", label: "Completed Projects", href: "/projects/completed" },
+] as const satisfies ReadonlyArray<{ id: ProjectStage; label: string; href: string }>;

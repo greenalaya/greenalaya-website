@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
-import Link from "next/link";
+import { SmoothHashLink } from "@/components/smooth-hash-link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -30,7 +30,7 @@ function ScrollArrow({
         className,
       )}
     >
-      <Link
+      <SmoothHashLink
         href={href}
         aria-label={label}
         className="pointer-events-auto inline-flex size-11 items-center justify-center text-home-ink/45 no-underline transition-colors duration-200 hover:text-home-ink/75"
@@ -44,7 +44,7 @@ function ScrollArrow({
               : "animate-[hero-chevron-bounce_2s_ease-in-out_infinite]",
           )}
         />
-      </Link>
+      </SmoothHashLink>
     </div>
   );
 }

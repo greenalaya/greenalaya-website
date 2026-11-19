@@ -45,8 +45,8 @@ export function SearchableListPage<T>({
 
   return (
     <>
-      {/* Search bar */}
-      <div className="border-b border-border bg-secondary px-5 py-10 pt-28 sm:px-6 lg:px-8">
+      {/* Search bar (more compact on phones; the input keeps 16px text so iPhones don't zoom) */}
+      <div className="border-b border-border bg-secondary px-5 pt-24 pb-6 sm:px-6 sm:pt-28 sm:pb-10 lg:px-8">
         <div className="mx-auto flex max-w-xl justify-center">
           {searchOpen ? (
             <div className="relative w-full">
@@ -70,18 +70,18 @@ export function SearchableListPage<T>({
                   }
                 }}
                 placeholder={`Search ${searchLabel} by title or date`}
-                className="w-full rounded-full border border-primary bg-card py-3.5 pr-12 pl-6 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
+                className="w-full rounded-full border border-primary bg-card py-2.5 pr-11 pl-5 text-base text-foreground sm:py-3.5 sm:pr-12 sm:pl-6 placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
               />
               <Search
                 aria-hidden
-                className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-primary"
+                className="pointer-events-none absolute top-1/2 right-4 size-4 -translate-y-1/2 text-primary sm:size-5"
               />
             </div>
           ) : (
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 rounded-full border border-primary bg-card px-6 py-3.5 text-base font-medium text-primary transition hover:bg-primary hover:text-primary-foreground"
+              className="flex items-center gap-2 rounded-full border border-primary bg-card px-4 py-2 text-sm font-medium text-primary sm:px-6 sm:py-3.5 sm:text-base transition hover:bg-primary hover:text-primary-foreground"
             >
               <Search className="size-4" aria-hidden />
               Search {searchLabel}
@@ -101,7 +101,7 @@ export function SearchableListPage<T>({
                 {items.length === 0 ? emptyMessage : noMatchMessage}
               </p>
             ) : (
-              <ul className="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12">
+              <ul className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 sm:gap-10 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12">
                 {filtered.map((item) => (
                   <li key={getKey(item)}>{renderItem(item)}</li>
                 ))}

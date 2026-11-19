@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProjectStatusTag } from "@/components/project-status-tag";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -26,12 +27,13 @@ export function ChinariProjectDetail() {
         <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
           <Link
             href="/projects"
-            className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-white/85 transition hover:text-white"
+            className="-my-2.5 inline-flex min-h-11 w-fit items-center gap-2 py-2.5 text-sm font-semibold text-white/85 transition hover:text-white"
           >
             <ArrowLeft aria-hidden="true" className="size-4" /> All projects
           </Link>
           <div className="mt-8 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
             <div className="max-w-2xl">
+              <ProjectStatusTag slug={chinariProject.slug} className="mb-5" />
               <h1 className={`${pageTitleClass} text-white`}>
                 {chinariProject.shortTitle}
                 <span className="mt-2 block text-2xl leading-tight font-normal text-white/90 sm:text-3xl lg:text-4xl">

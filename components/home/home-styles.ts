@@ -38,10 +38,6 @@ export const homeArrowIconClass =
 
 export const homeArrowLinkClass = `group/link inline-flex min-h-11 items-center gap-2 font-semibold text-home-accent no-underline transition-colors duration-200 hover:text-home-ink ${focusRing}`;
 
-/** A text link set on a photograph (white, underlined), e.g. the hero's secondary action. */
-export const homeOnImageLinkClass =
-  "inline-flex min-h-11 items-center text-base font-semibold text-white underline decoration-white/60 decoration-2 underline-offset-[6px] transition-colors duration-200 hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white";
-
 /**
  * The butterfly meadow's daytime sky (pale blue into meadow green). Shared by the scene and by
  * the hero's left half on the homepage (/), so the two halves join without a seam.

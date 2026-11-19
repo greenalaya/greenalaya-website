@@ -1,37 +1,60 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SiteLogo } from "@/components/site-logo";
-import { homePreviewPath, labsPath, primaryNavItems, siteConfig } from "@/lib/site";
+import { SmoothHashLink } from "@/components/smooth-hash-link";
+import { homePreviewPath, labsPath, primaryNavItems, siteConfig, type NavItem } from "@/lib/site";
 import { cn, rafThrottle } from "@/lib/utils";
 
 const MOBILE_MENU_ID = "mobile-primary-nav";
 
-function isNavItemActive(pathname: string, href: string) {
+function isPathActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return href === pathname || pathname.startsWith(`${href}/`);
 }
 
-// Menu links are bold, pure black in light theme and pure white in dark theme; the current
-// page and hover get a pale green pill.
+/** A menu item is current on its own page, any page under it, and the pages in its drop-down. */
+function isNavItemActive(pathname: string, item: NavItem) {
+  return [item.href, ...(item.children ?? []).map((child) => child.href)].some((href) =>
+    isPathActive(pathname, href),
+  );
+}
+
+// The current page and hover get a pale green pill.
+const navPillClass = (active: boolean) =>
+  active
+    ? "bg-[#4caf50]/15 dark:bg-[#4caf50]/20"
+    : "hover:bg-[#4caf50]/10 dark:hover:bg-[#4caf50]/15";
+
+// Menu links are bold, pure black in light theme and pure white in dark theme. Slightly tighter
+// on narrow laptops, so the row with its drop-down arrows still fits beside the logo.
+const navTextClass = "text-sm font-bold text-black no-underline transition-colors dark:text-white";
+
 const navLinkClass = (active: boolean) =>
+  cn("rounded-full px-3 py-2 xl:px-4", navTextClass, navPillClass(active));
+
+// A link in a drop-down.
+const dropdownLinkClass = (active: boolean) =>
   cn(
-    "rounded-full px-4 py-2 text-sm font-bold text-black no-underline transition-colors dark:text-white",
-    active
-      ? "bg-[#4caf50]/15 dark:bg-[#4caf50]/20"
-      : "hover:bg-[#4caf50]/10 dark:hover:bg-[#4caf50]/15",
+    "flex min-h-10 items-center rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap text-black no-underline transition-colors dark:text-white",
+    navPillClass(active),
   );
 
 const mobileNavLinkClass = (active: boolean) =>
   cn(
     "flex min-h-11 items-center rounded-lg px-4 py-3 text-base font-bold text-black no-underline transition-colors dark:text-white",
-    active
-      ? "bg-[#4caf50]/15 dark:bg-[#4caf50]/20"
-      : "hover:bg-[#4caf50]/10 dark:hover:bg-[#4caf50]/15",
+    navPillClass(active),
+  );
+
+// The pages in a group on the phone menu, indented under its name.
+const mobileSubLinkClass = (active: boolean) =>
+  cn(
+    "flex min-h-11 items-center rounded-lg px-4 py-2.5 text-[15px] font-semibold text-black no-underline transition-colors dark:text-white",
+    navPillClass(active),
   );
 
 /** Round icon buttons in the header and mobile menu (theme toggle, menu open/close). */
@@ -42,6 +65,9 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  /** The open drop-down on laptops (its item's href), if any. */
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const desktopNavRef = useRef<HTMLElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -58,7 +84,29 @@ export function SiteHeader() {
   if (pathname !== prevPathname) {
     setPrevPathname(pathname);
     setMenuOpen(false);
+    setOpenDropdown(null);
   }
+
+  // An open drop-down closes on Escape (back to its arrow button) and on a click elsewhere.
+  useEffect(() => {
+    if (!openDropdown) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      desktopNavRef.current
+        ?.querySelector<HTMLButtonElement>(`[data-dropdown-button="${openDropdown}"]`)
+        ?.focus();
+      setOpenDropdown(null);
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (!desktopNavRef.current?.contains(event.target as Node)) setOpenDropdown(null);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [openDropdown]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -109,7 +157,7 @@ export function SiteHeader() {
   }, [menuOpen, closeMenu]);
 
   // Pages with their own "Get Involved" band jump to it; every other page goes to the homepage's.
-  const ctaHref = ["/", homePreviewPath, labsPath, "/about"].includes(pathname)
+  const ctaHref = ["/", homePreviewPath, labsPath, "/about", "/about-copy"].includes(pathname)
     ? "#get-involved"
     : "/#get-involved";
 
@@ -136,18 +184,99 @@ export function SiteHeader() {
 
         {/* From laptop width: on tablets the full row crowds the "Get Involved" button, so they
             use the menu button, like phones. */}
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+        <nav
+          ref={desktopNavRef}
+          className="hidden items-center gap-0.5 lg:flex xl:gap-1"
+          aria-label="Primary"
+        >
           {primaryNavItems.map((item) => {
-            const active = isNavItemActive(pathname, item.href);
+            const active = isNavItemActive(pathname, item);
+            if (!item.children) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={navLinkClass(active)}
+                >
+                  {item.label}
+                </Link>
+              );
+            }
+
+            // The name opens its page; the arrow beside it, or hovering, opens the drop-down.
+            const open = openDropdown === item.href;
+            const dropdownId = `nav-dropdown-${item.label.toLowerCase()}`;
             return (
-              <Link
+              <div
                 key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={navLinkClass(active)}
+                className="relative"
+                onMouseEnter={() => setOpenDropdown(item.href)}
+                onMouseLeave={() => setOpenDropdown(null)}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setOpenDropdown((current) => (current === item.href ? null : current));
+                  }
+                }}
               >
-                {item.label}
-              </Link>
+                <div
+                  className={cn(
+                    "flex items-center rounded-full transition-colors",
+                    navPillClass(active || open),
+                  )}
+                >
+                  <Link
+                    href={item.href}
+                    aria-current={pathname === item.href ? "page" : undefined}
+                    className={cn("rounded-full py-2 pr-0.5 pl-3 xl:pl-4", navTextClass)}
+                  >
+                    {item.label}
+                  </Link>
+                  <button
+                    type="button"
+                    data-dropdown-button={item.href}
+                    aria-expanded={open}
+                    aria-controls={open ? dropdownId : undefined}
+                    aria-label={`${item.label} pages`}
+                    onClick={() => setOpenDropdown(open ? null : item.href)}
+                    className="mr-1 inline-flex size-7 items-center justify-center rounded-full text-black dark:text-white"
+                  >
+                    <ChevronDown
+                      aria-hidden
+                      className={cn(
+                        "size-4 transition-transform duration-200",
+                        open && "rotate-180",
+                      )}
+                    />
+                  </button>
+                </div>
+                {open ? (
+                  // The top padding bridges the gap to the list, so moving the pointer down to it
+                  // keeps it open.
+                  <div className="absolute top-full left-0 pt-2">
+                    <ul
+                      id={dropdownId}
+                      className="min-w-52 rounded-2xl border border-black/10 bg-white p-1.5 shadow-[0_12px_32px_rgb(0_0_0/0.12)] dark:border-white/15 dark:bg-[#0d120f] dark:shadow-[0_12px_32px_rgb(0_0_0/0.6)]"
+                    >
+                      {item.children.map((child) => {
+                        const childActive = pathname === child.href;
+                        return (
+                          <li key={child.href}>
+                            <SmoothHashLink
+                              href={child.href}
+                              aria-current={childActive ? "page" : undefined}
+                              className={dropdownLinkClass(childActive)}
+                              onClick={() => setOpenDropdown(null)}
+                            >
+                              {child.label}
+                            </SmoothHashLink>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
             );
           })}
         </nav>
@@ -225,17 +354,48 @@ export function SiteHeader() {
               aria-label="Primary mobile"
             >
               {primaryNavItems.map((item) => {
-                const active = isNavItemActive(pathname, item.href);
+                if (!item.children) {
+                  const active = isPathActive(pathname, item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      className={mobileNavLinkClass(active)}
+                      onClick={closeMenu}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
+                // A group: its name, with its pages (the first is the main page) under it.
+                const groupId = `mobile-nav-${item.label.toLowerCase()}`;
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    className={mobileNavLinkClass(active)}
-                    onClick={closeMenu}
-                  >
-                    {item.label}
-                  </Link>
+                  <div key={item.href} role="group" aria-labelledby={groupId} className="mt-2">
+                    <p
+                      id={groupId}
+                      className="px-4 pt-1 pb-1 text-xs font-bold tracking-wider text-[#2e7d32] uppercase dark:text-[#8bd88f]"
+                    >
+                      {item.label}
+                    </p>
+                    <ul className="ml-4 border-l border-black/10 pl-2 dark:border-white/15">
+                      {item.children.map((child) => {
+                        const active = pathname === child.href;
+                        return (
+                          <li key={child.href}>
+                            <SmoothHashLink
+                              href={child.href}
+                              aria-current={active ? "page" : undefined}
+                              className={mobileSubLinkClass(active)}
+                              onClick={closeMenu}
+                            >
+                              {child.label}
+                            </SmoothHashLink>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 );
               })}
             </nav>

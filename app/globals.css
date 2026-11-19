@@ -4,7 +4,8 @@
 /* Short screens (up to 820px tall, e.g. 1280x720 and 1366x768 laptops). */
 @custom-variant short (@media (max-height: 820px));
 
-/* Pages built from one-screen sections (/home-preview-2): on a laptop scrolling settles on
+/* Pages built from one-screen sections (now only the frozen /home-preview copy; the live
+   homepage scrolls normally): on a laptop scrolling settles on
    a whole section (HomeScreenScroller glides there; this is the fallback before its script
    runs). Phones scroll freely, with no snapping: their sections run longer than the screen. */
 @media (min-width: 64rem) {
@@ -18,8 +19,6 @@
   --foreground: #000000;
   --card: #ffffff;
   --card-foreground: #000000;
-  --popover: #ffffff;
-  --popover-foreground: #000000;
   --primary: #2e7d32;
   --primary-foreground: #ffffff;
   --secondary: #f0f7f0;
@@ -29,7 +28,6 @@
   --accent: #e8f5e9;
   --accent-foreground: #000000;
   --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
   --border: #e5e5e5;
   --input: #e5e5e5;
   --ring: #2e7d32;
@@ -43,9 +41,6 @@
   --home-field: #dde6d7;
   --home-surface: #ffffff;
   --home-accent: #1f5f23;
-  --home-forest: #183d32;
-  --home-on-forest: #ffffff;
-  --home-on-forest-muted: #ffffff;
   --home-action: #183d32;
   --home-action-foreground: #f7f7f2;
   --home-sage: #a9baa1;
@@ -73,8 +68,6 @@
   --foreground: #f0f4f0;
   --card: #121212;
   --card-foreground: #f0f4f0;
-  --popover: #121212;
-  --popover-foreground: #f0f4f0;
   --primary: #4caf50;
   --primary-foreground: #000000;
   --secondary: #1a1a1a;
@@ -84,7 +77,6 @@
   --accent: #1a1a1a;
   --accent-foreground: #c8e6c9;
   --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
   --border: #2a2a2a;
   --input: #2a2a2a;
   --ring: #4caf50;
@@ -95,9 +87,6 @@
   --home-field: #141414;
   --home-surface: #141414;
   --home-accent: #8bd88f;
-  --home-forest: #141414;
-  --home-on-forest: #ffffff;
-  --home-on-forest-muted: #ffffff;
   --home-action: #8bd88f;
   --home-action-foreground: #000000;
   --home-sage: #3d5a43;
@@ -120,8 +109,6 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -131,7 +118,6 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -145,9 +131,6 @@
   --color-home-field: var(--home-field);
   --color-home-surface: var(--home-surface);
   --color-home-accent: var(--home-accent);
-  --color-home-forest: var(--home-forest);
-  --color-home-on-forest: var(--home-on-forest);
-  --color-home-on-forest-muted: var(--home-on-forest-muted);
   --color-home-action: var(--home-action);
   --color-home-action-foreground: var(--home-action-foreground);
   --color-home-sage: var(--home-sage);
@@ -270,37 +253,11 @@ body {
 }
 
 @utility animate-tree-sway {
-  animation: tree-sway 7s ease-in-out infinite alternate;
+  animation: tree-sway 6.4s ease-in-out infinite alternate;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@utility animate-marquee {
-  animation: marquee var(--duration, 40s) linear infinite;
-}
-
-@keyframes marquee-reverse {
-  from {
-    transform: translateX(-50%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@utility animate-marquee-reverse {
-  animation: marquee-reverse var(--duration, 40s) linear infinite;
 }
 
 [data-glow]::before,
@@ -441,4 +398,208 @@ body {
   --home-muted: #a7b2a9;
   --home-field: #141414;
   --home-surface: #141414;
+}
+
+/* "Where We Work" map (homepage): Leaflet builds these elements itself, so they are styled here. */
+.field-map .fm-marker {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 7px rgb(0 0 0 / 0.4);
+  transition: transform 0.15s;
+}
+.field-map .fm-marker-office {
+  width: 24px;
+  height: 24px;
+  box-shadow:
+    0 0 0 3px rgb(24 61 50 / 0.3),
+    0 2px 7px rgb(0 0 0 / 0.4);
+}
+.field-map .leaflet-marker-icon:hover .fm-marker {
+  transform: scale(1.25);
+}
+.field-map .fm-cluster {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #183d32;
+  color: #fff;
+  font:
+    600 13px ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  box-shadow:
+    0 0 0 6px rgb(79 122 58 / 0.3),
+    0 4px 12px rgb(0 0 0 / 0.3);
+}
+.field-map .leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgb(24 61 50 / 0.25);
+}
+.field-map .leaflet-popup-content {
+  margin: 16px 18px;
+  font-family: inherit;
+}
+.field-map .fm-pop-tag {
+  display: block;
+  margin-bottom: 6px;
+  color: #1f5f23;
+  font:
+    600 0.66rem ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.field-map .fm-pop-title {
+  margin: 0 0 6px;
+  color: #000;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.field-map .fm-pop-body {
+  margin: 0;
+  color: #525d55;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.field-map .fm-pop-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: #1f5f23;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.field-map .fm-pop-link:hover {
+  color: #000;
+}
+@media (prefers-reduced-motion: reduce) {
+  .field-map .fm-marker {
+    transition: none;
+  }
+}
+.field-map .fm-fit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+}
+.field-map .leaflet-tooltip.fm-province {
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: #183d32;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 3px #f7f7f2,
+    0 0 3px #f7f7f2,
+    0 0 6px #f7f7f2;
+}
+.field-map .leaflet-tooltip.fm-province::before {
+  display: none;
+}
+/* Phones: the whole of Nepal is too small for the province names to fit without overlapping. */
+@media (max-width: 40rem) {
+  .field-map .leaflet-tooltip.fm-province {
+    display: none;
+  }
+}
+
+/* Field map: the official boundary's lines, drawn in ink in the light theme and in pale grey
+   over the dark terrain in the dark theme. CSS outranks the colour Leaflet writes on each line. */
+.field-map {
+  --fm-line: #183d32;
+}
+.dark .field-map {
+  --fm-line: #e9ede6;
+}
+.field-map .fm-line-district {
+  stroke: var(--fm-line);
+  stroke-opacity: 0.35;
+}
+.field-map .fm-line-province {
+  stroke: var(--fm-line);
+  stroke-opacity: 0.85;
+}
+.field-map .fm-line-country {
+  stroke: var(--fm-line);
+  stroke-opacity: 1;
+}
+
+/* Field map, dark theme: the province names, popups, clusters and controls. */
+.dark .field-map .leaflet-tooltip.fm-province {
+  color: #e9ede6;
+  text-shadow:
+    0 0 3px #000,
+    0 0 3px #000,
+    0 0 6px #000;
+}
+.dark .field-map .leaflet-popup-content-wrapper,
+.dark .field-map .leaflet-popup-tip {
+  background: #141414;
+  color: #e9ede6;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.6);
+}
+.dark .field-map .leaflet-popup-close-button {
+  color: #a7b2a9;
+}
+.dark .field-map .fm-pop-tag,
+.dark .field-map .fm-pop-link {
+  color: #8bd88f;
+}
+.dark .field-map .fm-pop-title,
+.dark .field-map .fm-pop-link:hover {
+  color: #fff;
+}
+.dark .field-map .fm-pop-body {
+  color: #a7b2a9;
+}
+.dark .field-map .fm-cluster {
+  border-color: #000;
+  background: #8bd88f;
+  color: #000;
+  box-shadow:
+    0 0 0 6px rgb(139 216 143 / 0.3),
+    0 4px 12px rgb(0 0 0 / 0.5);
+}
+.dark .field-map .fm-marker {
+  border-color: #000;
+  box-shadow:
+    0 0 0 1.5px rgb(255 255 255 / 0.6),
+    0 2px 7px rgb(0 0 0 / 0.6);
+}
+.dark .field-map .leaflet-bar {
+  border-color: rgb(255 255 255 / 0.2);
+}
+.dark .field-map .leaflet-bar a {
+  border-bottom-color: rgb(255 255 255 / 0.15);
+  background: #141414;
+  color: #e9ede6;
+}
+.dark .field-map .leaflet-bar a:hover {
+  background: #262626;
+}
+.dark .field-map .leaflet-bar a.leaflet-disabled {
+  background: #141414;
+  color: #555;
+}
+.dark .field-map .leaflet-control-attribution {
+  background: rgb(0 0 0 / 0.7);
+  color: #a7b2a9;
+}
+.dark .field-map .leaflet-control-attribution a {
+  color: #8bd88f;
 }

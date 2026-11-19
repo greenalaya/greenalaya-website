@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { SmoothWheelScroll } from "@/components/smooth-wheel-scroll";
 import { ThemeProvider } from "@/components/theme-provider";
 import { rootJsonLd } from "@/lib/json-ld";
 import { titleSeparator } from "@/lib/seo";
@@ -79,6 +80,8 @@ export default function RootLayout({
             {children}
           </div>
           <SiteFooter />
+          {/* On every page, a mouse wheel glides the page instead of jumping (renders nothing). */}
+          <SmoothWheelScroll />
         </ThemeProvider>
       </body>
     </html>

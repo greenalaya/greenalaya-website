@@ -37,8 +37,6 @@ const sources = {
   },
 } satisfies Record<string, ImpactSource>;
 
-export const impactSources: ImpactSource[] = Object.values(sources);
-
 export type ImpactMilestone = {
   id: string;
   dateLabel: string;
@@ -51,6 +49,12 @@ export type ImpactMilestone = {
 
 /** The year in order. */
 export const impactMilestones: ImpactMilestone[] = [
+  {
+    id: "established",
+    dateLabel: "February 2026",
+    title: "Greenalaya Nepal established",
+    figures: [],
+  },
   {
     id: "book",
     dateLabel: "April 2026",

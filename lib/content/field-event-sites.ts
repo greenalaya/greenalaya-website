@@ -13,7 +13,11 @@ export type FieldEventSite = {
   location: string;
   participants: string;
   found: string;
+  /** The page about the event: its news post or report (the research map's "Read more"). */
+  href: string;
 };
+
+const pollinatorReport = "/publications/pollinator-week-2026-event-report";
 
 /** In date order. */
 export const fieldEventSites: FieldEventSite[] = [
@@ -23,6 +27,7 @@ export const fieldEventSites: FieldEventSite[] = [
     location: "Godawari Forest Area",
     participants: "45+ Participants",
     found: "46+ Butterflies found",
+    href: "/news/godawari-butterfly-watch",
   },
   {
     siteId: "hetauda",
@@ -30,6 +35,7 @@ export const fieldEventSites: FieldEventSite[] = [
     location: "Forestry Complex, Hetauda",
     participants: "18+ Participants",
     found: "10+ Pollinators found",
+    href: pollinatorReport,
   },
   {
     siteId: "ranibari",
@@ -37,5 +43,6 @@ export const fieldEventSites: FieldEventSite[] = [
     location: "Ranibari Community Forest, Kathmandu",
     participants: "28+ Participants",
     found: "22 Pollinators found",
+    href: pollinatorReport,
   },
 ];

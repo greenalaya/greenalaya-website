@@ -1,5 +1,6 @@
 import { homeContent } from "@/components/home-v1/content";
 import { HomeShowcase, type ShowcaseItem } from "@/components/home-v1/home-showcase";
+import type { ReactNode } from "react";
 import type { getNewsList } from "@/lib/content/news";
 import type { getProjectList } from "@/lib/content/projects";
 import type { getPublications } from "@/lib/content/resources";
@@ -19,7 +20,10 @@ export function HomeShowcases({
   projects,
   publications,
   news,
+  wrapScreen = (_id, screen) => screen,
 }: {
+  /** Wraps each section (by its id), e.g. to add the page's up/down arrows around it. */
+  wrapScreen?: (id: string, screen: ReactNode) => ReactNode;
   projects: Awaited<ReturnType<typeof getProjectList>>;
   publications: Awaited<ReturnType<typeof getPublications>>;
   news: Awaited<ReturnType<typeof getNewsList>>;
@@ -70,29 +74,38 @@ export function HomeShowcases({
 
   return (
     <>
-      <HomeShowcase
-        id="our-work"
-        tone="field"
-        title={work.title}
-        items={projectItems}
-        more={work.more}
-        inScreen
-      />
-      <HomeShowcase
-        id="publications"
-        title={homeContent.publications.title}
-        items={publicationItems}
-        more={homeContent.publications.more}
-        inScreen
-      />
-      <HomeShowcase
-        id="news"
-        tone="field"
-        title={homeContent.news.title}
-        items={newsItems}
-        more={homeContent.news.more}
-        inScreen
-      />
+      {wrapScreen(
+        "our-work",
+        <HomeShowcase
+          id="our-work"
+          tone="field"
+          title={work.title}
+          items={projectItems}
+          more={work.more}
+          inScreen
+        />,
+      )}
+      {wrapScreen(
+        "publications",
+        <HomeShowcase
+          id="publications"
+          title={homeContent.publications.title}
+          items={publicationItems}
+          more={homeContent.publications.more}
+          inScreen
+        />,
+      )}
+      {wrapScreen(
+        "news",
+        <HomeShowcase
+          id="news"
+          tone="field"
+          title={homeContent.news.title}
+          items={newsItems}
+          more={homeContent.news.more}
+          inScreen
+        />,
+      )}
     </>
   );
 }

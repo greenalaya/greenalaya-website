@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProjectStatusTag } from "@/components/project-status-tag";
 import Link from "next/link";
 import { ArrowLeft, Camera, CheckCircle2, FlaskConical, Leaf, MapPin, Users } from "lucide-react";
 import { mothsBagmatiProject } from "@/lib/content/moths-bagmati-project";
@@ -23,7 +24,7 @@ export function MothsBagmatiProjectDetail() {
         <div className="relative mx-auto flex min-h-[600px] max-w-7xl flex-col justify-between px-5 py-12 sm:min-h-[640px] sm:px-8 sm:py-16 lg:px-12">
           <Link
             href="/projects"
-            className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-white/85 transition hover:text-white"
+            className="-my-2.5 inline-flex min-h-11 w-fit items-center gap-2 py-2.5 text-sm font-semibold text-white/85 transition hover:text-white"
           >
             <ArrowLeft aria-hidden="true" className="size-4" /> All projects
           </Link>
@@ -31,7 +32,8 @@ export function MothsBagmatiProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#a8dc9d]">
               Citizen science &amp; biodiversity documentation
             </p>
-            <h1 className={`${pageTitleClass} mt-5 text-white`}>
+            <ProjectStatusTag slug={mothsBagmatiProject.slug} className="mt-5 block" />
+            <h1 className={`${pageTitleClass} mt-3 text-white`}>
               Moonlight Dancer
               <span className="mt-2 block text-2xl font-normal leading-tight text-white/90 sm:text-3xl lg:text-4xl">
                 Documenting the Moths of Bagmati Province

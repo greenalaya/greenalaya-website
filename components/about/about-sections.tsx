@@ -1,20 +1,11 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { canOptimizeLogo, collaboratorPhotoUrl } from "@/lib/content/collaborator-photo";
-import { teamPhotoUrl } from "@/lib/content/team-photo";
 import { aboutPageContent, aboutWhatWeDo, siteConfig } from "@/lib/site";
 import type { Collaborator } from "@/lib/types/collaborator";
-import type { TeamMember } from "@/lib/types/team";
 import { ScrollToNext, ScrollToPrevious, screenSectionClass } from "@/components/scroll-to-next";
-import {
-  homeArrowIconClass,
-  homeArrowLinkClass,
-  homeContainerClass,
-  homeSectionHeadingClass,
-} from "@/components/home/home-styles";
+import { homeContainerClass, homeSectionHeadingClass } from "@/components/home/home-styles";
 import { pageTitleClass } from "@/lib/typography";
-import { cn } from "@/lib/utils";
 
 /**
  * Hero: page title, then what we do beside the community photo, filling the first screen on
@@ -50,7 +41,7 @@ export function AboutIntro() {
             sizes="(min-width: 1200px) 576px, (min-width: 1024px) 50vw, 100vw"
             className="h-auto w-full"
           />
-          <figcaption className="mt-3 text-sm text-home-muted italic">
+          <figcaption className="mt-3 text-sm font-bold text-home-muted italic">
             {aboutWhatWeDo.imageCaption}
           </figcaption>
         </figure>
@@ -107,75 +98,10 @@ export function AboutMissionVision() {
   );
 }
 
-/**
- * Advisors as a still row of portraits, in full colour: one row of three on phones, a centred
- * row of fixed-width portraits from small tablets up. Faces are cropped from near the top so
- * they line up across differently framed photos.
- */
-export function AboutAdvisors({
-  advisors,
-  nextHref,
-}: {
-  advisors: TeamMember[];
-  /** Where the down arrow goes, so it never points at a section that isn't rendered. */
-  nextHref: { href: `#${string}`; label: string };
-}) {
-  if (advisors.length === 0) return null;
-
-  return (
-    <section
-      id="advisors"
-      aria-labelledby="advisors-title"
-      className={`relative scroll-mt-24 py-16 md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
-    >
-      <ScrollToPrevious href="#thematic" label="Back to our thematic areas" />
-      <div className={homeContainerClass}>
-        <h2 id="advisors-title" className={`${homeSectionHeadingClass} text-center text-home-ink`}>
-          Advisors
-        </h2>
-        <ul className="mt-10 grid grid-cols-3 gap-3 sm:flex sm:flex-wrap sm:justify-center sm:gap-x-6 sm:gap-y-8 md:mt-12 md:gap-x-10">
-          {advisors.map((advisor) => (
-            <li key={advisor.id} className="text-center sm:w-48 lg:w-52">
-              <div className="relative aspect-4/5 overflow-hidden bg-home-field">
-                {/* The name is printed below, so the portrait is not announced a second time. */}
-                <Image
-                  src={teamPhotoUrl(advisor)}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 208px, (min-width: 640px) 192px, 33vw"
-                  className="object-cover object-[50%_25%]"
-                />
-              </div>
-              <p className="mt-3 text-sm leading-snug font-semibold text-home-ink sm:text-lg">
-                {advisor.name}
-              </p>
-              {advisor.position ? (
-                <p className="mt-0.5 text-sm text-home-muted">{advisor.position}</p>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-10 text-center">
-          <Link
-            href="/team"
-            className={cn(
-              homeArrowLinkClass,
-              "text-black hover:text-home-accent dark:text-white dark:hover:text-home-accent",
-            )}
-          >
-            Meet our team
-            <ArrowRight aria-hidden className={homeArrowIconClass} />
-          </Link>
-        </div>
-      </div>
-      <ScrollToNext href={nextHref.href} label={nextHref.label} />
-    </section>
-  );
-}
-
 const logoTileSize = {
-  large: { tile: "size-36 sm:size-44", sizes: "176px" },
-  small: { tile: "size-[6.5rem] sm:size-32", sizes: "128px" },
+  // Smaller on phones, so the walls stay compact: four supporters or collaborators to a row.
+  large: { tile: "size-24 p-2.5 sm:size-44 sm:p-3", sizes: "176px" },
+  small: { tile: "size-[4.75rem] p-2 sm:size-32 sm:p-3", sizes: "128px" },
 } as const;
 
 /**
@@ -192,7 +118,7 @@ function PartnerLogo({
   const { tile, sizes } = logoTileSize[size];
   const src = collaboratorPhotoUrl(partner);
   const logo = (
-    <div className={`overflow-hidden rounded-lg bg-white p-3 dark:bg-[#e9ede6] ${tile}`}>
+    <div className={`overflow-hidden rounded-lg bg-white dark:bg-[#e9ede6] ${tile}`}>
       <div className="relative size-full">
         {/* Optimized so tiles load a small resized copy, not the full-size original upload. */}
         <Image
@@ -219,7 +145,7 @@ function PartnerLogo({
         {logo}
         <ArrowUpRight
           aria-hidden
-          className="absolute top-1.5 right-1.5 size-4 text-[#1f5f23] opacity-50 transition-opacity group-hover/logo:opacity-100 group-focus-visible/logo:opacity-100"
+          className="absolute top-1 right-1 size-3 text-[#1f5f23] sm:top-1.5 sm:right-1.5 sm:size-4 opacity-50 transition-opacity group-hover/logo:opacity-100 group-focus-visible/logo:opacity-100"
         />
       </a>
     );
@@ -270,7 +196,7 @@ export function AboutPartners({
               >
                 {group.title}
               </h3>
-              <ul className="mt-5 flex flex-wrap justify-center gap-3 sm:gap-4">
+              <ul className="mt-5 flex flex-wrap justify-center gap-2.5 sm:gap-4">
                 {group.partners.map((partner) => (
                   <li key={partner.id}>
                     <PartnerLogo partner={partner} size={group.size} />

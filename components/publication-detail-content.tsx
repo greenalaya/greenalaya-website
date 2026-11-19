@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { PdfPreviewModal } from "@/components/pdf-preview-modal";
+import { PublicationCategoryTag } from "@/components/publication-category-tag";
 import { PublicationMetadataSection } from "@/components/publication-metadata";
 import type { PublicationDetail } from "@/lib/content/resources";
 import { formatMonthYearParts } from "@/lib/format";
@@ -38,7 +39,10 @@ export function PublicationDetailContent({
           <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
             <ol className="flex flex-wrap items-center gap-2">
               <li>
-                <Link href="/publications" className="text-primary hover:underline">
+                <Link
+                  href="/publications"
+                  className="-my-2.5 inline-flex min-h-11 items-center py-2.5 text-primary hover:underline"
+                >
                   Publications
                 </Link>
               </li>
@@ -46,6 +50,7 @@ export function PublicationDetailContent({
           </nav>
 
           <header className="mt-8">
+            <PublicationCategoryTag category={publication.category} className="mb-4" />
             <h1 className={`${pageTitleClass} text-foreground`}>{publication.title}</h1>
             {postedOn ? (
               <p className="mt-4 text-base italic text-muted-foreground">{postedOn}</p>

@@ -28,7 +28,10 @@ export function ContactSection({ description, formEnabled, defaultSubject }: Con
             </div>
             <div>
               <h3 className="mb-1 font-semibold text-foreground">Email</h3>
-              <a href={`mailto:${siteContact.email}`} className="text-foreground hover:underline">
+              <a
+                href={`mailto:${siteContact.email}`}
+                className="-my-2.5 inline-block py-2.5 text-foreground hover:underline"
+              >
                 {siteContact.email}
               </a>
             </div>
@@ -42,7 +45,7 @@ export function ContactSection({ description, formEnabled, defaultSubject }: Con
               <h3 className="mb-1 font-semibold text-foreground">Phone</h3>
               <a
                 href={`tel:${siteContact.phone.replace(/[^+\d]/g, "")}`}
-                className="text-foreground hover:underline"
+                className="-my-2.5 inline-block py-2.5 text-foreground hover:underline"
               >
                 {siteContact.phone}
               </a>

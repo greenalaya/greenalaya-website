@@ -4,22 +4,29 @@ import { getProjectList } from "@/lib/content/projects";
 import { getPublications } from "@/lib/content/resources";
 import { seedBlogPosts } from "@/lib/content/seed";
 import { getTeamMembers } from "@/lib/content/team";
-import { siteConfig } from "@/lib/site";
+import { primaryNavItems, siteConfig } from "@/lib/site";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
 
+// The fixed pages, and every page in the header's drop-downs (only the ones the menus show; links
+// to a section of a page, such as /about#advisors, are that page).
 const staticPaths = [
-  "",
-  "/about",
-  "/projects",
-  "/publications",
-  "/team",
-  "/news",
-  "/blog",
-  "/membership",
-  "/contact",
+  ...new Set([
+    "",
+    "/about",
+    "/projects",
+    "/publications",
+    "/team",
+    "/news",
+    "/blog",
+    "/membership",
+    "/contact",
+    ...primaryNavItems.flatMap((item) =>
+      (item.children ?? []).map((child) => child.href).filter((href) => !href.includes("#")),
+    ),
+  ]),
 ];
 
 function toDate(value: string | null | undefined) {

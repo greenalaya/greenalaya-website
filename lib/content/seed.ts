@@ -81,15 +81,6 @@ export const seedTeamMembers: TeamMember[] = [
     linkedin_url: "https://www.linkedin.com/in/sarita-pokhrel-025aa4269/",
   },
   {
-    id: "seed-aashish-shrestha",
-    name: "Aashish Shrestha",
-    slug: "aashish-shrestha",
-    position: null,
-    bio: null,
-    photo_url: "/images/team/aashish-shrestha.jpg",
-    linkedin_url: "https://www.linkedin.com/in/saashish1746/",
-  },
-  {
     id: "seed-negma-shakya",
     name: "Negma Shakya",
     slug: "negma-shakya",

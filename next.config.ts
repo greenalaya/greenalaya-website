@@ -92,6 +92,17 @@ const nextConfig: NextConfig = {
         destination: "/about#advisors",
         permanent: true,
       },
+      // Advisors and partners were briefly pages of their own; they are sections of /about.
+      {
+        source: "/about/advisors",
+        destination: "/about#advisors",
+        permanent: false,
+      },
+      {
+        source: "/about/partners",
+        destination: "/about#partners",
+        permanent: false,
+      },
       // The redesigned About page was tested here before it replaced /about.
       {
         source: "/about-preview",

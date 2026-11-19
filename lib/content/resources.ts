@@ -2,8 +2,10 @@ import { seedResearch } from "@/lib/content/seed";
 import {
   defaultPublicationCover,
   getPublicationMetadata,
+  publicationCategoryBySlug,
   publicationCovers,
   resolvePublicationPdfUrl,
+  type PublicationCategory,
   type PublicationMetadata,
 } from "@/lib/site";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
@@ -18,6 +20,8 @@ export type PublicationCard = {
   abstract: string | null;
   publishedDateIso: string | null;
   metadata: PublicationMetadata | null;
+  /** Its kind (report, book and so on), or null if not yet given in publicationCategoryBySlug. */
+  category: PublicationCategory | null;
 };
 
 export type PublicationDetail = PublicationCard;
@@ -41,6 +45,7 @@ function toPublicationCard(item: Research): PublicationCard | null {
     abstract: item.abstract,
     publishedDateIso: item.published_date,
     metadata: getPublicationMetadata(item.slug, publicationYear(item.published_date)),
+    category: publicationCategoryBySlug[item.slug] ?? null,
   };
 }
 

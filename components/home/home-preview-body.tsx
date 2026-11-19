@@ -2,7 +2,6 @@ import { FooterStayAhead } from "@/components/footer-stay-ahead";
 import { HomeEventsNews } from "@/components/home/home-events-news";
 import { HomeFlagshipSpecies } from "@/components/home/home-flagship-species";
 import { HomeImpact } from "@/components/home/home-impact";
-import { HomeScreenScroller } from "@/components/home/home-screen-scroller";
 import { HomePress } from "@/components/home/home-press";
 import { HomePublications, type PublicationListItem } from "@/components/home/home-publications";
 import { HomeShowcase, type ShowcaseItem } from "@/components/home/home-showcase";
@@ -17,6 +16,7 @@ import { formatLongDate, formatMonthYearParts } from "@/lib/format";
 import type { ReactNode } from "react";
 import { homeContent, publicationPageCounts } from "@/lib/site";
 import { homeScreenClass } from "@/components/home/home-styles";
+import { ScrollToNext, ScrollToPrevious } from "@/components/scroll-to-next";
 import { cn } from "@/lib/utils";
 
 const byNewest =
@@ -35,7 +35,14 @@ export async function HomePreviewBody({
   oneScreenEach = false,
   originalShowcases = false,
   flagshipSpecies = false,
+  showcases = true,
 }: {
+  /**
+   * Show the work, publications, news and press sections after "Where We Work" (and the
+   * flagship species). Without them the page goes from the last of those straight to the
+   * closing band; each has its own page, linked from the header.
+   */
+  showcases?: boolean;
   /** Show "Our Flagship Species" (butterflies, moths, fireflies) after "Where We Work". */
   flagshipSpecies?: boolean;
   /**
@@ -53,9 +60,9 @@ export async function HomePreviewBody({
   /** Show the impact figures even while they are a draft (see HomeImpact). */
   showDraftImpact?: boolean;
   /**
-   * On a laptop every section is one screen, and scrolling snaps from one to the next (the
-   * hero, the funders with the impact figures, "Where We Work" and so on, down to the closing
-   * band with the footer).
+   * On a laptop every section is one screen (the hero, the impact figures, "Where We Work" and
+   * so on, down to the closing band with the footer). The page scrolls normally; with
+   * `originalShowcases`, each screen has the About page's bouncing up and down arrows.
    */
   oneScreenEach?: boolean;
 }) {
@@ -120,40 +127,103 @@ export async function HomePreviewBody({
     language: item.language,
   }));
 
+  // Laptops: an up arrow at the top of each screen and a down arrow at its foot, as on the
+  // About page, in the order the screens come.
+  const withArrows = oneScreenEach && originalShowcases;
+  const screenOrder = [
+    "home-top",
+    "impact-screen",
+    "where-we-work",
+    ...(flagshipSpecies ? ["flagship-species"] : []),
+    ...(showcases ? ["our-work", "publications", "news", "press"] : []),
+    "get-involved",
+  ];
+  const screenNames: Record<string, string> = {
+    "home-top": "the top",
+    "impact-screen": "our impact",
+    "where-we-work": "where we work",
+    "flagship-species": "our flagship species",
+    "our-work": "our work",
+    publications: "our publications",
+    news: "our news",
+    press: "the national press",
+    "get-involved": "get involved",
+  };
+  const neighbours = (id: string) => {
+    const index = screenOrder.indexOf(id);
+    const previous = screenOrder[index - 1];
+    const next = screenOrder[index + 1];
+    return {
+      previous: previous
+        ? { href: `#${previous}` as const, label: `Back to ${screenNames[previous]}` }
+        : null,
+      next: next ? { href: `#${next}` as const, label: `Scroll to ${screenNames[next]}` } : null,
+    };
+  };
+  const wrapScreen = (id: string, screen: ReactNode) => {
+    if (!withArrows) return screen;
+    const { previous, next } = neighbours(id);
+    return (
+      <div className="relative" id={id === "home-top" ? id : undefined}>
+        {previous ? <ScrollToPrevious href={previous.href} label={previous.label} /> : null}
+        {screen}
+        {next ? (
+          <ScrollToNext
+            href={next.href}
+            label={next.label}
+            // The hero: in the middle, in front of the tree trunk and above the grass; light,
+            // so it shows against the dark bark.
+            className={
+              id === "home-top"
+                ? "z-30 lg:bottom-16 [&>a]:text-white/80 [&>a:hover]:text-white [&_svg]:size-6 [&_svg]:drop-shadow-[0_1px_2px_rgb(0_0_0/0.45)]"
+                : undefined
+            }
+          />
+        ) : null}
+      </div>
+    );
+  };
+  const beforeFooter = neighbours("get-involved").previous;
+
   return (
-    <main
-      data-snap-screens={oneScreenEach ? "" : undefined}
-      className="bg-home-ground text-home-ink selection:bg-home-sage/60 selection:text-home-ink"
-    >
-      {oneScreenEach ? <HomeScreenScroller /> : null}
-      {hero}
-      {oneScreenEach && supporters ? (
-        // One screen for both, their content centred in it. At least one screen rather than
-        // exactly one: in a window too short for both, the screen grows instead of its content
-        // spilling over the hero above.
-        <div
-          className={cn(
-            "border-t border-home-line lg:justify-center",
-            homeScreenClass,
-            "py-0 md:py-0 lg:h-auto lg:min-h-[calc(100svh-4.5rem)]",
-          )}
-        >
-          {supporters}
-          <HomeImpact showDraft={showDraftImpact} inScreen />
-        </div>
+    <main className="bg-home-ground text-home-ink selection:bg-home-sage/60 selection:text-home-ink">
+      {wrapScreen("home-top", hero)}
+      {oneScreenEach ? (
+        wrapScreen(
+          "impact-screen",
+          // One screen for the funders (when given) and the impact figures, centred in it. At
+          // least one screen rather than exactly one: in a window too short for both, the
+          // screen grows instead of its content spilling over the hero above.
+          <div
+            id="impact-screen"
+            className={cn(
+              "border-t border-home-line lg:justify-center",
+              homeScreenClass,
+              "py-0 md:py-0 lg:h-auto lg:min-h-[calc(100svh-4.5rem)]",
+            )}
+          >
+            {supporters}
+            <HomeImpact showDraft={showDraftImpact} inScreen afterFunders={Boolean(supporters)} />
+          </div>,
+        )
       ) : (
         <>
           {supporters}
           <HomeImpact showDraft={showDraftImpact} />
         </>
       )}
-      <HomeWorkMap inScreen={oneScreenEach} />
-      {flagshipSpecies ? <HomeFlagshipSpecies /> : null}
-      {originalShowcases ? (
+      {wrapScreen("where-we-work", <HomeWorkMap inScreen={oneScreenEach} />)}
+      {flagshipSpecies ? wrapScreen("flagship-species", <HomeFlagshipSpecies />) : null}
+      {!showcases ? null : originalShowcases ? (
         <>
-          <HomeShowcases projects={projects} publications={publications} news={news} />
+          <HomeShowcases
+            projects={projects}
+            publications={publications}
+            news={news}
+            wrapScreen={wrapScreen}
+          />
           {/* After the organisation's own news: what the national newspapers wrote about it. */}
-          <HomePress items={coverageItems} />
+          {wrapScreen("press", <HomePress items={coverageItems} />)}
         </>
       ) : (
         <>
@@ -169,7 +239,14 @@ export async function HomePreviewBody({
         </>
       )}
       {/* The same closing band as the About page, so the redesigned pages end alike. */}
-      <FooterStayAhead themed />
+      <FooterStayAhead
+        themed
+        fillScreenWithFooter={
+          withArrows && beforeFooter
+            ? { previousHref: beforeFooter.href, previousLabel: beforeFooter.label }
+            : undefined
+        }
+      />
     </main>
   );
 }

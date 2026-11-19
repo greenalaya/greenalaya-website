@@ -7,15 +7,22 @@ import type { PublicationCard } from "@/lib/content/resources";
 
 type PublicationsPageContentProps = {
   publications: PublicationCard[];
+  /** The page's title (default "Publications"; each kind's page sets its own). */
+  heading?: string;
+  emptyMessage?: string;
 };
 
-export function PublicationsPageContent({ publications }: PublicationsPageContentProps) {
+export function PublicationsPageContent({
+  publications,
+  heading = "Publications",
+  emptyMessage = "No publications are available yet.",
+}: PublicationsPageContentProps) {
   return (
     <SearchableListPage
       items={publications}
-      heading="Publications"
+      heading={heading}
       searchLabel="publications"
-      emptyMessage="No publications are available yet."
+      emptyMessage={emptyMessage}
       noMatchMessage="No publications match your search."
       getKey={(publication) => publication.id}
       matchesQuery={(publication, q) =>

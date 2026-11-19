@@ -10,10 +10,8 @@
 
 const API = "https://api.inaturalist.org/v1";
 const NEPAL_PLACE_ID = 7335;
-const LEPIDOPTERA_TAXON_ID = 47157;
 const REVALIDATE_SECONDS = 3600;
 
-const researchQuery = `place_id=${NEPAL_PLACE_ID}&taxon_id=${LEPIDOPTERA_TAXON_ID}&quality_grade=research`;
 const openLicences = new Set(["cc0", "cc-by", "cc-by-nc"]);
 
 export type QuizSpecies = {
@@ -137,52 +135,4 @@ async function getNepalSpecies(
   }
   // The quiz needs a few species to choose wrong answers from.
   return species.length >= 6 ? species : null;
-}
-
-export type RecentRecord = {
-  id: number;
-  name: string;
-  /** ISO date the record was made. */
-  observedOn: string;
-  lat: number;
-  lon: number;
-  url: string;
-};
-
-/**
- * The latest research-grade butterfly and moth records in Nepal with a map position, newest
- * first, for the "live records" map option. These are every observer's records, not only the
- * organisation's. Any failure returns null, and the map then says so.
- */
-export async function getNepalRecentRecords(limit = 200): Promise<RecentRecord[] | null> {
-  return getRecords(`${researchQuery}&per_page=${limit}`);
-}
-
-/** Records matching an iNaturalist observations query, newest first, with a map position. */
-async function getRecords(query: string): Promise<RecentRecord[] | null> {
-  const data = await getJson<{
-    results?: {
-      id: number;
-      observed_on?: string | null;
-      location?: string | null;
-      taxon?: { name: string; preferred_common_name?: string | null } | null;
-    }[];
-  }>(`/observations?${query}&geo=true&order_by=observed_on&order=desc`);
-  if (!data?.results) return null;
-
-  const records: RecentRecord[] = [];
-  for (const item of data.results) {
-    const [lat, lon] = (item.location ?? "").split(",").map(Number);
-    if (!item.taxon || !item.observed_on || !Number.isFinite(lat) || !Number.isFinite(lon))
-      continue;
-    records.push({
-      id: item.id,
-      name: item.taxon.preferred_common_name ?? item.taxon.name,
-      observedOn: item.observed_on,
-      lat,
-      lon,
-      url: `https://www.inaturalist.org/observations/${item.id}`,
-    });
-  }
-  return records.length > 0 ? records : null;
 }

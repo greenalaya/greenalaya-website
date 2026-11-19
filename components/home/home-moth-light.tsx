@@ -66,7 +66,12 @@ function makeFliers(scene: Scene, width: number, height: number): Flier[] {
   }));
 }
 
-function drawMoth(context: CanvasRenderingContext2D, moth: Flier, light: number) {
+/** A moth seen from above, wings beating with its phase. Also used by the Field Night game. */
+export function drawMoth(
+  context: CanvasRenderingContext2D,
+  moth: Pick<Flier, "x" | "y" | "vx" | "vy" | "phase" | "size" | "colour">,
+  light: number,
+) {
   const flap = 0.55 + Math.abs(Math.sin(moth.phase)) * 0.45;
   context.save();
   context.translate(moth.x, moth.y);
@@ -185,7 +190,12 @@ function drawHalo(context: CanvasRenderingContext2D, x: number, y: number) {
  * The lamp's warm glow on the night (on the light layer, which can extend left of the scene).
  * `reach` is how far it spreads; only that square round the lamp is painted.
  */
-function drawLampGlow(context: CanvasRenderingContext2D, x: number, y: number, reach: number) {
+export function drawLampGlow(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  reach: number,
+) {
   const glow = context.createRadialGradient(x, y, 0, x, y, reach);
   // Brightness falls off like a real lamp's (roughly with the square of the distance, from a
   // 40px core), eased to nothing at `reach`: bright close by, faint within a short way.
@@ -202,7 +212,7 @@ function drawLampGlow(context: CanvasRenderingContext2D, x: number, y: number, r
   context.fillRect(x - reach, y - reach, reach * 2, reach * 2);
 }
 
-function drawFlower(context: CanvasRenderingContext2D, x: number, y: number) {
+export function drawFlower(context: CanvasRenderingContext2D, x: number, y: number) {
   context.fillStyle = "#e86fa3";
   context.strokeStyle = "#c24f82";
   context.lineWidth = 1;
@@ -234,7 +244,12 @@ const grassGreens: Record<Scene, [string, string]> = {
   night: ["#35602f", "#27482a"],
 };
 
-function drawGrass(context: CanvasRenderingContext2D, width: number, height: number, scene: Scene) {
+export function drawGrass(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  scene: Scene,
+) {
   const [light, dark] = grassGreens[scene];
   const random = seeded(3);
   context.lineCap = "round";

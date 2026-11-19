@@ -1,6 +1,6 @@
 /**
- * Generates lib/content/nepal-map.ts: SVG outlines of Nepal's provinces and the Kathmandu Valley
- * districts for the "Where we work" map.
+ * Generates lib/content/nepal-map.ts: SVG outlines of Nepal's provinces for the "Where we work"
+ * map.
  *
  * Source: the official post-May-2020 map of Nepal (including Kalapani, Lipulekh and Limpiyadhura),
  * from Nepal subnational administrative boundaries, HDX COD-AB (CC BY 4.0), as simplified in
@@ -28,7 +28,6 @@ const PROVINCE_NAMES = {
   P6: "Karnali",
   P7: "Sudurpashchim",
 };
-const VALLEY_DISTRICTS = ["Kathmandu", "Lalitpur", "Bhaktapur"];
 const LAT0 = 28.4;
 const COS0 = Math.cos((LAT0 * Math.PI) / 180);
 
@@ -90,7 +89,6 @@ const roundParams = (params) =>
   Object.fromEntries(Object.entries(params).map(([key, value]) => [key, round(value, 6)]));
 
 const provincesGeo = await loadGeo("provinces.geo.ts");
-const districtsGeo = await loadGeo("districts.geo.ts");
 
 const main = makeProjection(bounds(provincesGeo.features), 1000);
 const provinces = provincesGeo.features.map((feature) => {
@@ -98,18 +96,6 @@ const provinces = provincesGeo.features.map((feature) => {
   if (!name) throw new Error(`Unknown province id ${feature.properties.id}`);
   return { name, d: toPath(feature.geometry, main.project, 1.2) };
 });
-
-const valleyFeatures = districtsGeo.features.filter((feature) =>
-  VALLEY_DISTRICTS.includes(feature.properties.nameEn),
-);
-const [minLon, minLat, maxLon, maxLat] = bounds(valleyFeatures);
-const pad = 0.02;
-const valleyBox = [minLon - pad, minLat - pad, maxLon + pad, maxLat + pad];
-const valley = makeProjection(valleyBox, 600);
-const districts = valleyFeatures.map((feature) => ({
-  name: feature.properties.nameEn,
-  d: toPath(feature.geometry, valley.project, 0.6),
-}));
 
 const json = (value) => JSON.stringify(value);
 
@@ -142,20 +128,9 @@ export const nepalMap = {
   project: projector(${json(roundParams(main.params))}),
 };
 
-export const kathmanduValleyMap = {
-  width: ${valley.width.toFixed(1)},
-  height: ${valley.height.toFixed(1)},
-  districts: ${json(districts)} as { name: string; d: string }[],
-  project: projector(${json(roundParams(valley.params))}),
-  /** Bounding box of the inset, used to decide which sites appear in it. */
-  bounds: ${json({ minLon: round(valleyBox[0], 4), minLat: round(valleyBox[1], 4), maxLon: round(valleyBox[2], 4), maxLat: round(valleyBox[3], 4) })},
-};
-
 export const mapAttribution =
   "Official map of Nepal (2020). Boundaries: HDX COD-AB (CC BY 4.0) via nepali-geo-pro-max.";
 `;
 
 writeFileSync(outPath, output);
-console.log(
-  `Wrote ${path.relative(process.cwd(), outPath)}: ${provinces.length} provinces, ${districts.length} valley districts.`,
-);
+console.log(`Wrote ${path.relative(process.cwd(), outPath)}: ${provinces.length} provinces.`);

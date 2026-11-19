@@ -76,67 +76,25 @@ test("contact form renders required fields", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Send message" })).toBeVisible();
 });
 
-test("stay ahead section renders on home page", async ({ page }) => {
-  await page.goto("/home-preview");
-  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Get Membership" })).toHaveAttribute(
-    "href",
-    "/membership",
-  );
-  await expect(page.getByRole("link", { name: "Research Internship" })).toHaveAttribute(
-    "href",
-    "/contact?intent=internship",
-  );
-  await expect(page.getByRole("link", { name: "Partner With Us" })).toHaveAttribute(
-    "href",
-    "/contact?intent=partner",
-  );
-});
-
-test("home page hero and core sections render", async ({ page }) => {
-  await page.goto("/home-preview");
-  const heroCta = page.locator("#shader-hero-cta");
-
-  await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: /Building a Resilient Nepal Through Tech-Powered Conservation/i,
-    }),
-  ).toBeVisible();
-  await expect(heroCta.getByRole("link", { name: "Explore Our Work", exact: true })).toBeVisible();
-  await expect(heroCta.getByRole("link", { name: "Get Involved" })).toHaveAttribute(
-    "href",
-    "#get-involved",
-  );
-  await expect(page.getByRole("heading", { name: "Our Mission" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Our Vision" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Strategic Pillars" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Thematic Areas" })).toBeVisible();
-});
-
-test("home page anchor links scroll to target sections", async ({ page }) => {
-  await page.goto("/home-preview");
-  const heroCta = page.locator("#shader-hero-cta");
-
-  await expect(heroCta.getByRole("link", { name: "Get Involved" })).toHaveAttribute(
-    "href",
-    "#get-involved",
-  );
-  await expect(
-    heroCta.getByRole("link", { name: "Explore Our Work", exact: true }),
-  ).toHaveAttribute("href", "#thematic");
-
-  await expect(page.locator("#get-involved")).toBeAttached();
-  await expect(page.locator("#thematic")).toBeAttached();
-});
-
-test("home page CTA links to the membership page", async ({ page }) => {
-  await page.goto("/home-preview");
-  const membershipLink = page
-    .locator("#get-involved")
-    .getByRole("link", { name: "Get Membership" });
-  await expect(membershipLink).toHaveAttribute("href", "/membership");
-});
+for (const path of ["/", "/home-preview"]) {
+  test(`stay ahead section renders on ${path}`, async ({ page }) => {
+    await page.goto(path);
+    const band = page.locator("#get-involved");
+    await expect(band.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
+    await expect(band.getByRole("link", { name: "Partner With Us" })).toHaveAttribute(
+      "href",
+      "/contact?intent=partner",
+    );
+    await expect(band.getByRole("link", { name: "Send a query" })).toHaveAttribute(
+      "href",
+      "/contact",
+    );
+    await expect(band.getByRole("link", { name: "Research Internship" })).toHaveAttribute(
+      "href",
+      "/contact?intent=internship",
+    );
+  });
+}
 
 test("membership page renders application form", async ({ page }) => {
   await page.goto("/membership");
@@ -297,11 +255,33 @@ test("footer links route to dedicated pages", async ({ page }, testInfo) => {
     { name: "Publications", path: "/publications" },
     { name: "Blog", path: "/blog" },
     { name: "News & Updates", path: "/news" },
+    { name: "Media Coverage", path: "/news/media-coverage" },
   ] as const;
 
   for (const link of footerLinks) {
     await expect(footer.getByRole("link", { name: link.name })).toHaveAttribute("href", link.path);
   }
+});
+
+test("header drop-downs list each section's pages", async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile-chrome",
+    "Phones get the menu panel instead; covered by the mobile menu test.",
+  );
+
+  await page.goto("/");
+  const nav = page.getByRole("navigation", { name: "Primary", exact: true });
+  const projects = nav.getByRole("button", { name: "Projects pages" });
+  await expect(projects).toHaveAttribute("aria-expanded", "false");
+  await projects.click();
+  await expect(projects).toHaveAttribute("aria-expanded", "true");
+  await expect(nav.getByRole("link", { name: "Ongoing" })).toHaveAttribute(
+    "href",
+    "/projects/ongoing",
+  );
+  await page.keyboard.press("Escape");
+  await expect(projects).toHaveAttribute("aria-expanded", "false");
+  await expect(projects).toBeFocused();
 });
 
 test("closing band and footer exactly fill the last laptop screen", async ({ page }, testInfo) => {
@@ -385,15 +365,16 @@ test("mobile menu exposes primary navigation links", async ({ page }, testInfo) 
 
   const mobileNav = page.getByRole("navigation", { name: "Primary mobile" });
   await expect(mobileNav.getByRole("link", { name: "Home" })).toBeVisible();
-  await expect(mobileNav.getByRole("link", { name: "About" })).toBeVisible();
-  await expect(mobileNav.getByRole("link", { name: "Projects" })).toBeVisible();
-  await expect(mobileNav.getByRole("link", { name: "Publications" })).toBeVisible();
-  await expect(mobileNav.getByRole("link", { name: "News" })).toBeVisible();
+  // About, Projects, Publications and News are groups of their pages.
+  await expect(mobileNav.getByRole("link", { name: "Organization" })).toBeVisible();
+  await expect(mobileNav.getByRole("link", { name: "All Projects" })).toBeVisible();
+  await expect(mobileNav.getByRole("link", { name: "All Publications" })).toBeVisible();
+  await expect(mobileNav.getByRole("link", { name: "News & Updates" })).toBeVisible();
   await expect(mobileNav.getByRole("link", { name: "Blog" })).toBeVisible();
   await expect(mobileNav.getByRole("link", { name: "Research" })).toHaveCount(0);
   await expect(page.getByRole("dialog").getByRole("link", { name: "Get Involved" })).toBeVisible();
 
-  await mobileNav.getByRole("link", { name: "Projects" }).click();
+  await mobileNav.getByRole("link", { name: "All Projects" }).click();
   await expect(page).toHaveURL(/\/projects$/);
   await expect(page.getByRole("button", { name: "Open menu" })).toBeVisible();
 });
@@ -409,6 +390,23 @@ test("home page has no horizontal overflow on mobile", async ({ page }, testInfo
     return document.documentElement.scrollWidth > window.innerWidth;
   });
   expect(hasOverflow).toBe(false);
+});
+
+test("mobile menu lists each section's pages", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile-chrome", "The menu panel is for small viewports.");
+
+  await page.goto("/about");
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const menu = page.getByRole("navigation", { name: "Primary mobile" });
+  const about = menu.getByRole("group", { name: "About" });
+  await expect(about.getByRole("link", { name: "Advisors" })).toHaveAttribute(
+    "href",
+    "/about#advisors",
+  );
+  await expect(about.getByRole("link", { name: "Organization" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
 });
 
 test("footer accordion exposes links on mobile", async ({ page }, testInfo) => {
@@ -457,7 +455,7 @@ test("retired news posts redirect", async ({ page }) => {
 });
 
 test("strategic pillars are keyboard operable", async ({ page }) => {
-  await page.goto("/home-preview");
+  await page.goto("/about");
   const pause = page.locator("#pillars").getByRole("button", { name: "Pause rotation" });
   await pause.click();
   await expect(
@@ -501,30 +499,14 @@ for (const path of [
   });
 }
 
-test("homepage shows its funders after the hero", async ({ page }) => {
+test("homepage sections render in order", async ({ page }) => {
   await page.goto("/");
   // The homepage is the one page of the redesign that search engines index.
   await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
   await expect(page.getByText(/^Meet the \d+ people/)).toHaveCount(0);
-  // The two supporters have their own section on the screen straight after the hero (shared
-  // with the impact figures), not inside the hero.
-  await expect(
-    page.locator('section[aria-labelledby="home-hero-title"] #hero-supporters-title'),
-  ).toHaveCount(0);
-  const supporters = page.locator(
-    'section[aria-labelledby="home-hero-title"] + div > section[aria-labelledby="hero-supporters-title"]',
-  );
-  // The heading stands alone (no description line) and says what the two gave: grants.
-  await expect(supporters.getByRole("heading", { name: "Funded by" })).toBeVisible();
-  await expect(supporters.getByText(/Each logo opens their website/)).toHaveCount(0);
-  await expect(supporters.getByRole("link")).toHaveCount(2);
-  await expect(supporters.getByRole("link", { name: /^Idea Wild/ })).toHaveAttribute(
-    "href",
-    "https://ideawild.org/",
-  );
-  await expect(
-    supporters.getByRole("link", { name: /^The Mohamed bin Zayed Species Conservation Fund/ }),
-  ).toHaveAttribute("href", "https://www.speciesconservation.org/");
+  // No "Funded by" section: the impact figures have the screen after the hero to themselves.
+  await expect(page.locator("#supported-by")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Funded by" })).toHaveCount(0);
   // The right side is the moth lamp, a butterfly meadow in the light theme; the species
   // quiz has its own test page.
   await expect(page.locator('section[aria-labelledby="name-quiz-title"]')).toHaveCount(0);
@@ -552,24 +534,34 @@ test("homepage shows its funders after the hero", async ({ page }) => {
   } else {
     await expect(touchControl).toBeHidden();
   }
-  // Under the funders: the impact figures (shown here for review even while a draft), then
-  // "Where We Work" and the first redesign's work, publications and news sections.
-  const impact = page.locator("#supported-by + #impact");
+  // After the hero: the impact figures on a screen of their own (shown here for review even
+  // while a draft), then "Where We Work" and the flagship species, and then the closing band.
+  const impact = page.locator("#impact-screen > #impact");
   await expect(impact.getByRole("heading", { name: "Our impact so far" })).toBeVisible();
-  await expect(impact.getByRole("listitem")).toHaveCount(6);
+  // Seven stops, starting with the founding in February 2026.
+  await expect(impact.getByRole("listitem")).toHaveCount(7);
+  await expect(impact.getByRole("listitem").first()).toContainText("February 2026");
+  await expect(impact.getByRole("listitem").first()).toContainText("Greenalaya Nepal established");
   // No sources line under the figures.
   await expect(impact.getByText(/^Sources:/)).toHaveCount(0);
-  // ...and "Where We Work" follows that shared screen.
-  await expect(
-    page.locator("div:has(> #supported-by):has(> #impact) + #where-we-work"),
-  ).toBeVisible();
-  // No browser snapping: phones scroll freely, and on a laptop the screen scroller glides
-  // from screen to screen instead (see the next test).
-  await expect
-    .poll(() => page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType))
-    .toBe("none");
+  // The screens come in this order (each may sit in a wrapper that holds its arrows).
+  const order = await page.evaluate(() =>
+    ["impact-screen", "where-we-work", "flagship-species", "get-involved"].map(
+      (id) => document.getElementById(id)?.getBoundingClientRect().top ?? NaN,
+    ),
+  );
+  expect(order.every((top, index) => index === 0 || top > order[index - 1])).toBe(true);
+  // Work, publications, news and press have their own pages (in the header's menus), so the
+  // homepage ends after the flagship species.
+  for (const id of ["our-work", "publications", "news", "press"]) {
+    await expect(page.locator(`#${id}`)).toHaveCount(0);
+  }
+  // The page scrolls normally: no browser snapping.
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType)).toBe(
+    "none",
+  );
   // After the map: the three flagship groups, two of them opening their project.
-  const flagship = page.locator("#where-we-work + #flagship-species");
+  const flagship = page.locator("#flagship-species");
   await expect(flagship.getByRole("heading", { name: "Our Flagship Species" })).toBeVisible();
   await expect(flagship.getByRole("listitem")).toHaveCount(3);
   await expect(flagship.getByRole("link", { name: /Butterflies/ })).toHaveAttribute(
@@ -581,19 +573,20 @@ test("homepage shows its funders after the hero", async ({ page }) => {
     "/projects/moths-of-bagmati-province",
   );
   await expect(flagship.getByText("Fireflies")).toBeVisible();
-  // After the organisation's own news: newspaper coverage, each tile opening the newspaper's
-  // site in a new tab (at most six), with a Nepali headline marked as Nepali.
-  const press = page.locator("#news + #press");
-  await expect(press.getByRole("heading", { name: "In the National Press" })).toBeVisible();
-  const articles = press.getByRole("link");
+  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
+});
+
+test("media coverage page opens each article in a new tab", async ({ page }) => {
+  await page.goto("/news/media-coverage");
+  await expect(page.getByRole("heading", { level: 1, name: "Media Coverage" })).toBeVisible();
+  const articles = page.getByRole("main").getByRole("link");
   expect(await articles.count()).toBeGreaterThan(0);
-  expect(await articles.count()).toBeLessThanOrEqual(6);
   for (const article of await articles.all()) {
     await expect(article).toHaveAttribute("href", /^https:\/\//);
     await expect(article).toHaveAttribute("target", "_blank");
   }
-  await expect(press.locator('[lang="ne"]')).not.toHaveCount(0);
-  await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
+  // A Nepali headline is marked as Nepali.
+  await expect(page.getByRole("main").locator('[lang="ne"]')).not.toHaveCount(0);
 });
 
 test("labs page explains the approach, Chinari and the research pillars", async ({ page }) => {
@@ -637,39 +630,47 @@ test("labs page explains the approach, Chinari and the research pillars", async 
   await expect(page.getByRole("heading", { name: /Stay ahead with/i })).toBeVisible();
 });
 
-test("homepage glides one screen per scroll on a laptop", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === "mobile-chrome", "Phones scroll freely, with no snapping.");
+test("homepage scrolls normally, with up and down arrows on laptops", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name === "mobile-chrome", "The arrows are for laptops only.");
   await page.setViewportSize({ width: 1366, height: 768 });
   await page.goto("/");
-  // The scroller is running once it has taken over from the browser's snapping.
-  await expect
-    .poll(() => page.evaluate(() => getComputedStyle(document.documentElement).scrollSnapType))
-    .toBe("none");
-
-  // Where each screen starts, just under the fixed header (4.5rem = 72px).
-  const screenTop = (selector: string) =>
-    page.evaluate(
-      (selector) =>
-        Math.round(
-          document.querySelector(selector)!.getBoundingClientRect().top + window.scrollY - 72,
-        ),
-      selector,
-    );
   const pageY = () => page.evaluate(() => Math.round(window.scrollY));
 
-  // One notch of the wheel glides from the hero to the funders' screen, and no further.
+  // One notch of the wheel scrolls a little, not a whole screen.
   await page.mouse.move(150, 400);
   await page.mouse.wheel(0, 100);
-  const funders = await screenTop("div:has(> #supported-by)");
-  await expect.poll(pageY).toBe(funders);
-  await page.waitForTimeout(400);
-  expect(await pageY()).toBe(funders);
+  await expect.poll(pageY).toBeGreaterThan(0);
+  await page.waitForTimeout(800);
+  expect(await pageY()).toBeLessThan(300);
 
-  // The keyboard moves a screen at a time too, and the wheel back up returns.
-  await page.keyboard.press("ArrowDown");
-  await expect.poll(pageY).toBe(await screenTop("#where-we-work"));
-  await page.mouse.wheel(0, -100);
-  await expect.poll(pageY).toBe(funders);
+  // Each screen has the About page's arrows: down to the next, up to the previous.
+  const down = page.getByRole("link", { name: "Scroll to our impact" });
+  await expect(down).toHaveAttribute("href", "#impact-screen");
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await down.click();
+  // Lands just under the fixed header (4.5rem = 72px).
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        Math.round(document.getElementById("impact-screen")!.getBoundingClientRect().top),
+      ),
+    )
+    .toBe(72);
+  await expect(page.getByRole("link", { name: "Back to the top" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Scroll to where we work" })).toHaveAttribute(
+    "href",
+    "#where-we-work",
+  );
+  // The closing band's up arrow (shown only on screens tall enough to have room for it).
+  await expect(
+    page.locator('#get-involved a[aria-label="Back to our flagship species"]'),
+  ).toHaveAttribute("href", "#flagship-species");
+  await expect(page.getByRole("link", { name: "Scroll to get involved" })).toHaveAttribute(
+    "href",
+    "#get-involved",
+  );
 });
 
 test("Nature Detective: pick a group and a level, then name five species", async ({ page }) => {
@@ -730,11 +731,18 @@ test("about page shows mission, vision, pillars and thematic areas", async ({ pa
     "Our Vision",
     "Strategic Pillars",
     "Thematic Areas",
-    "Advisors",
+    "Our People",
     "Our Partners",
   ]) {
     await expect(page.getByRole("heading", { level: 2, name, exact: true })).toBeVisible();
   }
+  // Our People: the advisors, then the team.
+  for (const name of ["Advisors", "Team"]) {
+    await expect(
+      page.locator("#advisors").getByRole("heading", { level: 3, name, exact: true }),
+    ).toBeVisible();
+  }
+  await expect(page.locator("#team").getByRole("listitem")).not.toHaveCount(0);
   await expect(page.locator("#pillars").getByRole("button").first()).toBeVisible();
   await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
   await expect(
@@ -742,46 +750,131 @@ test("about page shows mission, vision, pillars and thematic areas", async ({ pa
   ).toHaveAttribute("target", "_blank");
 });
 
+test("About menu's Advisors and Our Partners glide to their sections", async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile-chrome",
+    "Phones get the menu panel instead; covered by the mobile menu test.",
+  );
+  // Even with reduce motion on, which would otherwise make the page jump.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/about");
+  const nav = page.getByRole("navigation", { name: "Primary", exact: true });
+  for (const [name, id] of [
+    ["Advisors", "advisors"],
+    ["Our Partners", "partners"],
+  ]) {
+    await nav.getByRole("button", { name: "About pages" }).click();
+    const before = await page.evaluate(() => scrollY);
+    await nav.getByRole("link", { name }).click();
+    await page.waitForTimeout(60);
+    const during = await page.evaluate(() => scrollY);
+    await expect(page).toHaveURL(new RegExp(`/about#${id}$`));
+    await expect
+      .poll(() =>
+        page.locator(`#${id}`).evaluate((el) => Math.round(el.getBoundingClientRect().top)),
+      )
+      .toBeLessThan(100);
+    const after = await page.evaluate(() => scrollY);
+    // Part of the way there after a moment: a glide, not a jump.
+    expect(during).not.toBe(after);
+    expect(Math.abs(during - before)).toBeLessThan(Math.abs(after - before));
+  }
+});
+
+test("/about/advisors and /about/partners go to their sections of /about", async ({ page }) => {
+  await page.goto("/about/partners");
+  await expect(page).toHaveURL(/\/about#partners$/);
+});
+
+test("projects carry a status tag; Ongoing and Completed list only theirs", async ({ page }) => {
+  const moths = 'a[href="/projects/moths-of-bagmati-province"]';
+  const butterflies = 'a[href="/projects/kathmandu-valley-butterfly-documentation"]';
+  await page.goto("/projects");
+  await expect(
+    page.locator(moths).getByText("Ongoing", { exact: true }).filter({ visible: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator(butterflies).getByText("Completed", { exact: true }).filter({ visible: true }),
+  ).toBeVisible();
+
+  await page.goto("/projects/ongoing");
+  await expect(page.getByRole("heading", { level: 1, name: "Ongoing Projects" })).toBeVisible();
+  await expect(page.locator(moths)).toBeVisible();
+  await expect(page.locator(butterflies)).toHaveCount(0);
+
+  await page.goto("/projects/completed");
+  await expect(page.getByRole("heading", { level: 1, name: "Completed Projects" })).toBeVisible();
+  await expect(page.locator(butterflies)).toBeVisible();
+  await expect(page.locator(moths)).toHaveCount(0);
+
+  await page.goto("/projects/kathmandu-valley-butterfly-documentation");
+  await expect(page.getByRole("main").getByText("Completed", { exact: true })).toBeVisible();
+});
+
+test("publications carry a kind tag; each kind's page lists only its own", async ({ page }) => {
+  const report = 'a[href="/publications/pollinator-week-2026-event-report"]';
+  const book = 'a[href="/publications/butterfly-images-kathmandu-valley"]';
+  await page.goto("/publications");
+  await expect(
+    page.locator(report).getByText("Report", { exact: true }).filter({ visible: true }),
+  ).toBeVisible();
+  await expect(
+    page.locator(book).getByText("Book", { exact: true }).filter({ visible: true }),
+  ).toBeVisible();
+
+  await page.goto("/publications/reports");
+  await expect(page.getByRole("heading", { level: 1, name: "Reports" })).toBeVisible();
+  await expect(page.locator(report)).toBeVisible();
+  await expect(page.locator(book)).toHaveCount(0);
+
+  await page.goto("/publications/books");
+  await expect(page.locator(book)).toBeVisible();
+  await expect(page.locator(report)).toHaveCount(0);
+
+  await page.goto("/publications/pollinator-week-2026-event-report");
+  await expect(page.getByRole("main").getByText("Report", { exact: true })).toBeVisible();
+});
+
 test("/about-preview redirects to /about", async ({ page }) => {
   await page.goto("/about-preview");
   await expect(page).toHaveURL(/\/about$/);
 });
 
-test("where we work map opens a card for each place", async ({ page }) => {
+test("where we work map opens a popup for each place", async ({ page }) => {
   await page.goto("/");
   const map = page.locator("#where-we-work");
+  await map.scrollIntoViewIfNeeded();
 
-  // The boundaries' credit is the map's hover note (and read by screen readers), not a line
-  // under the map.
-  await expect(map.locator("svg title")).toHaveText(/Official map of Nepal \(2020\)/);
-  await expect(map.locator("p", { hasText: /Official map of Nepal/ })).toHaveCount(0);
+  // A street map with the official boundary, credited in the map's corner.
+  await expect(map.locator(".leaflet-control-attribution")).toContainText(
+    "official map of Nepal (2020)",
+  );
 
-  // Three field sites as dots, and our own address as a house.
-  const card = map.getByRole("dialog");
-  await expect(card).toHaveCount(0);
-  await map
-    .getByRole("button", { name: "Pollinator Week 2026: Forestry Complex, Hetauda" })
-    .click();
-  await expect(card).toContainText("18+ Participants");
-  await expect(card).toContainText("10+ Pollinators found");
+  // Nearby markers share a numbered cluster (on a phone, all four do at first); opening a
+  // cluster zooms in until the marker stands alone.
+  const marker = async (title: string) => {
+    const found = map.locator(`[title^="${title}"]`);
+    for (let tries = 0; tries < 4 && (await found.count()) === 0; tries++) {
+      await map.locator(".fm-cluster").first().click();
+      await page.waitForTimeout(800);
+    }
+    return found;
+  };
 
-  await map.getByRole("button", { name: "Butterfly Watch Event: Godawari Forest Area" }).click();
-  await expect(card).toContainText("46+ Butterflies found");
+  const popup = map.locator(".leaflet-popup");
+  await expect(popup).toHaveCount(0);
+  await (await marker("Greenalaya Nepal: Hemja, Pokhara")).click({ force: true });
+  await expect(popup).toContainText("Gandaki Province");
+  await map.locator(".leaflet-popup-close-button").click();
+  await expect(popup).toHaveCount(0);
 
-  await map.getByRole("button", { name: "Greenalaya Nepal: Hemja, Pokhara" }).click();
-  await expect(card).toContainText("Gandaki Province");
+  await (await marker("Pollinator Week 2026: Forestry Complex, Hetauda")).click({ force: true });
+  await expect(popup).toContainText("18+ Participants");
+  await expect(popup).toContainText("10+ Pollinators found");
 
-  await card.getByRole("button", { name: "Close" }).click();
-  await expect(card).toHaveCount(0);
-
-  // Clicking the same mark again closes its card, and so does a click anywhere else.
-  const home = map.getByRole("button", { name: "Greenalaya Nepal: Hemja, Pokhara" });
-  await home.click();
-  await expect(card).toBeVisible();
-  await home.click();
-  await expect(card).toHaveCount(0);
-  await home.click();
-  await expect(card).toBeVisible();
-  await map.getByRole("heading", { name: "Where We Work" }).click();
-  await expect(card).toHaveCount(0);
+  // "Fit to Nepal" goes back to the whole country.
+  await map.getByRole("button", { name: "Fit to Nepal" }).click();
+  await expect(popup).toHaveCount(0);
 });

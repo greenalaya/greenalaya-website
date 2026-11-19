@@ -4,6 +4,12 @@ import type { TeamMember } from "@/lib/types/team";
 
 const teamColumns = "id, name, slug, position, bio, photo_url, linkedin_url, website_url";
 
+/**
+ * People no longer on the team, left out even if their row is still in Supabase (where
+ * database-only members are otherwise added to the list). Their profile pages are gone too.
+ */
+const formerMemberSlugs = new Set(["aashish-shrestha"]);
+
 function isPlaceholderPhoto(url: string | null | undefined) {
   return !url || url.endsWith("/placeholder.jpg") || url.includes("/placeholder.jpg?");
 }
@@ -48,13 +54,16 @@ export async function getTeamMembers(): Promise<{
     mergeWithSeed(rowsBySlug.get(seed.slug) ?? seed, seed),
   );
   const extras = rows.filter(
-    (member) => !seedTeamMembers.some((seed) => seed.slug === member.slug),
+    (member) =>
+      !seedTeamMembers.some((seed) => seed.slug === member.slug) &&
+      !formerMemberSlugs.has(member.slug),
   );
 
   return { members: [...ordered, ...extras], error: null };
 }
 
 export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | null> {
+  if (formerMemberSlugs.has(slug)) return null;
   const seed = seedTeamMembers.find((member) => member.slug === slug);
 
   if (!isSupabaseConfigured()) {

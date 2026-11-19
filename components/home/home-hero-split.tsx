@@ -169,7 +169,7 @@ export function HomeHeroSplit({
         // crown spreads across the top of the hero, above the words. Layered over the scene's
         // sky but under its light and insects, so the lamp lights it and the butterflies, moths
         // and grass pass in front of it.
-        <HomeHeroTree className="pointer-events-none absolute bottom-0 left-1/2 z-10 hidden aspect-[400/700] h-[min(88%,62vw)] -translate-x-1/2 lg:block" />
+        <HomeHeroTree className="pointer-events-none absolute bottom-0 left-1/2 z-10 hidden h-[min(88%,62vw)] -translate-x-1/2 lg:block" />
       ) : null}
     </section>
   );

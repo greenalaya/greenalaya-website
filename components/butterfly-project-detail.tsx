@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProjectStatusTag } from "@/components/project-status-tag";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, Camera, CheckCircle2, FileText, MapPin } from "lucide-react";
 import { butterflyProject } from "@/lib/content/butterfly-project";
@@ -30,7 +31,7 @@ export function ButterflyProjectDetail() {
         <div className="relative mx-auto flex min-h-[600px] max-w-7xl flex-col justify-between px-5 py-12 sm:min-h-[640px] sm:px-8 sm:py-16 lg:px-12">
           <Link
             href="/projects"
-            className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-white/85 transition hover:text-white"
+            className="-my-2.5 inline-flex min-h-11 w-fit items-center gap-2 py-2.5 text-sm font-semibold text-white/85 transition hover:text-white"
           >
             <ArrowLeft aria-hidden="true" className="size-4" /> All projects
           </Link>
@@ -38,7 +39,8 @@ export function ButterflyProjectDetail() {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#a8dc9d]">
               Citizen science &amp; urban biodiversity
             </p>
-            <h1 className={`${pageTitleClass} mt-5 text-white`}>
+            <ProjectStatusTag slug={butterflyProject.slug} className="mt-5 block" />
+            <h1 className={`${pageTitleClass} mt-3 text-white`}>
               Winged Wonders
               <span className="mt-2 block text-2xl font-normal leading-tight text-white/90 sm:text-3xl lg:text-4xl xl:text-[2.75rem] lg:whitespace-nowrap">
                 Documenting the Butterflies of Kathmandu Valley

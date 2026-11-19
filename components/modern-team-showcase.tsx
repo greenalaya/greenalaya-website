@@ -84,7 +84,8 @@ function LinkedinIcon({ href, memberName }: { href?: string | null; memberName: 
   const className = cn(
     "text-muted-foreground transition-all duration-300 opacity-0 group-hover:opacity-100",
     href
-      ? `${socialLinkRevealClass} hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring rounded-full`
+      ? // The padding (offset by the margin) makes a 36px tap area without moving the icon.
+        `${socialLinkRevealClass} -m-2 p-2 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring rounded-full`
       : "opacity-0 group-hover:opacity-40 pointer-events-none",
   );
 
@@ -117,7 +118,7 @@ function WebsiteIcon({ href, memberName }: { href?: string | null; memberName: s
       href={href}
       aria-label={`${memberName}'s website`}
       className={cn(
-        "text-muted-foreground opacity-0 transition-all duration-300 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring group-hover:opacity-100 rounded-full",
+        "-m-2 p-2 text-muted-foreground opacity-0 transition-all duration-300 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring group-hover:opacity-100 rounded-full",
         socialLinkRevealClass,
       )}
       target="_blank"

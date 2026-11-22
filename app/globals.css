@@ -231,7 +231,6 @@ body {
   }
 }
 
-/* The hero tree (/home-preview-2): its crown sways a degree either way, like in a breeze. */
 /* The hero's typing cursor (phones and tablets): on, off, on... */
 @keyframes hero-caret {
   0%,

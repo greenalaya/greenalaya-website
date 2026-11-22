@@ -375,12 +375,12 @@ export function MembershipForm() {
             <>
               <Image
                 src="/images/membership-payment-qr.png"
-                alt="Scan to pay your Greenalaya Nepal membership fee"
-                width={200}
-                height={200}
+                alt="Fonepay QR code to pay your Greenalaya Nepal membership fee (Greenalaya Nepal, Naxal Branch)"
+                width={552}
+                height={625}
                 unoptimized
                 onError={() => setQrMissing(true)}
-                className="size-[200px] rounded-md border border-border bg-card object-contain"
+                className="h-auto w-[260px] rounded-md border border-border bg-white object-contain"
               />
               <p className="text-xs text-muted-foreground">
                 If the QR code has not loaded yet, email{" "}

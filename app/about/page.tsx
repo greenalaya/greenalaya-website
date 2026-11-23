@@ -38,12 +38,11 @@ export default async function AboutPage() {
   const beforeFooter = hasPartners ? partnersLink : beforePartners;
 
   return (
-    <main className="about-tone bg-home-ground text-home-ink selection:bg-home-sage/60 selection:text-home-ink">
+    <main className="about-tone about-mint bg-home-ground text-home-ink selection:bg-home-sage/60 selection:text-home-ink">
       <AboutIntro />
       <AboutMissionVision />
-      <StrategicPillarsOrbit themed />
+      <StrategicPillarsOrbit />
       <ThematicAreasSection
-        themed
         nextHref={
           hasPeople
             ? { href: "#advisors", label: "Scroll to our people" }
@@ -68,7 +67,6 @@ export default async function AboutPage() {
         previousHref={beforePartners}
       />
       <FooterStayAhead
-        themed
         fillScreenWithFooter={{
           previousHref: beforeFooter.href,
           previousLabel: beforeFooter.label,

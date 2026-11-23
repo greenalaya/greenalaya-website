@@ -49,7 +49,7 @@ test("about page preserves collaborator order and supporter links", async ({ pag
     "Tinylife Finders",
     "Butterfly Watchers Nepal",
     "Club for Wildlife Conservation (CWC)",
-    "Green and orange collaborator logo featuring wildlife",
+    "Wildlife Conservation Society CNRM-Katari, Udayapur",
     "IFSA Hetauda",
     "International Forestry Students' Association (IFSA) Pokhara",
     "Vision Green Organization",

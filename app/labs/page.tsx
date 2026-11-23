@@ -25,7 +25,7 @@ export default function LabsPage() {
       <LabsChinari />
       <LabsPillars />
       {/* The same closing band as the other pages. */}
-      <FooterStayAhead themed />
+      <FooterStayAhead />
     </main>
   );
 }

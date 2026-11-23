@@ -10,20 +10,21 @@ import { pageTitleClass } from "@/lib/typography";
 /**
  * Hero: page title, then what we do beside the community photo, filling the first screen on
  * laptops with the same bouncing scroll-down arrow as the live homepage hero. On phones the
- * photo comes first, so the people are seen before the text.
+ * photo comes first, so the people are seen before the text; there the words are a size smaller
+ * (title 30px, paragraphs 16px, caption 12px) and there is no arrow.
  */
 export function AboutIntro() {
   return (
     <section
       id="about-hero"
       aria-labelledby="about-title"
-      className="relative flex min-h-svh flex-col pt-24 pb-24 md:pt-28 lg:justify-center lg:pt-24 lg:pb-20"
+      className="relative flex min-h-svh flex-col pt-24 pb-12 sm:pb-24 md:pt-28 lg:justify-center lg:pt-24 lg:pb-20"
     >
       <div className={homeContainerClass}>
         {/* Full-width row so the title stays on one line on laptops. */}
         <h1
           id="about-title"
-          className={`${pageTitleClass} text-center text-home-ink lg:whitespace-nowrap`}
+          className={`${pageTitleClass} text-center text-home-ink max-sm:text-[1.875rem] lg:whitespace-nowrap`}
         >
           {aboutPageContent.title}
         </h1>
@@ -41,23 +42,24 @@ export function AboutIntro() {
             sizes="(min-width: 1200px) 576px, (min-width: 1024px) 50vw, 100vw"
             className="h-auto w-full"
           />
-          <figcaption className="mt-3 text-sm font-bold text-home-muted italic">
+          <figcaption className="mt-3 text-xs font-bold text-black italic sm:text-sm dark:text-white">
             {aboutWhatWeDo.imageCaption}
           </figcaption>
         </figure>
         <div className="space-y-4 lg:col-span-6">
-          {/* All three paragraphs share one size and pure black (white in dark mode), as requested. */}
+          {/* All three paragraphs share one size (smaller on phones) and pure black (white in dark mode). */}
           {aboutWhatWeDo.paragraphs.map((paragraph) => (
             <p
               key={paragraph.slice(0, 32)}
-              className="text-lg leading-relaxed text-pretty text-black dark:text-white"
+              className="text-base leading-relaxed text-pretty text-black sm:text-lg dark:text-white"
             >
               {paragraph}
             </p>
           ))}
         </div>
       </div>
-      <ScrollToNext href="#mission" label="Scroll to our mission" className="bottom-4 flex" />
+      {/* Laptops only (the arrow's default); phones just scroll on. */}
+      <ScrollToNext href="#mission" label="Scroll to our mission" className="bottom-4" />
     </section>
   );
 }
@@ -76,7 +78,7 @@ export function AboutMissionVision() {
     <section
       id="mission"
       aria-labelledby="mission-title"
-      className={`relative scroll-mt-24 bg-home-field dark:bg-home-ground py-20 text-home-ink md:py-28 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
+      className={`relative scroll-mt-24 bg-home-ground py-20 text-home-ink md:py-28 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
     >
       <ScrollToPrevious href="#about-hero" label="Back to the top" />
       <div
@@ -87,7 +89,8 @@ export function AboutMissionVision() {
             <h2 id={block.id} className={`${homeSectionHeadingClass} scroll-mt-24`}>
               {block.title}
             </h2>
-            <p className="mx-auto mt-6 max-w-[46ch] text-xl leading-relaxed text-pretty text-home-ink">
+            {/* Same size as the first section's paragraphs: 16px on phones, 18px from 640px up. */}
+            <p className="mx-auto mt-6 max-w-[46ch] text-base leading-relaxed text-pretty text-home-ink sm:text-lg">
               {block.text}
             </p>
           </div>
@@ -180,7 +183,7 @@ export function AboutPartners({
     <section
       id="partners"
       aria-labelledby="partners-title"
-      className={`relative scroll-mt-24 bg-home-field dark:bg-home-ground py-16 md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
+      className={`relative scroll-mt-24 bg-home-ground py-16 md:py-20 lg:pt-12 lg:pb-12 ${screenSectionClass}`}
     >
       <ScrollToPrevious href={previousHref.href} label={previousHref.label} />
       <div className={homeContainerClass}>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { memo, useCallback, useEffect, useState, type SVGProps } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { MotionConfig, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 import type { TeamShowcaseMember } from "@/lib/content/team-showcase";
 import { cn } from "@/lib/utils";
@@ -239,45 +239,49 @@ export function ModernTeamShowcase({
   const reducedMotion = usePrefersReducedMotion();
 
   return (
-    <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background p-8 pt-28 md:p-16 md:pt-32">
-      <div className="aurora-bg absolute inset-0 z-0 opacity-20">
-        <div className="aurora-shape-1" />
-        <div className="aurora-shape-2" />
-      </div>
-
-      <div className="relative z-10 mb-16 flex flex-col items-center text-center">
-        <motion.h1
-          animate={{ y: 0 }}
-          className={`${pageTitleClass} text-foreground`}
-          initial={{ y: -20 }}
-          transition={{ delay: 0.2, duration: 0.8, ease: "easeInOut" }}
-        >
-          Our Team
-        </motion.h1>
-        <motion.p
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-4 max-w-2xl text-lg text-muted-foreground"
-          initial={{ opacity: 0, y: -20 }}
-          transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
-        >
-          {tagline}
-        </motion.p>
-      </div>
-
-      {teamMembers.length === 0 ? (
-        <p className="relative z-10 text-center text-muted-foreground">No team members yet.</p>
-      ) : (
-        <div className="responsive-grid relative z-10 w-full max-w-6xl">
-          {teamMembers.map((member, index) => (
-            <TeamMemberCard
-              key={member.id}
-              index={index}
-              member={member}
-              reducedMotion={reducedMotion}
-            />
-          ))}
+    // Honour the OS "reduce motion" setting for every animation in the showcase. Kept here, not
+    // site-wide, so pages without animations don't load the animation library.
+    <MotionConfig reducedMotion="user">
+      <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background p-8 pt-28 md:p-16 md:pt-32">
+        <div className="aurora-bg absolute inset-0 z-0 opacity-20">
+          <div className="aurora-shape-1" />
+          <div className="aurora-shape-2" />
         </div>
-      )}
-    </main>
+
+        <div className="relative z-10 mb-16 flex flex-col items-center text-center">
+          <motion.h1
+            animate={{ y: 0 }}
+            className={`${pageTitleClass} text-foreground`}
+            initial={{ y: -20 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeInOut" }}
+          >
+            Our Team
+          </motion.h1>
+          <motion.p
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-4 max-w-2xl text-lg text-muted-foreground"
+            initial={{ opacity: 0, y: -20 }}
+            transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
+          >
+            {tagline}
+          </motion.p>
+        </div>
+
+        {teamMembers.length === 0 ? (
+          <p className="relative z-10 text-center text-muted-foreground">No team members yet.</p>
+        ) : (
+          <div className="responsive-grid relative z-10 w-full max-w-6xl">
+            {teamMembers.map((member, index) => (
+              <TeamMemberCard
+                key={member.id}
+                index={index}
+                member={member}
+                reducedMotion={reducedMotion}
+              />
+            ))}
+          </div>
+        )}
+      </main>
+    </MotionConfig>
   );
 }

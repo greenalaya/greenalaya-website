@@ -399,6 +399,38 @@ body {
   --home-surface: #141414;
 }
 
+/*
+ * About page (/about) only: its sections alternate between the pale sage (#dde6d7, the site's
+ * field colour; 1st, 3rd, 5th...) and the plain ivory ground (2nd, 4th, 6th...), counted
+ * from the top so a hidden section never breaks the pattern. The closing "Get Involved" band
+ * keeps its own colour. Secondary text stays 5.4:1 on the sage. Dark mode keeps black.
+ */
+.about-mint {
+  --home-ground: var(--home-field);
+}
+
+.about-mint > section:nth-of-type(even):not(#get-involved) {
+  --home-ground: #f7f7f2;
+  background-color: var(--home-ground);
+}
+
+/*
+ * The first section uses the homepage hero's sky (pale blue into meadow green; the same stops
+ * as homeMeadowSkyClass in components/home/home-styles.ts), so the two pages open alike.
+ */
+.about-mint > #about-hero {
+  background-image: linear-gradient(180deg, #eaf3fb 0%, #eef6e6 55%, #d6e9c8 100%);
+}
+
+.dark .about-mint,
+.dark .about-mint > section:nth-of-type(even):not(#get-involved) {
+  --home-ground: #000000;
+}
+
+.dark .about-mint > #about-hero {
+  background-image: none;
+}
+
 /* "Where We Work" map (homepage): Leaflet builds these elements itself, so they are styled here. */
 .field-map .fm-marker {
   display: block;

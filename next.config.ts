@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    // AVIF first (photos come out far smaller, so pages finish loading sooner), WebP as fallback.
+    formats: ["image/avif", "image/webp"],
     qualities: [75, 92],
     localPatterns: [
       {

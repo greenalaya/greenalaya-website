@@ -70,7 +70,6 @@ export default async function AboutCopyPage() {
         previousHref={beforePartners}
       />
       <FooterStayAhead
-        themed
         fillScreenWithFooter={{
           previousHref: beforeFooter.href,
           previousLabel: beforeFooter.label,

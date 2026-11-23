@@ -212,11 +212,11 @@ export const seedCollaborators: Collaborator[] = [
   },
   {
     id: "seed-wildlife-logo",
-    name: "Green and orange collaborator logo featuring wildlife",
+    name: "Wildlife Conservation Society CNRM-Katari, Udayapur",
     slug: "wildlife-logo",
     position: null,
     bio: null,
-    photo_url: "/images/collaborators/wildlife-logo.png",
+    photo_url: "/images/collaborators/wildlife-conservation-society-katari.jpg",
   },
   {
     id: "seed-ifsa-hetauda",

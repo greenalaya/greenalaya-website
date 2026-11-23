@@ -172,7 +172,7 @@ export async function HomePreviewBody({
         </>
       )}
       {/* The same closing band as the About page, so the redesigned pages end alike. */}
-      <FooterStayAhead themed />
+      <FooterStayAhead />
     </main>
   );
 }
